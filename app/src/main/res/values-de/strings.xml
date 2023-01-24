@@ -17,6 +17,7 @@
 	<string name="images_found_body">Dein Gerät meldet die Unterstützung von Project Treble. Das benötigte Systemabbild lautet:</string>
 	<string name="browse_images">Systemabbilder durchstöbern</string>
 	<string name="view_details">Einzelheiten anzeigen</string>
+	<string name="report_this_bug">Fehler melden</string>
 	<string name="ask_a_question">Eine Frage stellen</string>
 	<string name="report_a_bug">Einen Fehler melden</string>
 	<string name="help_translate">Bei der Übersetzung helfen</string>
@@ -27,10 +28,15 @@
 	<string name="treble_unknown">Unbekannt</string>
 	<string name="treble_true">Unterstützt</string>
 	<string name="treble_false">Nicht unterstützt</string>
+	<string name="treble_version_title">VNDK Version</string>
 	<string name="treble_version_explanation">Die VNDK Version ist die Version von Android, welche vom Hersteller zur Nutzung implliziert wurde. Eine neuere Version von Android zu nutzen könnte zu fehlenden Funktionen führen, und du kannst keine ältere Version verwenden.</string>
+	<string name="treble_lite_title">VNDK Lite</string>
 	<string name="treble_lite_explanation">Die VNDK-Konfiguration ist für die Trennung von verschiedenen Teilen des Systemes verantwortlich. VNDK Lite lockert diese Voraussetzung, verringerrt somit den Speicherbedarf auf Kosten der Kompatibilitätsgarantie.</string>
+	<string name="treble_lite_true">VNDK ist im Lite-Modus</string>
 	<string name="treble_lite_false">Vollständige Linker-Separation verfügbar</string>
+	<string name="treble_legacy_title">Ort des Manifests</string>
 	<string name="treble_legacy_explanation">Die Liste der unterstützten Funktionen, welche das Gerät zur Verfügung stellen kann, ist im VINTF manifest gespeichert. Die Datei wurde früher im Root-Verzeichnis der Vendor-Partition gespeichert, dies ist jedoch nicht mehr gängige Praxis.</string>
+	<string name="treble_legacy_true">Altsystem</string>
 	<string name="treble_legacy_false">Modern</string>
 	<string name="ab_explanation">Nahtlose Aktualisierungen erlaubt die Installation von Updates mit geringen Unterbrechungen, da zwei Kopien von Android gespeichert werden.</string>
 	<string name="ab_unknown">Unbekannt</string>
