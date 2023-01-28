@@ -41,7 +41,8 @@ platform :android do
 
   desc "Import translations and icons and generate screenshots if release-ready"
   lane :pre_release do
-    gradle(task: "importTranslations importTranslationsForFastlane updateDrawables lintReportFreeDebug lintReportFreeRelease lintReportNonfreeDebug lintReportNonfreeRelease test")
+    # TODO updateDrawables is temporarily removed because of https://github.com/Pictogrammers/pictogrammers.com/issues/32
+    gradle(task: "importTranslations importTranslationsForFastlane lintReportFreeDebug lintReportFreeRelease lintReportNonfreeDebug lintReportNonfreeRelease test")
     build_and_screengrab()
   end
 

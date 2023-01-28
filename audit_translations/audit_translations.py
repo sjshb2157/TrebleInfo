@@ -39,13 +39,10 @@ for lang in langs:
     if not lang["translations"]:
         continue
     exported = api.view_project_terms(project, lang["code"])
-    data.setdefault(lang["code"], {}).update({term["term"]: term["translation"]["content"] for term in exported})
+    data.setdefault(lang["code"], {}).update({term["term"]: term["translation"]["content"] for term in exported if term["translation"]["content"]})
     for term in exported:
         if term["translation"]["fuzzy"]:
             fuzzy.add((lang["code"], term["term"]))
-
-data = json.load(open("tmp.json"))
-fuzzy = {tuple(x) for x in json.load(open("3.json"))}
 
 by_term = {}
 for lang_name, lang_data in data.items():
