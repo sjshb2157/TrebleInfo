@@ -1,0 +1,3 @@
+- Material 3 ve Jetpack Compose UI kullanılması için tümüyle baştan yazıldı
+- Varsayılan olarak Monet temalama destekleniyor
+- Lisans bilgileri eklendi

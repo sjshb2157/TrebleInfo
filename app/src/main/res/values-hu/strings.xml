@@ -5,4 +5,17 @@
 	<string name="ab_title">Zökkenőmentesen Frissítések</string>
 	<string name="donate">Adományozás</string>
 	<string name="dynamicpartitions_title">Dinamikus partíciók</string>
+	<string name="screen_images">Képek</string>
+	<string name="screen_details">Részletek</string>
+	<string name="screen_licenses">Licencek</string>
+	<string name="screen_contribute">Közreműködés</string>
+	<string name="no_treble_title">Az Ön készüléke nem támogatja a Project Treble-t</string>
+	<string name="no_treble_body">Sajnos az Ön készüléke nem támogatja a GSI-k telepítését. Egyes készülékeken lehetőség van arra, hogy az internetről telepítsen egy készülék-specifikus ROM-ot.</string>
+	<string name="detection_error_title">Hoppá!</string>
+	<string name="detection_error_body">Sajnos valami rosszul sült el, amikor megpróbáltuk betölteni ezeket az adatokat.</string>
+	<string name="images_found_title">Általános rendszerképet találtunk!</string>
+	<string name="images_found_body">Az Ön készüléke a Project Treble támogatását jelzi. A szükséges kép típusa:</string>
+	<string name="browse_images">Képek böngészése</string>
+	<string name="view_details">Részletek megtekintése</string>
+	<string name="report_this_bug">Hiba bejelentése</string>
 </resources>

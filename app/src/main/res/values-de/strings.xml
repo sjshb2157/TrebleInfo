@@ -58,8 +58,11 @@
 	<string name="cpu_arch_arm32">ARM32</string>
 	<string name="cpu_arch_x86_64">x86_64</string>
 	<string name="cpu_arch_x86">x86</string>
+	<string name="binder_arch_title">Binder-Architektur</string>
 	<string name="binder_arch_explanation">Die Binder-Architektur steuert die Kommunikation der Programme. Da die Programme der Vendor Partition mit dem Programmen der System Partition kommunizieren müssen, muss die Binder Architektur passend sein.</string>
 	<string name="binder_arch_unknown">Unbekannt</string>
+	<string name="binder_arch_32_bit">32-Bit</string>
+	<string name="binder_arch_64_bit">64-Bit</string>
 	<string name="binder_arch_unknown_version">Unbekannt, fehlende Version %d</string>
 	<string name="no_browser">Kein Internet-Browser installiert!</string>
 	<string name="no_email">Kein E-Mail Client installiert!</string>

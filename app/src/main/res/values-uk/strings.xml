@@ -27,11 +27,9 @@
 	<string name="treble_version_explanation">Версія VNDK — це версія Android, для роботи з якою розроблявся вендор. Використання новішої версії Android може призвести до втрати функцій, і ви не зможете використовувати старішу версію.</string>
 	<string name="treble_lite_explanation">Конфігурація VNDK відповідає за забезпечення поділу між різними частинами системи. VNDK Lite послаблює цю вимогу, зменшуючи вимоги до пам’яті за рахунок гарантій сумісності.</string>
 	<string name="treble_lite_true">VNDK в lite режимі</string>
-	<string name="treble_lite_false">Доступне повне розділення компонувальника</string>
 	<string name="treble_legacy_title">Розташування маніфесту</string>
 	<string name="treble_legacy_explanation">Список підтримуваних функцій, які пристрій може надати Android, зберігається в маніфесті VINTF. Раніше цей файл зберігався в корені розділу вендора, але це більше не є хорошою практикою.</string>
 	<string name="treble_legacy_true">Спадщина</string>
-	<string name="ab_explanation">Безшовні оновлення дозволяють оновленням бути встановленими з мінімальним часом простою зберігаючи дві копії Android.</string>
 	<string name="ab_unknown">Невідомий</string>
 	<string name="ab_true">Увімкнено</string>
 	<string name="ab_false">Не підтримується</string>

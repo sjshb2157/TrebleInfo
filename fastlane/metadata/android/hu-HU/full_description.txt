@@ -2,9 +2,9 @@ Ez az alkalmazás lehetővé teszi a Treble GSI követelményeinek ellenőrzés�
 
 Főbb jellemzők:
 * Ellenőrizze a Treble támogatás állapotát 
-* Ellenőrizze a Treble / VNDK verziót 
+* Ellenőrizze a Treble/VNDK verziót 
 * Ellenőrizze a rendszer architektúráját 
-* Ellenőrizze a Csak A vagy A / B állapotot 
+* Ellenőrizze a Csak A vagy A/B állapotot 
 * Ellenőrizze a kötőanyagot64 
 * Ellenőrizze, hogy van-e Rendszer Gyökérként 
 * Nem igényel root hozzáférést 

@@ -33,12 +33,12 @@
 	<string name="treble_lite_title">VNDK Lite</string>
 	<string name="treble_lite_explanation">La configurazione VNDK è responsabile dell\&apos;applicazione della separazione tra le diverse parti del sistema.  VNDK Lite alleggerisce questo requisito, riducendo i requisiti di archiviazione a scapito delle garanzie di compatibilità.</string>
 	<string name="treble_lite_true">VNDK è in modalità lite</string>
-	<string name="treble_lite_false">Separazione completa del linker disponibile</string>
+	<string name="treble_lite_false">Isolamento completo del linker abilitato</string>
 	<string name="treble_legacy_title">Posizione del manifest</string>
 	<string name="treble_legacy_explanation">L\&apos;elenco delle funzionalità supportate che il dispositivo può fornire ad Android è memorizzato nel VINTF manifest.  Questo file era archiviato nella radice della partizione del vendor, ma questo non è più consentito.</string>
 	<string name="treble_legacy_true">Tradizionale</string>
 	<string name="treble_legacy_false">Moderno</string>
-	<string name="ab_explanation">Gli Aggiornamenti Continui consentono di installare gli aggiornamenti con tempi di inattività minimi memorizzando due copie di Android.</string>
+	<string name="ab_explanation">I Seamless Upgrades consentono di installare gli aggiornamenti con tempi di inattività minimi memorizzando due istanze di Android.</string>
 	<string name="ab_unknown">Sconosciuto</string>
 	<string name="ab_true">Abilitato</string>
 	<string name="ab_false">Non supportato</string>

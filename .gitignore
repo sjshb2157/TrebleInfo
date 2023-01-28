@@ -330,3 +330,6 @@ obj/
 /.idea/deploymentTargetDropDown.xml
 
 /vendor/
+
+# Translation auditing
+/audit_translations/output.html

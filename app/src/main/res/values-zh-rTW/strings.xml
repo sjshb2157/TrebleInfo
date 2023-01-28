@@ -28,16 +28,14 @@
 	<string name="treble_true">支援</string>
 	<string name="treble_false">不支援</string>
 	<string name="treble_version_title">VNDK 版本</string>
-	<string name="treble_version_explanation">VNDK 版本是供應商設計用於運行的 Android 版本。 使用較新版本的 Android 可能會導致功能缺失，並且您無法使用舊版本。</string>
+	<string name="treble_version_explanation">VNDK 版本是供應商設計用於執行的 Android 版本。 使用較新版本的 Android 可能會導致功能缺失，並且您無法使用舊版本。</string>
 	<string name="treble_lite_title">VNDK Lite</string>
 	<string name="treble_lite_explanation">VNDK 配置負責強制分離系統的不同部分。 VNDK Lite 放寬了這一要求，以相容性保證為代價降低了儲存要求。</string>
 	<string name="treble_lite_true">VNDK 處於 Lite 模式</string>
-	<string name="treble_lite_false">提供完整的鏈接器分離</string>
 	<string name="treble_legacy_title">清單位置</string>
 	<string name="treble_legacy_explanation">設備可以向 Android 提供的支持功能列表儲存在 VINTF 清單中。 該文件以前儲存在供應商分區的根目錄中，但這不再是好的做法。</string>
 	<string name="treble_legacy_true">傳統</string>
 	<string name="treble_legacy_false">現代</string>
-	<string name="ab_explanation">無縫升級允許通過儲存兩個 Android 副本以最短的停機時間安裝更新。</string>
 	<string name="ab_unknown">未知</string>
 	<string name="ab_true">開啟</string>
 	<string name="ab_false">不支援</string>
