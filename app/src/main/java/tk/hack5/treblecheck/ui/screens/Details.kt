@@ -123,35 +123,25 @@ fun DetailsList(
             Spacer(Modifier.height(innerPadding.calculateBottomPadding()))
         }
         if (twoColumn) {
-            openDialog?.let { index ->
-                Column(
-                    Modifier
-                        .verticalScroll(rememberScrollState())
-                        .weight(0.5f)
-                        .consumeWindowInsets(innerPadding.vertical())
-                ) {
-                    Spacer(Modifier.height(innerPadding.calculateTopPadding()))
-                    val modifier = Modifier.safeDrawingPadding()
-                        .padding(start = gutter / 2, end = pageHorizontalPadding).fillMaxWidth()
+            Column(
+                Modifier
+                    .verticalScroll(rememberScrollState())
+                    .weight(0.5f)
+                    .consumeWindowInsets(innerPadding.vertical())
+            ) {
+                Spacer(Modifier.height(innerPadding.calculateTopPadding()))
+                val modifier = Modifier.safeDrawingPadding()
+                    .padding(start = gutter / 2, end = pageHorizontalPadding).fillMaxWidth()
+                openDialog?.let { index ->
                     val detail = details[index]
                     Text(detail.title, modifier, style = MaterialTheme.typography.titleLarge)
                     Text(detail.subtitle, modifier, style = MaterialTheme.typography.titleMedium)
                     Text(detail.body, modifier, style = MaterialTheme.typography.bodyMedium)
-                    Spacer(Modifier.height(innerPadding.calculateBottomPadding()))
-                }
-            } ?: run {
-                Column(
-                    Modifier
-                        .weight(0.5f)
-                        .padding(innerPadding)
-                        .fillMaxHeight()
-                        .consumeWindowInsets(innerPadding.vertical()),
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    val modifier = Modifier.safeDrawingPadding()
-                        .padding(start = gutter / 2, end = pageHorizontalPadding).fillMaxWidth()
+                } ?: run {
+                    Spacer(Modifier.height(verticalSpacer))
                     Text(stringResource(R.string.detail_placeholder), modifier)
                 }
+                Spacer(Modifier.height(innerPadding.calculateBottomPadding()))
             }
         }
     }
