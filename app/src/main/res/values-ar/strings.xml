@@ -60,5 +60,5 @@
 	<string name="donation_successful_title">نجح التبرع!</string>
 	<string name="donation_successful_body">شكرا لك على الدعم.</string>
 	<string name="donation_failed_title">فشل التبرع</string>
-	<string name="donation_failed_body">عفوًا يبدو أنه قد حدث خطأ ما... يُرجى المحاولة مرة أخرى لاحقًا!</string>
+	<string name="donation_failed_body">عفوًا يبدو أنه قد حدث خطأ ما… يُرجى المحاولة مرة أخرى لاحقًا!</string>
 </resources>

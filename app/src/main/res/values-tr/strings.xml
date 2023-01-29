@@ -57,5 +57,5 @@
 	<string name="donation_successful_title">Bağış başarılı!</string>
 	<string name="donation_successful_body">Desteğiniz için teşekkürler.</string>
 	<string name="donation_failed_title">Bağış başarısız</string>
-	<string name="donation_failed_body">Üzgünüz, bir şeyler yanlış gitti... Lütfen sonra yeniden deneyin!</string>
+	<string name="donation_failed_body">Üzgünüz, bir şeyler yanlış gitti… Lütfen sonra yeniden deneyin!</string>
 </resources>
