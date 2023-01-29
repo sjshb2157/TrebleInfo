@@ -1,2 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<resources/>
+<resources>
+	<string name="donate">Пожертвувати</string>
+	<string name="screen_images">Фото</string>
+	<string name="screen_details">Деталі</string>
+	<string name="screen_licenses">Ліцензії</string>
+	<string name="screen_contribute">Приєднатися</string>
+	<string name="no_treble_title">Ваш пристрій не підтримує Project Treble</string>
+	<string name="no_treble_body">На жаль, ваш пристрій не підтримує встановлення GSI. На деяких пристроях можна встановити спеціальний ROM з Інтернету.</string>
+	<string name="detection_error_title">Упс!</string>
+</resources>
