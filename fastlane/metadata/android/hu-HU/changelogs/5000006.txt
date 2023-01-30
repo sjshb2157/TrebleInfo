@@ -1,0 +1,3 @@
+- Teljesen átírtuk a Material 3 és a Jetpack Compose UI használatára
+- Alapértelmezés szerint támogatja a Monet tematizálást
+- Hozzáadott licenc információk
