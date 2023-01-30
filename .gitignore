@@ -318,7 +318,6 @@ obj/
 # Secrets
 /app/poeditor.properties
 /app/signing.properties
-/app/billing.properties
 
 
 # Fastlane

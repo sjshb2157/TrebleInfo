@@ -36,21 +36,13 @@ aboutLibraries {
 val kotlinVersion = rootProject.extra["kotlinVersion"]
 val mockkVersion = "1.12.3"
 
-fun com.android.build.api.dsl.BuildType.setupBilling(debugByDefault: Boolean) {
-    if (project.properties["gplayDebug"] as Boolean? ?: debugByDefault || !file("billing.properties").exists()) {
-        buildConfigField("String", "GPLAY_PRODUCT", "\"donate_4\"")
+fun com.android.build.api.dsl.BuildType.setupBilling() {
+    loadProperties(file("billing.properties").absolutePath).run {
+        buildConfigField("String", "GPLAY_PRODUCT", getProperty("gplayProduct"))
 
-        buildConfigField("String", "PAYPAL_EMAIL", "\"example@example.com\"")
-        buildConfigField("String", "PAYPAL_CURRENCY", "\"USD\"")
-        buildConfigField("String", "PAYPAL_DESCRIPTION", "\"Testing!\"")
-    } else {
-        loadProperties(file("billing.properties").absolutePath).run {
-            buildConfigField("String", "GPLAY_PRODUCT", getProperty("gplayProduct"))
-
-            buildConfigField("String", "PAYPAL_EMAIL", getProperty("paypalEmail"))
-            buildConfigField("String", "PAYPAL_CURRENCY", getProperty("paypalCurrency"))
-            buildConfigField("String", "PAYPAL_DESCRIPTION", getProperty("paypalDescription"))
-        }
+        buildConfigField("String", "PAYPAL_EMAIL", getProperty("paypalEmail"))
+        buildConfigField("String", "PAYPAL_CURRENCY", getProperty("paypalCurrency"))
+        buildConfigField("String", "PAYPAL_DESCRIPTION", getProperty("paypalDescription"))
     }
 }
 
@@ -95,17 +87,15 @@ android {
         getByName("release") {
             if (file("signing.properties").exists()) {
                 signingConfig = signingConfigs["release"]
-                setupBilling(false)
-            } else {
-                setupBilling(true)
             }
+            setupBilling()
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
         getByName("debug") {
             signingConfig = signingConfigs["debug"]
-            setupBilling(true)
+            setupBilling()
         }
     }
     externalNativeBuild {
