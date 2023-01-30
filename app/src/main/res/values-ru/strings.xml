@@ -53,5 +53,5 @@
 	<string name="donation_successful_title">Успешное пожертвование!</string>
 	<string name="donation_successful_body">Спасибо Вам за поддержку.</string>
 	<string name="donation_failed_title">Неудачное пожертвование</string>
-	<string name="donation_failed_body">Извините, что-то пошло не так... Пожалуйста, попробуйте ещё раз позже!</string>
+	<string name="donation_failed_body">Извините, что-то пошло не так… Пожалуйста, попробуйте ещё раз позже!</string>
 </resources>
