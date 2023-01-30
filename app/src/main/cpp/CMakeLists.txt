@@ -5,12 +5,12 @@
 cmake_minimum_required(VERSION 3.4.1)
 
 project(TrebleCheck)
+
 # Specifies a library name, specifies whether the library is STATIC or
 # SHARED, and provides relative paths to the source code. You can
 # define multiple libraries by adding multiple add_library() commands,
 # and CMake builds them for you. When you build your app, Gradle
 # automatically packages shared libraries with your APK.
-
 add_library( # Specifies the name of the library.
         binderdetector
 
@@ -19,3 +19,6 @@ add_library( # Specifies the name of the library.
 
         # Provides a relative path to your source file(s).
         BinderDetector.cpp)
+
+# Disable build ID for reproducible builds
+target_link_libraries(binderdetector -Wl,--build-id=none)
