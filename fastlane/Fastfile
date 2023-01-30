@@ -28,8 +28,6 @@
 # Ensure the tag is pushed to GitLab and create the release manually (retry isn't possible)
 #
 
-require 'net/http'
-
 default_platform(:android)
 
 platform :android do
@@ -52,7 +50,17 @@ platform :android do
     release_to_gitlab(options)
   end
 
+  def remove_empty_directories(base)
+    return unless Dir.exist?(base)
+    if Dir.empty?(base)
+      Dir.unlink(base)
+    else
+      Dir.each_child(base) { |child| remove_empty_directories(File.join(base, child)) }
+    end
+  end
+
   lane :upload_to_play do |options|
+    remove_empty_directories(Dir.new("metadata/android"))
     upload_to_play_store(track: options[:production] ? "production" : "beta",
                          release_status: "draft",
                          apk: "app/build/outputs/apk/nonfree/release/app-nonfree-release.apk",
