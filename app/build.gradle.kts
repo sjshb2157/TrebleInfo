@@ -179,5 +179,3 @@ tasks.register("versionName") {
         println(android.defaultConfig.versionName)
     }
 }
-
-apply(from = "fix-profm.gradle")
