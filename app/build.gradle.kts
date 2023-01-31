@@ -17,7 +17,6 @@
  */
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import com.android.build.gradle.internal.tasks.CompileArtProfileTask
 import com.android.build.gradle.tasks.MergeResources
 import org.jetbrains.kotlin.konan.properties.loadProperties
 
@@ -140,6 +139,10 @@ if (file("poeditor.properties").exists()) {
 
 project.poeditor.projectId = 285385
 
+tasks.withType(com.github.penn5.ImportPoEditorStringsBaseTask::class) {
+    allowFuzzy = false
+}
+
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion")
@@ -166,17 +169,9 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview:1.3.3")
 }
 
-tasks.withType<com.github.penn5.ImportPoEditorStringsBaseTask<*>> {
-    allowFuzzy = false
-}
-
-tasks.withType<MergeResources> {
+tasks.withType<MergeResources>().configureEach {
     mustRunAfter("updateDrawables")
     mustRunAfter("importTranslations")
-}
-
-tasks.withType<CompileArtProfileTask> {
-    enabled = false
 }
 
 tasks.register("versionName") {
