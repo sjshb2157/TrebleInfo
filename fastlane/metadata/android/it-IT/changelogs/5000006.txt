@@ -1,3 +1,0 @@
-- Completamente riscritta per usare Materiale 3 e Jetpack Compose UI
-- Supporto per tematizzazione Monet di default
-- Aggiunte infomazioni sulle licenze

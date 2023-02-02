@@ -1,3 +1,0 @@
-- Vollständig überarbeitet für die Nutzung von Material 3 und Jetpack Compose UI
-- Standardmäßige Unterstütztung der Monet-Thematisierung
-- Lizenz-Informationen hinzugefügt
