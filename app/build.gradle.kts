@@ -106,17 +106,24 @@ android {
     buildFeatures {
         compose = true
     }
-
     packagingOptions {
         jniLibs {
             useLegacyPackaging = false
         }
         resources {
-            excludes.add("DebugProbesKt.bin")
+            excludes += "/DebugProbesKt.bin"
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "/META-INF/*.version"
+            excludes += "/kotlin-tooling-metadata.json"
+            excludes += "/kotlin/**.kotlin_builtins"
         }
     }
-
+    dependenciesInfo {
+        // Disables dependency metadata when building APKs.
+        includeInApk = false
+        // Disables dependency metadata when building Android App Bundles.
+        includeInBundle = false
+    }
     lint {
         checkDependencies = true
     }
