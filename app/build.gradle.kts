@@ -34,7 +34,7 @@ aboutLibraries {
 }
 
 val kotlinVersion = rootProject.extra["kotlinVersion"]
-val mockkVersion = "1.12.3"
+val mockkVersion = "1.13.4"
 
 fun com.android.build.api.dsl.BuildType.setupBilling() {
     loadProperties(file("billing.properties").absolutePath).run {
@@ -155,9 +155,9 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion")
     implementation("com.google.android.material:material:1.8.0")
     implementation("androidx.compose.ui:ui:1.3.3")
-    implementation("androidx.compose.material3:material3:1.1.0-alpha05")
-    implementation("androidx.compose.material3:material3-window-size-class:1.1.0-alpha05")
-    implementation("androidx.compose.animation:animation:1.4.0-alpha05")
+    implementation("androidx.compose.material3:material3:1.1.0-alpha06")
+    implementation("androidx.compose.material3:material3-window-size-class:1.1.0-alpha06")
+    implementation("androidx.compose.animation:animation:1.4.0-beta01")
     implementation("androidx.activity:activity-compose:1.6.1")
     implementation("androidx.navigation:navigation-compose:2.5.3")
     implementation("com.mikepenz:aboutlibraries-core:10.5.2")
