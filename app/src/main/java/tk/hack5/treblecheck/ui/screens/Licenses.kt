@@ -26,6 +26,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -53,6 +54,16 @@ fun Licenses(
         libraries.value = Libs.Builder().withContext(context).build()
     }
 
+    val licenses = setOf(
+        License(
+            SpdxLicense.GPL_3_0_or_later.fullName,
+            SpdxLicense.GPL_3_0_or_later.getUrl(),
+            null,
+            SpdxLicense.GPL_3_0_or_later.id,
+            context.resources.openRawResource(R.raw.license).bufferedReader().readText(),
+            SpdxLicense.GPL_3_0_or_later.id + "-TrebleInfo"
+        )
+    )
     val thisLibrary = Library(
         "tk.hack5:treblecheck",
         BuildConfig.VERSION_NAME,
@@ -66,36 +77,27 @@ fun Licenses(
             "scm:git:ssh://git@gitlab.com/TrebleInfo/TrebleInfo.git",
             "scm:git:https://gitlab.com/TrebleInfo/TrebleInfo.git"
         ),
-        setOf(
-            License(
-                SpdxLicense.GPL_3_0_or_later.fullName,
-                SpdxLicense.GPL_3_0_or_later.getUrl(),
-                null,
-                SpdxLicense.GPL_3_0_or_later.id,
-                context.resources.openRawResource(R.raw.license).bufferedReader().readText(),
-                SpdxLicense.GPL_3_0_or_later.id
-            )
-        ),
+        licenses,
         setOf(),
         null
     )
-    val libs = libraries.value?.libraries ?: emptyList()
 
-    val allLibs = listOf(thisLibrary) + libs
+    val newLibraries = libraries.value?.let { Libs(listOf(thisLibrary) + it.libraries, licenses + it.licenses) }
 
-    Libraries(innerPadding, scrollConnection, allLibs)
+    newLibraries?.let { Libraries(innerPadding, scrollConnection, it) }
 }
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun Libraries(innerPadding: PaddingValues, scrollConnection: NestedScrollConnection, allLibs: List<Library>) {
-    var openLicense by remember { mutableStateOf<License?>(null) }
+fun Libraries(innerPadding: PaddingValues, scrollConnection: NestedScrollConnection, libraries: Libs) {
+    var openLicenseIndex by rememberSaveable { mutableStateOf<String?>(null) }
+    val openLicense = openLicenseIndex?.let { libraries.licenses.first { license -> license.hash == it } }
 
     openLicense?.let {
         AlertDialog(
-            onDismissRequest = { openLicense = null },
+            onDismissRequest = { openLicenseIndex = null },
             confirmButton = {
-                TextButton(onClick = { openLicense = null }) {
+                TextButton(onClick = { openLicenseIndex = null }) {
                     Text(stringResource(R.string.close_dialog))
                 }
             },
@@ -119,7 +121,7 @@ fun Libraries(innerPadding: PaddingValues, scrollConnection: NestedScrollConnect
             .consumeWindowInsets(innerPadding),
         contentPadding = innerPadding
     ) {
-        items(allLibs) { library ->
+        items(libraries.libraries) { library ->
             Column(
                 Modifier
                     .fillMaxWidth()
@@ -151,7 +153,7 @@ fun Libraries(innerPadding: PaddingValues, scrollConnection: NestedScrollConnect
                 FlowRow {
                     library.licenses.forEach {
                         OutlinedButton(
-                            onClick = { openLicense = it }
+                            onClick = { openLicenseIndex = it.hash }
                         ) {
                             Text(it.name)
                         }
