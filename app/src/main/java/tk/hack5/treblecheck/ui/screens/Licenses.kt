@@ -66,7 +66,7 @@ fun Licenses(
     )
     val thisLibrary = Library(
         "tk.hack5:treblecheck",
-        BuildConfig.VERSION_NAME,
+        BuildConfig.VERSION_NAME + '-' + BuildConfig.FLAVOR + '-' + BuildConfig.BUILD_TYPE,
         stringResource(R.string.title),
         stringResource(R.string.this_app),
         "https://hack5.dev/about/projects/TrebleInfo",
