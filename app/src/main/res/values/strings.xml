@@ -33,7 +33,7 @@
 	<string name="treble_lite_title">VNDK Lite</string>
 	<string name="treble_lite_explanation">The VNDK configuration is responsible for enforcing separation between different parts of the system. VNDK Lite relaxes this requirement, reducing storage requirements at the cost of compatibility guarantees.</string>
 	<string name="treble_lite_true">VNDK is in lite mode</string>
-	<string name="treble_lite_false">Full linker separation enabled</string>
+	<string name="treble_lite_false">Full linker namespace separation enabled</string>
 	<string name="treble_legacy_title">Manifest location</string>
 	<string name="treble_legacy_explanation">The list of supported features that the device can provide to Android is stored in the VINTF manifest. This file used to be stored in the root of the vendor partition, but this is no longer good practice.</string>
 	<string name="treble_legacy_true">Legacy</string>
@@ -42,7 +42,7 @@
 	<string name="ab_unknown">Unknown</string>
 	<string name="ab_true">Enabled</string>
 	<string name="ab_false">Unsupported</string>
-	<string name="dynamicpartitions_explanation">Devices with Dynamic Partitions are able to create, modify or delete partitions during updates. To support this feature, a \&quot;super\&quot; partition is used. This container partition contains all other partitions except for the bootloader. Flashing must be performed using fastbootd on these devices.</string>
+	<string name="dynamicpartitions_explanation">Devices with Dynamic Partitions are able to create, modify or delete partitions during updates. To support this feature, a “super” partition is used. This container partition contains all other partitions except for the bootloader. Flashing must be performed using fastbootd on these devices.</string>
 	<string name="dynamicpartitions_unknown">Unknown</string>
 	<string name="dynamicpartitions_true">Enabled</string>
 	<string name="dynamicpartitions_false">Unsupported</string>

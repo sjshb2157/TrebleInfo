@@ -14,7 +14,7 @@
 	<string name="detection_error_body">На жаль, під час спроби завантажити ці дані сталася помилка.</string>
 	<string name="view_details">Переглянути деталі</string>
 	<string name="report_this_bug">Повідомити про баг</string>
-	<string name="ask_a_question">Задати питання</string>
+	<string name="ask_a_question">Поставити запитання</string>
 	<string name="report_a_bug">Повідомити про баг</string>
 	<string name="help_translate">Допомогти перекласти</string>
 	<string name="this_app">Цей застосунок</string>

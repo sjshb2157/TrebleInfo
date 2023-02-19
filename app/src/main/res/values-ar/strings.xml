@@ -42,7 +42,7 @@
 	<string name="ab_unknown">غير معروف</string>
 	<string name="ab_true">مفعل</string>
 	<string name="ab_false">غير مدعوم</string>
-	<string name="dynamicpartitions_explanation">يمكن للأجهزة ذات الأقسام الديناميكية إنشاء أقسام أو تعديلها أو حذفها خلال التحديثات. ولدعم هذه المزيّة يستخدم قسم \&quot;فائق\&quot; يحتوي على جميع الأقسام الأخرى باستثناء محمل اﻹقلاع. وعلى هذه الأجهزة يجب استخدام fastbootd في عملية التثبيت اليدوي لصور النظام.</string>
+	<string name="dynamicpartitions_explanation">يمكن للأجهزة ذات الأقسام الديناميكية إنشاء أقسام أو تعديلها أو حذفها خلال التحديثات. ولدعم هذه المزيّة يستخدم قسم ”فائق“ يحتوي على جميع الأقسام الأخرى باستثناء محمل اﻹقلاع. وعلى هذه الأجهزة يجب استخدام fastbootd في عملية التثبيت اليدوي لصور النظام.</string>
 	<string name="dynamicpartitions_unknown">غير معروف</string>
 	<string name="dynamicpartitions_true">مفعلة</string>
 	<string name="dynamicpartitions_false">غير مدعومة</string>

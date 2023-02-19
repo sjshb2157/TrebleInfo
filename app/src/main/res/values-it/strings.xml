@@ -42,7 +42,7 @@
 	<string name="ab_unknown">Sconosciuto</string>
 	<string name="ab_true">Abilitato</string>
 	<string name="ab_false">Non supportato</string>
-	<string name="dynamicpartitions_explanation">I dispositivi con partizioni dinamiche sono in grado di creare, modificare o eliminare partizioni durante gli aggiornamenti.  Per supportare questa funzione, viene utilizzata una partizione \&quot;super\&quot;.  Questa partizione contenitore contiene tutte le altre partizioni ad eccezione del bootloader.  Il flashing deve essere eseguito utilizzando fastbootd su questi dispositivi.</string>
+	<string name="dynamicpartitions_explanation">I dispositivi con partizioni dinamiche sono in grado di creare, modificare o eliminare partizioni durante gli aggiornamenti.  Per supportare questa funzione, viene utilizzata una partizione “super”.  Questa partizione contenitore contiene tutte le altre partizioni ad eccezione del bootloader.  Il flashing deve essere eseguito utilizzando fastbootd su questi dispositivi.</string>
 	<string name="dynamicpartitions_unknown">Sconosciuto</string>
 	<string name="dynamicpartitions_true">Abilitato</string>
 	<string name="dynamicpartitions_false">Non supportato</string>

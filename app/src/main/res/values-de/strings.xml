@@ -42,7 +42,7 @@
 	<string name="ab_unknown">Unbekannt</string>
 	<string name="ab_true">Aktiviert</string>
 	<string name="ab_false">Nicht unterstützt</string>
-	<string name="dynamicpartitions_explanation">Geräte mit Dynamischen Partitionen sind in der Lage, Partitionen zu erstellen, modifizieren und zu löschen. Um diese Funktion nutzen zu können, wird eine \&quot;super\&quot; Partition genutzt. Diese Container-Partition beinhaltet alle Partitionen, bis auf den Bootloader. Das schreiben der Partition muss bei solchen Geräten in fastbootd erfolgen.</string>
+	<string name="dynamicpartitions_explanation">Geräte mit Dynamischen Partitionen sind in der Lage, Partitionen zu erstellen, modifizieren und zu löschen. Um diese Funktion nutzen zu können, wird eine “super” Partition genutzt. Diese Container-Partition beinhaltet alle Partitionen, bis auf den Bootloader. Das schreiben der Partition muss bei solchen Geräten in fastbootd erfolgen.</string>
 	<string name="dynamicpartitions_unknown">Unbekannt</string>
 	<string name="dynamicpartitions_true">Aktiviert</string>
 	<string name="dynamicpartitions_false">Nicht unterstützt</string>

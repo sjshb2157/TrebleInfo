@@ -42,7 +42,7 @@
 	<string name="ab_unknown">Ismeretlen</string>
 	<string name="ab_true">Engedélyezve</string>
 	<string name="ab_false">Nem támogatott</string>
-	<string name="dynamicpartitions_explanation">A dinamikus partíciókkal rendelkező eszközök a frissítések során képesek partíciókat létrehozni, módosítani vagy törölni. E funkció támogatásához egy \&quot;super\&quot; partíciót használnak. Ez a konténerpartíció tartalmazza az összes többi partíciót a bootloader kivételével. A flashelést fastbootd segítségével kell elvégezni ezeken az eszközökön.</string>
+	<string name="dynamicpartitions_explanation">A dinamikus partíciókkal rendelkező eszközök a frissítések során képesek partíciókat létrehozni, módosítani vagy törölni. E funkció támogatásához egy “super” partíciót használnak. Ez a konténerpartíció tartalmazza az összes többi partíciót a bootloader kivételével. A flashelést fastbootd segítségével kell elvégezni ezeken az eszközökön.</string>
 	<string name="dynamicpartitions_unknown">Ismeretlen</string>
 	<string name="dynamicpartitions_true">Engedélyezve</string>
 	<string name="dynamicpartitions_false">Nem támogatott</string>

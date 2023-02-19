@@ -42,7 +42,7 @@
 	<string name="ab_unknown">未知</string>
 	<string name="ab_true">启用</string>
 	<string name="ab_false">不支持</string>
-	<string name="dynamicpartitions_explanation">具有动态分区的设备能够在系统更新期间创建、修改或删除分区，为了支持这个功能，使用了一个 \&quot;super\&quot; 分区。此容器分区包含除 bootloader 之外的所有其他分区，您必须在这些设备上使用 fastbootd 进行刷入。</string>
+	<string name="dynamicpartitions_explanation">具有动态分区的设备能够在系统更新期间创建、修改或删除分区，为了支持这个功能，使用了一个 “super” 分区。此容器分区包含除 bootloader 之外的所有其他分区，您必须在这些设备上使用 fastbootd 进行刷入。</string>
 	<string name="dynamicpartitions_unknown">未知</string>
 	<string name="dynamicpartitions_true">启用</string>
 	<string name="dynamicpartitions_false">不支持</string>

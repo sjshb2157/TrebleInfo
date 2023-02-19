@@ -24,6 +24,7 @@
 	<string name="contribute_code">Participer au développement</string>
 	<string name="this_app">Cette application</string>
 	<string name="treble_title">Projet Treble</string>
+	<string name="treble_explanation">Le projet Treble fournit un protocole unifié pour communiquer avec le matériel, qui permet aux fabricants de créer les mises à jour sans nécessiter de refaire les implémentations du protocole.</string>
 	<string name="treble_unknown">Inconnu</string>
 	<string name="treble_true">Supporté</string>
 	<string name="treble_false">Incompatible</string>
@@ -32,6 +33,7 @@
 	<string name="treble_lite_title">VNDK Lite</string>
 	<string name="treble_lite_explanation">La configuration du VNDK est responsable de la séparation des parties différentes du système. VNDK Lite assouplit cette exigence, réduisant le stockage requis au détriment des garanties de compatibilité.</string>
 	<string name="treble_lite_true">Le VNDK est en mode Lite</string>
+	<string name="treble_lite_false">La séparation totale des espaces de noms du linker est activée</string>
 	<string name="treble_legacy_title">Localisation du manifeste</string>
 	<string name="treble_legacy_explanation">La liste de fonctionnalités que l\&apos;appareil peut fournir à Android se trouve dans le manifeste VINTF. Ce fichier était stocké à la racine de la partition vendor, mais ce n\&apos;est plus la recommandation.</string>
 	<string name="treble_legacy_true">Système antérieur</string>
@@ -40,7 +42,7 @@
 	<string name="ab_unknown">État inconnu</string>
 	<string name="ab_true">Supportée</string>
 	<string name="ab_false">Incompatible</string>
-	<string name="dynamicpartitions_explanation">Les appareils avec les partitions dynamiques peuvent créer, modifier et supprimer les partitions lors des mises à jour, grâce à une partition \&quot;super\&quot;. Cette partition contient toutes les partitions à l\&apos;exception du chargeur de démarrage. Le flashage n\&apos;est possible qu\&apos;avec fastbootd sur ces appareils.</string>
+	<string name="dynamicpartitions_explanation">Les appareils avec les partitions dynamiques peuvent créer, modifier et supprimer les partitions lors des mises à jour, grâce à une partition “super”. Cette partition contient toutes les partitions à l\&apos;exception du chargeur de démarrage. Le flashage n\&apos;est possible qu\&apos;avec fastbootd sur ces appareils.</string>
 	<string name="dynamicpartitions_unknown">État inconnu</string>
 	<string name="dynamicpartitions_true">Supportées</string>
 	<string name="dynamicpartitions_false">Incompatibles</string>
