@@ -14,6 +14,10 @@ See https://gitlab.com/TrebleInfo/TrebleInfo/-/blob/dev/TRANSLATING.md
 
 ## Download
 
-[Google Play](https://play.google.com/store/apps/details?id=tk.hack5.treblecheck)
-or
+[F-Droid](https://f-droid.org/packages/tk.hack5.treblecheck/)
+
 [GitLab](https://gitlab.com/TrebleInfo/TrebleInfo/-/releases)
+
+[Google Play](https://play.google.com/store/apps/details?id=tk.hack5.treblecheck)
+
+Google Play is a trademark of Google LLC.
