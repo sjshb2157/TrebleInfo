@@ -18,7 +18,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import poeditor
-import json
 import io
 import sys
 import googletrans
