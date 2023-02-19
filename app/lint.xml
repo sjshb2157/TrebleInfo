@@ -20,8 +20,6 @@
 
 <lint>
   <issue id="MissingTranslation" severity="ignore" />
-
-  <!--<issue id="UnusedResources">
-    <ignore regexp="src/main/res/values[^/]*/strings\.xml$" />
-  </issue>-->
+  <issue id="StopShip" severity="error" />
+  <issue id="TypographyQuotes" severity="warning" />
 </lint>
