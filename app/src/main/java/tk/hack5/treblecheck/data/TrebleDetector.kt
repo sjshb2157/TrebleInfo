@@ -27,13 +27,12 @@ import tk.hack5.treblecheck.compareTo
 import tk.hack5.treblecheck.get
 import tk.hack5.treblecheck.propertyGet
 import java.io.File
-import java.io.IOException
 
 data class TrebleResult(val legacy: Boolean, val lite: Boolean,
                         val vndkVersion: Int, val vndkSubVersion: Int)
 
 object TrebleDetector {
-    private val SELINUX_REGEX = Regex("""\Winit_([0-9]+)_([0-9]+)\W""")
+    private val SELINUX_REGEX = Regex("""\Winit_(\d+)_(\d+)\W""")
     internal var root: File? = null
 
     fun getVndkData(): TrebleResult? {
@@ -145,16 +144,17 @@ object TrebleDetector {
     }
 
     private fun parseXml(file: File, block: (XmlPullParser) -> List<String>): Pair<Int, Int>? {
-        val factory = XmlPullParserFactory.newInstance()
-        factory.isNamespaceAware = false
-        val xpp = factory.newPullParser()
-        try {
-            xpp.setInput(file.inputStream().reader())
-        } catch (e: IOException) {
-            return null
-        }
+        val versions = file.inputStream().use { inputStream ->
+            inputStream.reader().use { reader ->
+                val factory = XmlPullParserFactory.newInstance()
+                factory.isNamespaceAware = false
+                val xpp = factory.newPullParser().apply {
+                    setInput(reader)
+                }
 
-        val versions = block(xpp)
+                block(xpp)
+            }
+        }
 
         return versions
             .mapNotNull { parseVersion(it) }
