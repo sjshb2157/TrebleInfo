@@ -34,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import tk.hack5.treblecheck.Optional
 import tk.hack5.treblecheck.R
@@ -158,8 +159,8 @@ fun DetailEntry(detail: Detail, modifier: Modifier, onClick: (Detail) -> Unit) {
             Icon(detail.icon, null, Modifier.size(36.dp), MaterialTheme.colorScheme.primary)
             Spacer(Modifier.width(cardIconSpacerWidth))
             Column {
-                Text(detail.title, maxLines = 1, style = MaterialTheme.typography.titleMedium)
-                Text(detail.subtitle, maxLines = 1, style = MaterialTheme.typography.bodyMedium)
+                Text(detail.title, maxLines = 1, style = MaterialTheme.typography.titleMedium, overflow = TextOverflow.Ellipsis)
+                Text(detail.subtitle, style = MaterialTheme.typography.bodyMedium)
             }
         }
     }
