@@ -70,7 +70,8 @@ assembleDebug:
   interruptible: true
   stage: build
   script:
-    - ./gradlew assembleDebug
+    - ./gradlew --console=plain assembleFreeDebug
+    - ./gradlew --console=plain assembleNonfreeDebug
   artifacts:
     paths:
       - app/build/outputs/
@@ -79,7 +80,10 @@ check:
   interruptible: true
   stage: test
   script:
-    - ./gradlew -Pci --console=plain lintReportFreeDebug lintReportFreeRelease lintReportNonfreeDebug lintReportNonfreeRelease test
+    - ./gradlew --console=plain lintReportFreeDebug testFreeDebugUnitTest
+    - ./gradlew --console=plain lintReportFreeRelease testFreeReleaseUnitTest
+    - ./gradlew --console=plain lintReportNonfreeDebug testNonfreeDebugUnitTest
+    - ./gradlew --console=plain lintReportNonfreeRelease testNonfreeReleaseUnitTest
     - '! grep -qv "^No issues found.$" app/build/reports/lint-results-*.txt || ( cat app/build/reports/lint-results-*.txt; exit 1; )'
   artifacts:
     reports:
