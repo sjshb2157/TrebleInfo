@@ -100,7 +100,7 @@ class ScreenshotTaker(
         }
 
         val tabs = composeTestRule.onAllNodes(SemanticsMatcher.expectValue(SemanticsProperties.Role, Role.Tab))
-        tabs.get(tab).performClick()
+        tabs[tab].performClick()
         takeIdleScreenshot(tab)
     }
 }

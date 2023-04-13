@@ -24,21 +24,28 @@ import io.mockk.every
 import io.mockk.mockkStatic
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.Parameterized
 import tk.hack5.treblecheck.data.DynamicPartitionsDetector
 
-class DynamicPartitionsDetectorTest {
-
-    @Test
-    fun isDynamic() {
-        testIsDynamic(false, "")
-        testIsDynamic(true, "true")
-        testIsDynamic(false, "false")
-        testIsDynamic(false, "weird-value 1.40$")
-        testIsDynamic(null, null)
+@RunWith(Parameterized::class)
+class DynamicPartitionsDetectorTest(private val expected: Boolean?, private val supportsDynamic: String?) {
+    companion object {
+        @Suppress("BooleanLiteralArgument")
+        @Parameterized.Parameters
+        @JvmStatic
+        fun data() = listOf(
+            arrayOf(false, ""),
+            arrayOf(true, "true"),
+            arrayOf(false, "false"),
+            arrayOf(false, "weird-value 1.40$"),
+            arrayOf<Any?>(null, null),
+        )
     }
 
-    private fun testIsDynamic(expected: Boolean?, slotSuffix: String?) = mockkStatic(::propertyGet.declaringKotlinFile) {
-        every { propertyGet("ro.boot.dynamic_partitions") } returns slotSuffix
+    @Test
+    fun isDynamic() = mockkStatic(::propertyGet.declaringKotlinFile) {
+        every { propertyGet("ro.boot.dynamic_partitions") } returns supportsDynamic
         assertEquals(expected, DynamicPartitionsDetector.isDynamic())
     }
 }

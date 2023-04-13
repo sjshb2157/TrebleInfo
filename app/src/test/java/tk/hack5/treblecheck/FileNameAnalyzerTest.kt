@@ -22,22 +22,27 @@ package tk.hack5.treblecheck
 import org.junit.Assert.*
 
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.Parameterized
 import tk.hack5.treblecheck.data.*
 
-class FileNameAnalyzerTest {
-
-    @Suppress("BooleanLiteralArgument")
+@RunWith(Parameterized::class)
+class FileNameAnalyzerTest(private val expected: String, private val treble: TrebleResult?, private val binderArch: BinderArch, private val cpuArch: CPUArch, private val sar: Boolean?) {
+    companion object {
+        @Suppress("BooleanLiteralArgument")
+        @Parameterized.Parameters
+        @JvmStatic
+        fun data() = listOf(
+            arrayOf("system-arm64-aonly.img.xz", TrebleResult(false, false, 31, 0), BinderArch.Binder8, CPUArch.ARM64, false),
+            arrayOf("system-arm64-aonly.img.xz", TrebleResult(false, true, 31, 0), BinderArch.Binder8, CPUArch.ARM64, false),
+            arrayOf("system-arm32_binder64-ab-vndklite.img.xz", TrebleResult(false, true, 31, 0), BinderArch.Binder8, CPUArch.ARM32, true),
+            arrayOf("system-arm32_binder64-ab-vndklite.img.xz", TrebleResult(true, false, 31, 0), BinderArch.Binder8, CPUArch.ARM32, true),
+            arrayOf("system-arm32-???-vndklite.img.xz", TrebleResult(true, false, 31, 0), BinderArch.Binder7, CPUArch.ARM32, null),
+            arrayOf("system-???-???.img.xz", null, BinderArch.Unknown(null), CPUArch.Unknown(null), null),
+        )
+    }
     @Test
     fun getFileName() {
-        testGetFileName("system-arm64-aonly.img.xz", TrebleResult(false, false, 31, 0), BinderArch.Binder8, CPUArch.ARM64, false)
-        testGetFileName("system-arm64-aonly.img.xz", TrebleResult(false, true, 31, 0), BinderArch.Binder8, CPUArch.ARM64, false)
-        testGetFileName("system-arm32_binder64-ab-vndklite.img.xz", TrebleResult(false, true, 31, 0), BinderArch.Binder8, CPUArch.ARM32, true)
-        testGetFileName("system-arm32_binder64-ab-vndklite.img.xz", TrebleResult(true, false, 31, 0), BinderArch.Binder8, CPUArch.ARM32, true)
-        testGetFileName("system-arm32-???-vndklite.img.xz", TrebleResult(true, false, 31, 0), BinderArch.Binder7, CPUArch.ARM32, null)
-        testGetFileName("system-???-???.img.xz", null, BinderArch.Unknown(null), CPUArch.Unknown(null), null)
-    }
-
-    private fun testGetFileName(expected: String, treble: TrebleResult?, binderArch: BinderArch, cpuArch: CPUArch, sar: Boolean?) {
         assertEquals(expected, FileNameAnalyzer.getFileName(treble, binderArch, cpuArch, sar))
     }
 }

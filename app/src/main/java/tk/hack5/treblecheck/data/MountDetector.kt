@@ -20,6 +20,7 @@
 package tk.hack5.treblecheck.data
 
 import android.util.Log
+import tk.hack5.treblecheck.BuildConfig
 import tk.hack5.treblecheck.Mock
 import tk.hack5.treblecheck.propertyGet
 import java.io.BufferedReader
@@ -31,7 +32,7 @@ object MountDetector {
     private const val MOUNTS_PATH = "/proc/mounts"
     internal fun getMountsStream(): BufferedReader = File(MOUNTS_PATH).inputStream().bufferedReader()
 
-    internal fun checkMounts(check: (List<Mount>) -> Boolean): Boolean {
+    internal fun getMounts(): Iterable<Mount> {
         val mountsStream: BufferedReader
         try {
             mountsStream = getMountsStream()
@@ -43,7 +44,7 @@ object MountDetector {
         val lines = mountsStream.lineSequence().mapNotNull {
             parseLine(it)
         }
-        return check(lines.toList())
+        return lines.asIterable()
     }
 
     fun isSAR(): Boolean? {
@@ -56,17 +57,42 @@ object MountDetector {
         return when {
             dynamicPartitions == "true" -> true
             systemRootImage == "true" -> true
-            else -> checkMounts { lines ->
-                val rootMounted = lines.any { it.device == "/dev/root" && it.mountpoint == "/" }
-                val noSystemPartition = lines.none { it.mountpoint == "/system" && it.type != "tmpfs" && it.device != "none" }
-                val systemRoot = lines.any { it.mountpoint == "/system_root" && it.type != "tmpfs" }
-                Log.v(tag, "rootMounted: $rootMounted, noSystemPartition: $noSystemPartition, systemRoot: $systemRoot")
-                rootMounted || noSystemPartition || systemRoot
+            else -> if (BuildConfig.DEBUG) {
+                getMounts().toList().let { lines ->
+                    val rootMounted = lines.any { it.device == "/dev/root" && it.mountpoint == "/" }
+                    val hasSystemPartition =
+                        lines.any { it.mountpoint == "/system" && it.type != "tmpfs" && it.device != "none" }
+                    val systemRoot =
+                        lines.any { it.mountpoint == "/system_root" && it.type != "tmpfs" }
+                    Log.v(
+                        tag,
+                        "rootMounted: $rootMounted, hasSystemPartition: $hasSystemPartition, systemRoot: $systemRoot"
+                    )
+                    rootMounted || !hasSystemPartition || systemRoot
+                }
+            } else {
+                getMounts().let { lines ->
+                    val (rootMountedOrSystemRoot, hasSystemPartition) = lines.fold(false to false) { acc, it ->
+                        (
+                                acc.first
+                                        || it.device == "/dev/root" && it.mountpoint == "/"
+                                        || it.mountpoint == "/system_root" && it.type != "tmpfs"
+                        ) to (
+                                acc.second
+                                        || it.mountpoint == "/system" && it.type != "tmpfs" && it.device != "none"
+                        )
+                    }
+                    Log.v(
+                        tag,
+                        "rootMountedOrSystemRoot: $rootMountedOrSystemRoot, hasSystemPartition: $hasSystemPartition"
+                    )
+                    rootMountedOrSystemRoot || !hasSystemPartition
+                }
             }
         }
     }
 
-    internal fun parseLine(line: String): Mount? {
+    private fun parseLine(line: String): Mount? {
         if (line.isBlank() || line.startsWith(' ')) {
             return null
         }

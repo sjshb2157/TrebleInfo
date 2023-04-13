@@ -29,10 +29,10 @@ import kotlinx.coroutines.CoroutineScope
 
 class PaypalIABHelper(private val activity: Activity, private val listener: IABListener, private val scope: CoroutineScope) {
 
-    suspend fun connect() {
+    fun connect() {
     }
 
-    suspend fun makePayment() {
+    fun makePayment() {
         val uriBuilder = Uri.Builder()
         uriBuilder.scheme("https").authority("www.paypal.com").path("cgi-bin/webscr")
         uriBuilder.appendQueryParameter("cmd", "_donations")

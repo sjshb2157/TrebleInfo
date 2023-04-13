@@ -85,18 +85,17 @@ fun Images(
         Icon(icon, null, Modifier.size(imagesIconSize), tint = MaterialTheme.colorScheme.primary)
         Text(title, style = MaterialTheme.typography.titleLarge, textAlign = TextAlign.Center)
         Text(body, textAlign = TextAlign.Center)
-        val button: Boolean
-        if (bug) {
+        val button = if (bug) {
             Spacer(Modifier.height(verticalSpacer))
             Button(reportBug) { Text(stringResource(R.string.report_this_bug)) }
-            button = true
+            true
         } else if (treble != false && fileName != null) {
             Text(fileName, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
             Spacer(Modifier.height(verticalSpacer))
             Button(browseImages) { Text(stringResource(R.string.browse_images)) }
-            button = true
+            true
         } else {
-            button = false
+            false
         }
         if (button) {
             OutlinedButton(navigateToDetails) { Text(stringResource(R.string.view_details)) }

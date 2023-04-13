@@ -23,28 +23,31 @@ import io.mockk.every
 import io.mockk.mockkObject
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.Parameterized
 import tk.hack5.treblecheck.data.ArchDetector
 import tk.hack5.treblecheck.data.CPUArch
 
-class ArchDetectorTest {
-    @Test
-    fun getArch() {
-        assertEquals(CPUArch.ARM32, testGetArch(arrayOf("armeabi-v7a")))
-        assertEquals(CPUArch.ARM64, testGetArch(arrayOf("arm64-v8a")))
-        assertEquals(CPUArch.X86_64, testGetArch(arrayOf("x86_64")))
-        assertEquals(CPUArch.X86, testGetArch(arrayOf("x86")))
 
-        assertEquals(CPUArch.Unknown("fancy new cpu"), testGetArch(arrayOf("fancy new cpu", "x86_64", "x86")))
+@RunWith(Parameterized::class)
+class ArchDetectorTest(private val expected: CPUArch, private val supportedAbis: Array<String>) {
+    companion object {
+        @Suppress("BooleanLiteralArgument")
+        @Parameterized.Parameters
+        @JvmStatic
+        fun data() = listOf(
+            arrayOf(CPUArch.ARM32, arrayOf("armeabi-v7a")),
+            arrayOf(CPUArch.ARM64, arrayOf("arm64-v8a")),
+            arrayOf(CPUArch.X86_64, arrayOf("x86_64")),
+            arrayOf(CPUArch.X86, arrayOf("x86")),
+            arrayOf(CPUArch.Unknown("fancy new cpu"), arrayOf("fancy new cpu", "x86_64", "x86")),
+            arrayOf(CPUArch.Unknown(null), arrayOf<String>()),
+        )
     }
 
-    private fun testGetArch(supportedAbis: Array<String>): CPUArch {
-        lateinit var ret: CPUArch
-
-        mockkObject(ArchDetector) {
-            every { ArchDetector.SUPPORTED_ABIS } returns supportedAbis
-            ret = ArchDetector.getCPUArch()
-        }
-
-        return ret
+    @Test
+    fun getArch() = mockkObject(ArchDetector) {
+        every { ArchDetector.SUPPORTED_ABIS } returns supportedAbis
+        assertEquals(expected, ArchDetector.getCPUArch())
     }
 }

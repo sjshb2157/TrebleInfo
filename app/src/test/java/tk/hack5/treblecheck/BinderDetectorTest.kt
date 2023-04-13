@@ -23,31 +23,34 @@ import io.mockk.every
 import io.mockk.mockkObject
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.Parameterized
 import tk.hack5.treblecheck.data.BinderArch
 import tk.hack5.treblecheck.data.BinderDetector
 
-class BinderDetectorTest {
-    @Test
-    fun getBinder() {
-        assertEquals(BinderArch.Unknown(6), testGetArch(6))
-        assertEquals(BinderArch.Unknown(null), testGetArch(null))
-        assertEquals(BinderArch.Binder7, testGetArch(7))
-        assertEquals(BinderArch.Binder8, testGetArch(8))
-        assertEquals(BinderArch.Unknown(9), testGetArch(9))
+@RunWith(Parameterized::class)
+class BinderDetectorTest(private val expected: BinderArch, private val binderVersion: Int?) {
+    companion object {
+        @Suppress("BooleanLiteralArgument")
+        @Parameterized.Parameters
+        @JvmStatic
+        fun data() = listOf(
+            arrayOf(BinderArch.Unknown(6), 6),
+            arrayOf(BinderArch.Unknown(null), null),
+            arrayOf(BinderArch.Binder7, 7),
+            arrayOf(BinderArch.Binder8, 8),
+            arrayOf(BinderArch.Unknown(9), 9),
+        )
     }
 
-    private fun testGetArch(binderVersion: Int?): BinderArch {
-        lateinit var ret: BinderArch
-        mockkObject(BinderDetector) {
-            if (binderVersion != null) {
-                every { BinderDetector.getBinderVersion() } returns binderVersion
-            } else {
-                every { BinderDetector.getBinderVersion() } throws UnsatisfiedLinkError()
-            }
-
-            ret = BinderDetector.getBinderArch()
+    @Test
+    fun getArch() = mockkObject(BinderDetector) {
+        if (binderVersion != null) {
+            every { BinderDetector.getBinderVersion() } returns binderVersion
+        } else {
+            every { BinderDetector.getBinderVersion() } throws UnsatisfiedLinkError()
         }
 
-        return ret
+        assertEquals(expected, BinderDetector.getBinderArch())
     }
 }

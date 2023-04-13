@@ -24,24 +24,29 @@ import io.mockk.every
 import io.mockk.mockkStatic
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.Parameterized
 import tk.hack5.treblecheck.data.ABDetector
 
-class ABDetectorTest {
-    @Test
-    fun checkAB() {
-        assertEquals(false, testCheckAB(""))
-        assertEquals(true, testCheckAB("a"))
-        assertEquals(true, testCheckAB("b"))
-        assertEquals(true, testCheckAB("weird-suffix 1.40$"))
-        assertEquals(null, testCheckAB(null))
+@RunWith(Parameterized::class)
+class ABDetectorTest(private val expected: Boolean?, private val slotSuffix: String?) {
+    companion object {
+        @Suppress("BooleanLiteralArgument")
+        @Parameterized.Parameters
+        @JvmStatic
+        fun data() = listOf(
+            arrayOf(false, ""),
+            arrayOf(true, "a"),
+            arrayOf(true, "b"),
+            arrayOf(true, "weird-suffix 1.40$"),
+            arrayOf<Any?>(null, null),
+        )
     }
 
-    private fun testCheckAB(slotSuffix: String?): Boolean? {
-        var ret: Boolean? = null
-        mockkStatic(::propertyGet.declaringKotlinFile) {
-            every { propertyGet("ro.boot.slot_suffix") } returns slotSuffix
-            ret = ABDetector.checkAB()
-        }
-        return ret
+
+    @Test
+    fun checkAB() = mockkStatic(::propertyGet.declaringKotlinFile) {
+        every { propertyGet("ro.boot.slot_suffix") } returns slotSuffix
+        assertEquals(expected, ABDetector.checkAB())
     }
 }
