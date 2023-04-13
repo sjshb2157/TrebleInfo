@@ -17,9 +17,7 @@
  */
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-buildscript {
-    val kotlinVersion by extra("1.8.10")
-    extra["composeVersion"] = "1.4.4"
+/*buildscript {
     repositories {
         google()
         mavenCentral()
@@ -30,13 +28,11 @@ buildscript {
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
-}
+}*/
 
-allprojects {
-    repositories {
-        mavenCentral()
-        google()
-    }
+plugins {
+    alias(libs.plugins.agp) apply false
+    alias(libs.plugins.kotlin.android) apply false
 }
 
 tasks.register<Delete>("clean") {

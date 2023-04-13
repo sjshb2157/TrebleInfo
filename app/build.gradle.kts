@@ -25,16 +25,13 @@ plugins {
     kotlin("android")
     id("poeditor-android")
     id("materialdesignicons-android")
-    id("com.mikepenz.aboutlibraries.plugin") version "10.5.2"
+    alias(libs.plugins.aboutlibraries)
 }
 
 aboutLibraries {
     configPath = projectDir.resolve("librariesConfig").toString()
     excludeFields = arrayOf("generated")
 }
-
-val kotlinVersion = rootProject.extra["kotlinVersion"]
-val mockkVersion = "1.13.4"
 
 fun com.android.build.api.dsl.BuildType.setupBilling() {
     loadProperties(file("billing.properties").absolutePath).run {
@@ -134,9 +131,9 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-    composeOptions {
+    /*composeOptions {
         kotlinCompilerExtensionVersion = rootProject.extra["composeVersion"] as String
-    }
+    }*/
     namespace = "tk.hack5.treblecheck"
 }
 
@@ -152,28 +149,27 @@ tasks.withType(com.github.penn5.ImportPoEditorStringsBaseTask::class) {
 
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion")
-    implementation("com.google.android.material:material:1.8.0")
-    implementation("androidx.compose.ui:ui:1.4.1")
-    implementation("androidx.compose.material3:material3:1.1.0-beta02")
-    implementation("androidx.compose.material3:material3-window-size-class:1.1.0-beta02")
-    implementation("androidx.compose.animation:animation:1.4.1")
-    implementation("androidx.activity:activity-compose:1.7.0")
-    implementation("androidx.navigation:navigation-compose:2.5.3")
-    implementation("com.mikepenz:aboutlibraries-core:10.5.2")
-    "nonfreeImplementation"("com.android.billingclient:billing:5.2.0")
-    "nonfreeImplementation"("com.android.billingclient:billing-ktx:5.2.0")
-    testImplementation("junit:junit:4.13.2")
-    testImplementation("io.mockk:mockk:$mockkVersion")
-    testImplementation("io.mockk:mockk-agent-jvm:$mockkVersion")
-    testImplementation("xmlpull:xmlpull:1.1.3.1")
-    testImplementation("net.sf.kxml:kxml2:2.3.0")
-    androidTestImplementation("androidx.test:runner:1.5.2")
-    androidTestImplementation("tools.fastlane:screengrab:2.1.1")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.4.1")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.4.1")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.4.1")
+    implementation(libs.main.material)
+    implementation(libs.main.compose.ui)
+    implementation(libs.main.compose.material3)
+    implementation(libs.main.compose.material3.windowsizeclass)
+    implementation(libs.main.compose.animation)
+    implementation(libs.main.activity.compose)
+    implementation(libs.main.navigation.compose)
+    implementation(libs.main.aboutlibraries)
+    "nonfreeImplementation"(libs.nonfree.billingclient)
+    "nonfreeImplementation"(libs.nonfree.billingclient.ktx)
+    testImplementation(libs.test.junit)
+    testImplementation(libs.test.mockk)
+    testImplementation(libs.test.mockk.jvm)
+    testImplementation(libs.test.xmlpull)
+//    testImplementation("net.sf.kxml:kxml2:2.3.0")
+    androidTestImplementation(libs.screenshots.runner)
+    androidTestImplementation(libs.screenshots.screengrab)
+    androidTestImplementation(libs.screenshots.junit.ext)
+    androidTestImplementation(libs.screenshots.compose.ui.junit)
+    debugImplementation(libs.tooling.compose.ui)
+    implementation(libs.tooling.compose.ui.preview)
 }
 
 tasks.withType<MergeResources>().configureEach {

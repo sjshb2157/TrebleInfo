@@ -17,6 +17,70 @@
  */
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        mavenCentral()
+        google()
+    }
+
+    versionCatalogs {
+        create("libs") {
+            // build
+            plugin("agp", "com.android.application").version("7.4.2")
+            plugin("kotlin-android", "org.jetbrains.kotlin.android").version("1.8.20")
+
+
+            // main
+            version("aboutlibraries", "10.6.2")
+            plugin("aboutlibraries", "com.mikepenz.aboutlibraries.plugin").versionRef("aboutlibraries")
+            library("main-aboutlibraries", "com.mikepenz", "aboutlibraries-core").versionRef("aboutlibraries")
+
+            library("main-material", "com.google.android.material:material:1.8.0")
+
+            version("compose-ui", "1.4.1")
+            library("main-compose-ui", "androidx.compose.ui", "ui").versionRef("compose-ui")
+            library("main-compose-animation", "androidx.compose.animation", "animation").versionRef("compose-ui")
+
+            version("compose-material3", "1.1.0-beta02")
+            library("main-compose-material3", "androidx.compose.material3", "material3").versionRef("compose-material3")
+            library("main-compose-material3-windowsizeclass", "androidx.compose.material3", "material3").versionRef("compose-material3")
+
+            library("main-activity-compose", "androidx.activity:activity-compose:1.7.0")
+
+            library("main-navigation-compose", "androidx.navigation:navigation-compose:2.5.3")
+
+            // nonfree
+            version("billingclient", "5.2.0")
+            library("nonfree-billingclient", "com.android.billingclient", "billing").versionRef("billingclient")
+            library("nonfree-billingclient-ktx", "com.android.billingclient", "billing-ktx").versionRef("billingclient")
+
+            // test
+            library("test-junit", "junit:junit:4.13.2")
+
+            version("mockk", "1.13.5")
+            library("test-mockk", "io.mockk", "mockk").versionRef("mockk")
+            library("test-mockk-jvm", "io.mockk", "mockk-agent-jvm").versionRef("mockk")
+
+            library("test-xmlpull", "xmlpull:xmlpull:1.1.3.1")
+
+            library("screenshots-runner", "androidx.test:runner:1.5.2")
+
+            library("screenshots-screengrab", "tools.fastlane:screengrab:2.1.1")
+
+            library("screenshots-junit-ext", "androidx.test.ext:junit:1.1.5")
+
+            library("screenshots-compose-ui-junit", "androidx.compose.ui", "ui-test-junit4").versionRef("compose-ui")
+
+            // tooling
+            library("tooling-compose-ui", "androidx.compose.ui", "ui-tooling").versionRef("compose-ui")
+            library("tooling-compose-ui-preview", "androidx.compose.ui", "ui-tooling-preview").versionRef("compose-ui")
+        }
+    }
+}
+
+rootProject.name = "Treble Info"
+
 pluginManagement {
     repositories {
         google()
