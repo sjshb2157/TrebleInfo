@@ -33,7 +33,7 @@ default_platform(:android)
 platform :android do
   desc "Build debug and test APK for screenshots"
   lane :build_and_screengrab do
-    gradle(task: "assembleDebug assembleAndroidTest")
+    gradle(task: "assembleFreeDebug assembleAndroidTest")
     capture_android_screenshots()
   end
 
@@ -46,7 +46,9 @@ platform :android do
 
   desc "Deploy a new version"
   lane :release do |options|
-    gradle(task: "clean assembleRelease")
+    gradle(task: "clean")
+    gradle(task: "assembleFreeRelease")
+    gradle(task: "assembleNonfreeRelease")
     upload_to_play(options)
     release_to_gitlab(options)
   end

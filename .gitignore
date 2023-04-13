@@ -332,3 +332,4 @@ obj/
 
 # Translation auditing
 /audit_translations/output.html
+/audit_translations/venv/

@@ -17,7 +17,6 @@
  */
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import com.android.build.gradle.tasks.MergeResources
 import org.jetbrains.kotlin.konan.properties.loadProperties
 
 plugins {
@@ -149,7 +148,9 @@ tasks.withType(com.github.penn5.ImportPoEditorStringsBaseTask::class) {
 
 
 dependencies {
-    implementation(libs.compose.bom)
+    val composeBom = platform(libs.compose.bom)
+
+    implementation(composeBom)
     implementation(libs.main.material)
     implementation(libs.main.compose.ui)
     implementation(libs.main.compose.material3)
@@ -165,7 +166,7 @@ dependencies {
     testImplementation(libs.test.mockk.jvm)
     testImplementation(libs.test.xmlpull)
     testImplementation(libs.test.kxml2)
-    androidTestImplementation(libs.compose.bom)
+    androidTestImplementation(composeBom)
     androidTestImplementation(libs.screenshots.runner)
     androidTestImplementation(libs.screenshots.screengrab)
     androidTestImplementation(libs.screenshots.junit.ext)
@@ -174,7 +175,7 @@ dependencies {
     implementation(libs.tooling.compose.ui.preview)
 }
 
-tasks.withType<MergeResources>().configureEach {
+tasks.getByName("preBuild") {
     mustRunAfter("updateDrawables")
     mustRunAfter("importTranslations")
 }
