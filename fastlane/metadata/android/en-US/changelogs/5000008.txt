@@ -1,3 +1,0 @@
-- Fix bugs on large screens
-- Fix screen rotation on libraries page
-- Display more detailed version information

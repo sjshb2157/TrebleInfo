@@ -30,10 +30,10 @@
 	<string name="treble_false">Incompatible</string>
 	<string name="treble_version_title">Version de VNDK</string>
 	<string name="treble_version_explanation">La partition vendor est faite pour fonctionner avec une version spécifique d\&apos;Android, la version du VNDK. Utiliser une version d\&apos;Android plus récente peut amener à la perte de fonctions. Aussi vous ne pouvez pas utiliser une version d\&apos;Android plus ancienne.</string>
-	<string name="treble_lite_title">VNDK Lite</string>
+	<string name="treble_lite_title">Séparation totale des espaces de noms du linker</string>
 	<string name="treble_lite_explanation">La configuration du VNDK est responsable de la séparation des parties différentes du système. VNDK Lite assouplit cette exigence, réduisant le stockage requis au détriment des garanties de compatibilité.</string>
 	<string name="treble_lite_true">Le VNDK est en mode Lite</string>
-	<string name="treble_lite_false">La séparation totale des espaces de noms du linker est activée</string>
+	<string name="treble_lite_false">Le VNDK n\&apos;est pas en mode Lite</string>
 	<string name="treble_legacy_title">Localisation du manifeste</string>
 	<string name="treble_legacy_explanation">La liste de fonctionnalités que l\&apos;appareil peut fournir à Android se trouve dans le manifeste VINTF. Ce fichier était stocké à la racine de la partition vendor, mais ce n\&apos;est plus la recommandation.</string>
 	<string name="treble_legacy_true">Système antérieur</string>

@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
 	<string name="title">Treble Info</string>
-	<string name="sar_title">Rendszer Gyökérként</string>
-	<string name="ab_title">Zökkenőmentesen Frissítések</string>
 	<string name="donate">Adományozás</string>
 	<string name="dynamicpartitions_title">Dinamikus partíciók</string>
 	<string name="screen_images">Képek</string>
@@ -30,10 +28,8 @@
 	<string name="treble_false">Nem támogatott</string>
 	<string name="treble_version_title">VNDK verzió</string>
 	<string name="treble_version_explanation">A VNDK verzió az Android azon verziója, amelyhez a gyártó tervezte. Az Android újabb verziójának használata a funkciók hiányát eredményezheti, régebbi verziót pedig nem lehet használni.</string>
-	<string name="treble_lite_title">VNDK Lite</string>
 	<string name="treble_lite_explanation">A VNDK-konfiguráció felelős a rendszer különböző részei közötti elkülönítés érvényesítéséért. A VNDK Lite enyhíti ezt a követelményt, csökkentve a tárolási követelményeket a kompatibilitási garanciák rovására.</string>
 	<string name="treble_lite_true">VNDK lite módban van</string>
-	<string name="treble_lite_false">Teljes linker szétválasztás engedélyezve</string>
 	<string name="treble_legacy_title">Manifest helye</string>
 	<string name="treble_legacy_explanation">Az eszköz által az Android számára nyújtható támogatott funkciók listája a VINTF manifestben van tárolva. Ezt a fájlt régebben a gyártó partíciójának gyökerében tárolták, de ez már nem jó gyakorlat.</string>
 	<string name="treble_legacy_true">Legacy</string>

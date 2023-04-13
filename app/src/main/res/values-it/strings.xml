@@ -30,10 +30,8 @@
 	<string name="treble_false">Non supportato</string>
 	<string name="treble_version_title">Versione VNDK</string>
 	<string name="treble_version_explanation">La versione VNDK è la versione di Android con cui il vendor è stato progettato per funzionare.  L\&apos;utilizzo di una versione più recente di Android potrebbe comportare la mancanza di funzionalità e non è possibile utilizzare una versione precedente.</string>
-	<string name="treble_lite_title">VNDK Lite</string>
 	<string name="treble_lite_explanation">La configurazione VNDK è responsabile dell\&apos;applicazione della separazione tra le diverse parti del sistema.  VNDK Lite alleggerisce questo requisito, riducendo i requisiti di archiviazione a scapito delle garanzie di compatibilità.</string>
 	<string name="treble_lite_true">VNDK è in modalità lite</string>
-	<string name="treble_lite_false">Isolamento completo del linker abilitato</string>
 	<string name="treble_legacy_title">Posizione del manifest</string>
 	<string name="treble_legacy_explanation">L\&apos;elenco delle funzionalità supportate che il dispositivo può fornire ad Android è memorizzato nel VINTF manifest.  Questo file era archiviato nella radice della partizione del vendor, ma questo non è più consentito.</string>
 	<string name="treble_legacy_true">Tradizionale</string>

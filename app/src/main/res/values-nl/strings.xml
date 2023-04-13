@@ -29,6 +29,4 @@
 	<string name="treble_false">Niet ondersteunt</string>
 	<string name="treble_version_title">VNDK versie</string>
 	<string name="treble_version_explanation">De VNDK versie is de Android versie waarvoor de vendor gemaakt is. Bij het gebruik van een nieuwere Android versie missen er misschien features, en het is niet mogelijk om een oudere Android versie te gebruiken.</string>
-	<string name="treble_lite_title">VNDK Lite</string>
-	<string name="treble_lite_explanation">De VNDK configuratie is verantwoordelijk voor het afdwingen van scheiding van de verschillende systeem onderdelen. VNDK Lite versoepeld dit vereiste, dit gaat ten koste van </string>
 </resources>

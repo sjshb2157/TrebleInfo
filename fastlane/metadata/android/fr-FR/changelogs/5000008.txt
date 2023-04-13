@@ -1,3 +1,0 @@
-- Corriger des erreurs sur les appareils à grand écran
-- Réparer la rotation de l'écran sur la page des licences
-- Montrer plus de détails à propos de la version de l'application

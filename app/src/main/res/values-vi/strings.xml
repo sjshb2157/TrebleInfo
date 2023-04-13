@@ -30,10 +30,8 @@
 	<string name="treble_false">Không hỗ trợ</string>
 	<string name="treble_version_title">Phiên bản VNDK</string>
 	<string name="treble_version_explanation">Phiên bản VNDK là phiên bản của Android mà vendor được thiết kế để chạy với nó. Sử dụng phiên bản mới hơn của Android có thể dẫn đến thiếu một số tính năng, và bạn không thể sử dụng phiên bản cũ hơn.</string>
-	<string name="treble_lite_title">VNDK Lite</string>
 	<string name="treble_lite_explanation">Cấu hình VNDK chịu trách nhiệm thực thi tách biệt giữa các phần khác nhau của hệ thống. VNDK Lite nới lỏng yêu cầu này, giảm yêu cầu lưu trữ với chi phí đảm bảo tính tương thích.</string>
 	<string name="treble_lite_true">VNDK đang ở chế độ lite</string>
-	<string name="treble_lite_false">Đã bật tách liên kết đầy đủ</string>
 	<string name="treble_legacy_title">Vị trí Manifest</string>
 	<string name="treble_legacy_explanation">Danh sách các tính năng được hỗ trợ mà thiết bị có thể cung cấp cho Android được lưu trữ trong bảng kê khai VINTF. Tệp này từng được lưu trữ trong thư mục gốc của phân vùng vendor, nhưng cách làm này không còn tốt nữa.</string>
 	<string name="treble_legacy_true">Cơ bản</string>

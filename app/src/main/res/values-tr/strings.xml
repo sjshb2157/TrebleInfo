@@ -30,10 +30,8 @@
 	<string name="treble_false">Desteklenmiyor</string>
 	<string name="treble_version_title">VNDK sürümü</string>
 	<string name="treble_version_explanation">VNDK sürümü Android\&apos;in çalışması için tasarlandığı vendor\&apos;un sürümüdür. Daha yeni bir Android sürümü kullanmak bazı özelliklerin eksik olmasına neden olabilir ve eski bir sürümü kullanamazsınız.</string>
-	<string name="treble_lite_title">VNDK Lite</string>
 	<string name="treble_lite_explanation">VNDK yapılandırması, sistemin farklı parçalarının ayrı tutulmasını zorlamakla sorumludur. VNDK Lite bu gereksinimi rahatlatır ve depolama gereksinimlerini azaltır fakat karşılığında uyumluluk garantisinden ödün verilir.</string>
 	<string name="treble_lite_true">VNDK lite modda.</string>
-	<string name="treble_lite_false">Tam bağlayıcı ayrım etkin</string>
 	<string name="treble_legacy_title">Manifest konumu</string>
 	<string name="treble_legacy_explanation">Cihazın Android\&apos;e sağlayabileceği özelliklerin listesi VINTF manifestinde depolanır. Bu dosya eskiden vendor bölümünün kök dizninde tutulurdu, fakat bu artık doğru bir hareket değil.</string>
 	<string name="treble_legacy_true">Kalıt</string>

@@ -27,10 +27,8 @@
 	<string name="treble_explanation">Project Treble предлагает стандартизированный интерфейс взаимоидействия с устройством. Это позволяет производителям быстрее выпускать обновления, так как не нужно обнолять интерфейсы аппаратуры.</string>
 	<string name="treble_version_title">Версия VNDK</string>
 	<string name="treble_version_explanation">Версия VNDK - это версия Android API с которой был рассчитан на работу вендор. Использование версии андроид новее может привести к отсутсвующим возможностям. Так же вы не можете использовать версию новее.</string>
-	<string name="treble_lite_title">VNDK Lite</string>
 	<string name="treble_lite_explanation">Конфигурация VNDK ответственна за разделение разных частей системы. VNDK Lite смягчает эти требования, уменьшая требуемое хранилище ценой гарантий совместимости.</string>
 	<string name="treble_lite_true">VNDK в режиме lite</string>
-	<string name="treble_lite_false">Полное разделение linker\&apos;а включено</string>
 	<string name="treble_legacy_title">Расположение манифеста</string>
 	<string name="treble_legacy_explanation">Список поддерживаемых устройством возможностей хранится в манифесте VINTF. Раньше этот файл хранился в корне vendor раздела, но теперь это считается плохой практикой.</string>
 	<string name="ab_explanation">Бесшовные обновления позволяют их устанавливать с минимальным временем простоя, храня две версии Android.</string>

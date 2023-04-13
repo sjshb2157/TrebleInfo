@@ -21,7 +21,6 @@
 	<string name="treble_title">Проєкт Treble</string>
 	<string name="treble_explanation">Project Treble надає стандартний інтерфейс для спілкування з обладнанням пристрою. Це дозволяє виробникам пристроїв створювати оновлення швидше, оскільки апаратні інтерфейси не потребують оновлення.</string>
 	<string name="treble_version_title">Версія VNDK</string>
-	<string name="treble_lite_title">VNDK Lite</string>
 	<string name="treble_lite_true">VNDK у режимі lite</string>
 	<string name="treble_legacy_title">Розташування маніфесту</string>
 	<string name="treble_legacy_false">Сучасна</string>
