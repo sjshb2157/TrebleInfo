@@ -29,6 +29,7 @@ dependencyResolutionManagement {
             // build
             plugin("agp", "com.android.application").version("7.4.2")
             plugin("kotlin-android", "org.jetbrains.kotlin.android").version("1.8.20")
+            version("compose-compiler", "1.4.5")
 
 
             // main
@@ -38,13 +39,13 @@ dependencyResolutionManagement {
 
             library("main-material", "com.google.android.material:material:1.8.0")
 
-            version("compose-ui", "1.4.1")
-            library("main-compose-ui", "androidx.compose.ui", "ui").versionRef("compose-ui")
-            library("main-compose-animation", "androidx.compose.animation", "animation").versionRef("compose-ui")
+            library("compose-bom", "androidx.compose:compose-bom:2023.04.00")
+            library("main-compose-ui", "androidx.compose.ui", "ui").withoutVersion()
+            library("main-compose-animation", "androidx.compose.animation", "animation").withoutVersion()
 
             version("compose-material3", "1.1.0-beta02")
             library("main-compose-material3", "androidx.compose.material3", "material3").versionRef("compose-material3")
-            library("main-compose-material3-windowsizeclass", "androidx.compose.material3", "material3").versionRef("compose-material3")
+            library("main-compose-material3-windowsizeclass", "androidx.compose.material3", "material3-window-size-class").versionRef("compose-material3")
 
             library("main-activity-compose", "androidx.activity:activity-compose:1.7.0")
 
@@ -64,17 +65,19 @@ dependencyResolutionManagement {
 
             library("test-xmlpull", "xmlpull:xmlpull:1.1.3.1")
 
+            library("test-kxml2", "net.sf.kxml:kxml2:2.3.0")
+
             library("screenshots-runner", "androidx.test:runner:1.5.2")
 
             library("screenshots-screengrab", "tools.fastlane:screengrab:2.1.1")
 
             library("screenshots-junit-ext", "androidx.test.ext:junit:1.1.5")
 
-            library("screenshots-compose-ui-junit", "androidx.compose.ui", "ui-test-junit4").versionRef("compose-ui")
+            library("screenshots-compose-ui-junit", "androidx.compose.ui", "ui-test-junit4").withoutVersion()
 
             // tooling
-            library("tooling-compose-ui", "androidx.compose.ui", "ui-tooling").versionRef("compose-ui")
-            library("tooling-compose-ui-preview", "androidx.compose.ui", "ui-tooling-preview").versionRef("compose-ui")
+            library("tooling-compose-ui", "androidx.compose.ui", "ui-tooling").withoutVersion()
+            library("tooling-compose-ui-preview", "androidx.compose.ui", "ui-tooling-preview").withoutVersion()
         }
     }
 }

@@ -131,9 +131,9 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-    /*composeOptions {
-        kotlinCompilerExtensionVersion = rootProject.extra["composeVersion"] as String
-    }*/
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
+    }
     namespace = "tk.hack5.treblecheck"
 }
 
@@ -149,6 +149,7 @@ tasks.withType(com.github.penn5.ImportPoEditorStringsBaseTask::class) {
 
 
 dependencies {
+    implementation(libs.compose.bom)
     implementation(libs.main.material)
     implementation(libs.main.compose.ui)
     implementation(libs.main.compose.material3)
@@ -163,7 +164,8 @@ dependencies {
     testImplementation(libs.test.mockk)
     testImplementation(libs.test.mockk.jvm)
     testImplementation(libs.test.xmlpull)
-//    testImplementation("net.sf.kxml:kxml2:2.3.0")
+    testImplementation(libs.test.kxml2)
+    androidTestImplementation(libs.compose.bom)
     androidTestImplementation(libs.screenshots.runner)
     androidTestImplementation(libs.screenshots.screengrab)
     androidTestImplementation(libs.screenshots.junit.ext)
