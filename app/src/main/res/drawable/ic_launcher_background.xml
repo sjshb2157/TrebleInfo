@@ -24,7 +24,7 @@
         android:viewportHeight="432">
   <group>
     <path
-            android:pathData="M0,0h432v436h-432z"
+            android:pathData="M0,0h432v432h-432z"
             android:fillColor="#4282F2" />
     <path
             android:pathData="M207,208H224V257H207V208ZM207,175H224V192H207V175Z"
