@@ -59,6 +59,9 @@ object TrebleDetector {
             Log.v(tag, "matrix: ${matrix.absolutePath}")
             parseMatrix(it)
         }?.let {
+            if (it == 0 to 0) {
+                return null // no treble support
+            }
             Log.v(tag, "vendor matrix result: $it")
             return TrebleResult(legacy, lite, it.first, it.second)
         }
@@ -72,7 +75,7 @@ object TrebleDetector {
             .asSequence()
             .map {
                 parseManifest(it)
-                    .also { res -> Log.v(tag, "matrix ${it.absolutePath}: $res") }
+                    .also { res -> Log.v(tag, "manifest ${it.absolutePath}: $res") }
             }
             .filterNotNull()
             .firstOrNull()
@@ -91,7 +94,8 @@ object TrebleDetector {
         throw ParseException("No method to detect version")
     }
 
-    private fun parseMatrix(matrix: File) = parseXml(matrix) { xpp ->
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    internal fun parseMatrix(matrix: File) = parseXml(matrix) { xpp ->
         val versions = mutableListOf<String>()
         val versionBuilder = StringBuilder(2) // 2 is the normal size of the version number, 'xy'
 
@@ -100,7 +104,7 @@ object TrebleDetector {
         var event = xpp.eventType
         while (event != XmlPullParser.END_DOCUMENT) {
             if (event == XmlPullParser.START_TAG) {
-                if (xpp.name == "vendor-ndk") {
+                if (xpp.name == "vendor-ndk" || xpp.name == "vndk") {
                     inVndkTag = true
                 } else if (inVndkTag && xpp.name == "version") {
                     inVersionTag = true
@@ -123,26 +127,28 @@ object TrebleDetector {
         versions
     }
 
-    private fun parseManifest(manifest: File) = parseXml(manifest) { xpp ->
-        val versionBuilder = StringBuilder(4) // 4 is the normal size of the version number, "xx.y"
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    internal fun parseManifest(manifest: File) = parseXml(manifest) { xpp ->
+        val versions = mutableListOf<String>()
+        val versionBuilder = StringBuilder(4) // 2 is the normal size of the version number, 'xy'
 
-        var inTargetTag = false
+        var inVersionTag = false
         var event = xpp.eventType
         while (event != XmlPullParser.END_DOCUMENT) {
-            if (event == XmlPullParser.START_TAG && xpp.name == "sepolicy")
-                inTargetTag = true
-            else if (event == XmlPullParser.END_TAG && inTargetTag) {
-                break
-            } else if (event == XmlPullParser.TEXT && inTargetTag) {
+            if (event == XmlPullParser.START_TAG && xpp.name == "sepolicy") {
+                inVersionTag = true
+            } else if (event == XmlPullParser.END_TAG && inVersionTag) {
+                inVersionTag = false
+                versions += versionBuilder.toString()
+                versionBuilder.clear()
+            } else if (event == XmlPullParser.TEXT && inVersionTag) {
                 // This is the version number
                 versionBuilder.append(xpp.text.trim())
             }
             xpp.next()
             event = xpp.eventType
         }
-        if (versionBuilder.isEmpty())
-            throw ParseException("versionBuilder is empty")
-        listOf(versionBuilder.toString())
+        versions
     }
 
     private fun parseXml(file: File, block: (XmlPullParser) -> List<String>): Pair<Int, Int>? {
@@ -166,6 +172,9 @@ object TrebleDetector {
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     internal fun parseVersion(string: String): Pair<Int, Int>? {
         val split = string.split('.').map(String::trim)
+        if (split.isNotEmpty() && split.all { it == "0" }) {
+            return 0 to 0 // we have a manifest but no treble
+        }
         if (split.size != 1 && split.size != 2) {
             return null
         }
@@ -182,72 +191,127 @@ object TrebleDetector {
         return first to second
     }
 
+    /**
+     * See https://cs.android.com/android/platform/superproject/+/master:system/libvintf/VintfObject.cpp;l=289;drc=0a1c02083dbd6e23f074069ebf45a87ec0757f30
+     * 1. Get vendor manifest. Iff found, add vendor fragments.
+     * 2. Add ODM manifest if available.
+     * 3. Iff vendor manifest was found, add ODM fragments.
+     * 4. Iff nothing found so far, use legacy manifest.
+     * @return files to legacy
+     */
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     internal fun locateManifestFiles(): Pair<List<File>, Boolean> {
         val ret = mutableListOf<File>()
-        var legacy = false
-        locateVendorManifest(propertyGet("ro.boot.product.vendor.sku"))?.let {
+        val foundVendorManifest = locateVendorManifest(propertyGet("ro.boot.product.vendor.sku"))?.let {
             ret += it
-            ret += locateVendorManifestFragments() ?: return@let
-        }
+            ret += locateVendorManifestFragments()
+        } != null
         locateOdmManifest(propertyGet("ro.boot.product.hardware.sku"))?.let {
             ret += it
-            ret += locateOdmManifestFragments() ?: return@let
         }
-        locateLegacyManifest()?.let {
-            if (ret.isNotEmpty())
-                legacy = true
-            ret += it
+        if (foundVendorManifest) {
+            ret += locateOdmManifestFragments()
         }
-        return ret to legacy
+        if (ret.isEmpty()) {
+            locateLegacyManifest()?.let {
+                return listOf(it) to true
+            }
+        }
+        return ret to false
     }
 
+    /**
+     * See https://cs.android.com/android/platform/superproject/+/master:system/libvintf/VintfObject.cpp;l=343;drc=0a1c02083dbd6e23f074069ebf45a87ec0757f30
+     */
     private fun locateVendorManifest(sku: String?): File? {
-        sku?.let {
-            File(root, "/vendor/etc/vintf/manifest_$it.xml")
-        }?.let {
-            if (it.exists())
-                return if (it.canRead()) it else null
-        }
-        File(root, "/vendor/etc/vintf/manifest.xml").let {
-            if (it.exists())
-                return if (it.canRead()) it else null
+        if (!sku.isNullOrEmpty()) {
+            File(root, "/vendor/etc/vintf/manifest_$sku.xml").let {
+                if (it.exists()) {
+                    return if (it.canRead()) {
+                        it
+                    } else {
+                        Log.w(tag, "Cannot read ${it.path}")
+                        null
+                    }
+                }
+            }
+        } else {
+            File(root, "/vendor/etc/vintf/manifest.xml").let {
+                if (it.exists()) {
+                    return if (it.canRead()) {
+                        it
+                    } else {
+                        Log.w(tag, "Cannot read ${it.path}")
+                        null
+                    }
+                }
+            }
         }
         return null
     }
 
-    private fun locateVendorManifestFragments(): List<File>? {
-        val dir = File(root, "/vendor/etc/manifest")
-        return (dir.listFiles() ?: return null).filter { it.canRead() }
+    private fun locateVendorManifestFragments(): List<File> {
+        val dir = File(root, "/vendor/etc/vintf/manifest")
+        return (dir.listFiles() ?: return emptyList()).filter { it.canRead() }
     }
 
+    /**
+     * See https://cs.android.com/android/platform/superproject/+/master:system/libvintf/VintfObject.cpp;l=375;drc=0a1c02083dbd6e23f074069ebf45a87ec0757f30
+     */
     private fun locateOdmManifest(sku: String?): File? {
-        sku?.let {
-            File(root, "/odm/etc/vintf/manifest_$it.xml")
-        }?.let {
-            if (it.exists())
-                return if (it.canRead()) it else null
+        if (!sku.isNullOrEmpty()) {
+            File(root, "/odm/etc/vintf/manifest_$sku.xml").let {
+                if (it.exists()) {
+                    return if (it.canRead()) {
+                        it
+                    } else {
+                        Log.w(tag, "Cannot read ${it.path}")
+                        null
+                    }
+                }
+            }
+        } else {
+            File(root, "/odm/etc/vintf/manifest.xml").let {
+                if (it.exists()) {
+                    return if (it.canRead()) {
+                        it
+                    } else {
+                        Log.w(tag, "Cannot read ${it.path}")
+                        null
+                    }
+                }
+            }
         }
-        File(root, "/odm/etc/vintf/manifest.xml").let {
-            if (it.exists())
-                return if (it.canRead()) it else null
-        }
-        sku?.let {
-            File(root, "/odm/etc/$it.xml")
-        }?.let {
-            if (it.exists())
-                return if (it.canRead()) it else null
-        }
-        File(root, "/odm/etc/manifest.xml").let {
-            if (it.exists())
-                return if (it.canRead()) it else null
+        // legacy locations, treated as normal though
+        if (!sku.isNullOrEmpty()) {
+            File(root, "/odm/etc/manifest_$sku.xml").let {
+                if (it.exists()) {
+                    return if (it.canRead()) {
+                        it
+                    } else {
+                        Log.w(tag, "Cannot read ${it.path}")
+                        null
+                    }
+                }
+            }
+        } else {
+            File(root, "/odm/etc/manifest.xml").let {
+                if (it.exists()) {
+                    return if (it.canRead()) {
+                        it
+                    } else {
+                        Log.w(tag, "Cannot read ${it.path}")
+                        null
+                    }
+                }
+            }
         }
         return null
     }
 
-    private fun locateOdmManifestFragments(): List<File>? {
-        val dir = File(root, "/odm/etc/manifest")
-        return (dir.listFiles() ?: return null).toList()
+    private fun locateOdmManifestFragments(): List<File> {
+        val dir = File(root, "/odm/etc/vintf/manifest")
+        return (dir.listFiles() ?: return emptyList()).toList()
     }
 
     private fun locateLegacyManifest(): File? {
@@ -261,8 +325,14 @@ object TrebleDetector {
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     internal fun locateVendorCompatibilityMatrix(): File? {
         File(root, "/vendor/etc/vintf/compatibility_matrix.xml").let {
-            if (it.exists() && it.canRead())
+            if (it.exists() && it.canRead()) {
                 return it
+            }
+        }
+        File(root, "/vendor/compatibility_matrix.xml").let {
+            if (it.exists() && it.canRead()) {
+                return it
+            }
         }
         return null
     }
@@ -291,7 +361,7 @@ object TrebleDetector {
                 }
             }
         }
-        if (version < Pair(0, 0)) return null
+        if (version <= Pair(0, 0)) return null
         return version
     }
 }
