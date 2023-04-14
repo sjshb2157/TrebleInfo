@@ -37,7 +37,7 @@
             android:fillAlpha="0.33">
       <aapt:attr name="android:fillColor">
         <gradient
-                android:gradientRadius="452.548"
+                android:gradientRadius="432"
                 android:centerX="0"
                 android:centerY="0"
                 android:type="radial">
