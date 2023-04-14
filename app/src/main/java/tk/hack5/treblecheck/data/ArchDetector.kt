@@ -21,9 +21,11 @@ package tk.hack5.treblecheck.data
 
 import android.os.Build
 import android.util.Log
+import androidx.annotation.VisibleForTesting
 import tk.hack5.treblecheck.Mock
 
 object ArchDetector {
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     internal val SUPPORTED_ABIS get() = Build.SUPPORTED_ABIS
 
     fun getCPUArch(): CPUArch {

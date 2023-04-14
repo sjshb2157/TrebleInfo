@@ -20,6 +20,7 @@
 package tk.hack5.treblecheck.data
 
 import android.util.Log
+import androidx.annotation.VisibleForTesting
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
 import tk.hack5.treblecheck.Mock
@@ -33,6 +34,7 @@ data class TrebleResult(val legacy: Boolean, val lite: Boolean,
 
 object TrebleDetector {
     private val SELINUX_REGEX = Regex("""\Winit_(\d+)_(\d+)\W""")
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     internal var root: File? = null
 
     fun getVndkData(): TrebleResult? {
@@ -161,6 +163,7 @@ object TrebleDetector {
             .maxWithOrNull { left, right -> left.compareTo(right) }
     }
 
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     internal fun parseVersion(string: String): Pair<Int, Int>? {
         val split = string.split('.').map(String::trim)
         if (split.size != 1 && split.size != 2) {
@@ -179,6 +182,7 @@ object TrebleDetector {
         return first to second
     }
 
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     internal fun locateManifestFiles(): Pair<List<File>, Boolean> {
         val ret = mutableListOf<File>()
         var legacy = false
@@ -254,6 +258,7 @@ object TrebleDetector {
         return null
     }
 
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     internal fun locateVendorCompatibilityMatrix(): File? {
         File(root, "/vendor/etc/vintf/compatibility_matrix.xml").let {
             if (it.exists() && it.canRead())
@@ -262,6 +267,7 @@ object TrebleDetector {
         return null
     }
 
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     internal fun parseSelinuxData(): Pair<Int, Int>? {
         // https://android.googlesource.com/platform/system/core/+/refs/tags/android-12.1.0_r2/init/selinux.cpp#281
         val sepolicyVersionFile = File(root, "/vendor/etc/selinux/plat_sepolicy_vers.txt")

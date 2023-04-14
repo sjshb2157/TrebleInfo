@@ -20,6 +20,7 @@
 package tk.hack5.treblecheck.data
 
 import android.util.Log
+import androidx.annotation.VisibleForTesting
 import tk.hack5.treblecheck.BuildConfig
 import tk.hack5.treblecheck.Mock
 import tk.hack5.treblecheck.propertyGet
@@ -30,8 +31,10 @@ import java.io.IOException
 
 object MountDetector {
     private const val MOUNTS_PATH = "/proc/mounts"
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     internal fun getMountsStream(): BufferedReader = File(MOUNTS_PATH).inputStream().bufferedReader()
 
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     internal fun getMounts(): Iterable<Mount> {
         val mountsStream: BufferedReader
         try {
@@ -101,7 +104,8 @@ object MountDetector {
     }
 }
 
-data class Mount(
+@VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+internal data class Mount(
     val device: String, val mountpoint: String,
     val type: String, val flags: List<String>,
     val dummy0: Int, val dummy1: Int

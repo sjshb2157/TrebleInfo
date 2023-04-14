@@ -167,6 +167,8 @@ class TrebleDetectorTest(
         }
         return ret
     }
+
+    // TODO more tests
 /*
     @Test
     fun parseMatrix() {
@@ -176,6 +178,7 @@ class TrebleDetectorTest(
     fun parseManifest() {
     }
 */
+    // TODO this should be parameterized in a different class
     @Test
     fun parseVersion() {
         assertEquals(30 to 1, TrebleDetector.parseVersion("30.1"))

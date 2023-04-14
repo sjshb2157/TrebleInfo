@@ -21,6 +21,7 @@ package tk.hack5.treblecheck.data
 
 import android.util.Log
 import androidx.annotation.Keep
+import androidx.annotation.VisibleForTesting
 import tk.hack5.treblecheck.Mock
 
 object BinderDetector {
@@ -40,11 +41,16 @@ object BinderDetector {
     }
 
     @Synchronized
-    fun getBinderVersion(): Int {
+    private fun ensureLoaded() {
         if (!loaded) {
             System.loadLibrary("binderdetector")
             loaded = true
         }
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun getBinderVersion(): Int {
+        ensureLoaded()
         return getBinderVersionNative()
     }
 
