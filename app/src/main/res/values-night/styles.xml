@@ -19,7 +19,7 @@
 <!-- SPDX-License-Identifier: GPL-3.0-or-later -->
 
 <resources>
-    <style name="NewTheme.1.DayNight">
+    <style name="NewTheme.1.DayNight" parent="@android:style/Theme.Material.Light">
         <item name="android:windowTranslucentStatus">false</item>
         <item name="android:windowTranslucentNavigation">false</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
