@@ -18,9 +18,8 @@
 <!-- SPDX-License-Identifier: GPL-3.0-or-later -->
 
 <resources>
-    <style name="NewTheme.27" parent="NewTheme.27.DayNight">
-        <item name="android:navigationBarColor">@android:color/transparent</item>
-        <item name="android:windowTranslucentNavigation">false</item>
-        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+    <style name="NewTheme.23" parent="NewTheme.23.DayNight">
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 </resources>

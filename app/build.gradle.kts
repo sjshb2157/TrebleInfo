@@ -151,7 +151,7 @@ dependencies {
     val composeBom = platform(libs.compose.bom)
 
     implementation(composeBom)
-    implementation(libs.main.material)
+    //implementation(libs.main.material)
     implementation(libs.main.compose.ui)
     implementation(libs.main.compose.material3)
     implementation(libs.main.compose.material3.windowsizeclass)

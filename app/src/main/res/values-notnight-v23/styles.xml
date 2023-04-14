@@ -19,7 +19,7 @@
 <!-- SPDX-License-Identifier: GPL-3.0-or-later -->
 
 <resources>
-    <style name="NewTheme.23" parent="NewTheme.1">
+    <style name="NewTheme.23.DayNight" parent="NewTheme.1">
         <item name="android:windowLightStatusBar">true</item>
     </style>
 </resources>

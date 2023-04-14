@@ -18,9 +18,11 @@
 <!-- SPDX-License-Identifier: GPL-3.0-or-later -->
 
 <resources>
-    <style name="NewTheme.1" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">@android:color/transparent</item>
+    <style name="NewTheme.1" parent="NewTheme.1.DayNight">
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:colorBackground">?android:attr/colorBackground</item>
+        <item name="android:windowBackground">?android:attr/colorBackground</item>
 
         <!-- DO NOT TOUCH - b/158777985 -->
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>

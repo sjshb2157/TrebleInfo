@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   ~     Treble Info
   ~     Copyright (C) 2023 Hackintosh Five
   ~
@@ -18,9 +19,8 @@
 <!-- SPDX-License-Identifier: GPL-3.0-or-later -->
 
 <resources>
-    <style name="NewTheme.27" parent="NewTheme.27.DayNight">
-        <item name="android:navigationBarColor">@android:color/transparent</item>
-        <item name="android:windowTranslucentNavigation">false</item>
-        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+    <style name="NewTheme.1.DayNight">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
     </style>
 </resources>
