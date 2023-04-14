@@ -105,7 +105,7 @@ object MountDetector {
 }
 
 @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-internal data class Mount(
+data class Mount(
     val device: String, val mountpoint: String,
     val type: String, val flags: List<String>,
     val dummy0: Int, val dummy1: Int

@@ -20,11 +20,9 @@
 
 IFS=$'\n'
 
-mkdir -p vendor/etc/vintf
-mkdir -p vendor/etc/vintf/manifest
-mkdir -p odm/etc/vintf
-mkdir -p odm/etc/vintf/manifest
 mkdir -p vendor/etc/selinux
+mkdir -p vendor/etc/vintf/manifest
+mkdir -p odm/etc/vintf/manifest
 
 vendor_sku="$(adb shell getprop ro.boot.product.vendor.sku)"
 adb shell run-as tk.hack5.treblecheck cat "/vendor/etc/vintf/manifest_$vendor_sku.xml" > "vendor/etc/vintf/manifest_sku.xml" || rm "vendor/etc/vintf/manifest_sku.xml"

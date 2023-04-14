@@ -52,6 +52,34 @@ sealed class Result<T> {
     }
 }
 
+private fun Any.extractFiles(name: String, files: Map<String, String?>, temporaryFolder: TemporaryFolder) {
+    temporaryFolder.delete()
+    val classLoader = this::class.java.classLoader!!
+
+    for (file in files.entries) {
+        if (file.key.endsWith('/')) {
+            var i = 0
+            children@ while (true) {
+                classLoader.getResourceAsStream("$name/${file.key}$i")?.use { sourceStream ->
+                    val destFile = temporaryFolder.root.resolve(file.key).resolve(i.toString() + file.value!!)
+                    destFile.parentFile!!.mkdirs()
+                    destFile.outputStream().use { destStream ->
+                        sourceStream.copyTo(destStream)
+                    }
+                    i++
+                } ?: break
+            }
+        } else {
+            val sourceStream = classLoader.getResourceAsStream("$name/${file.key}") ?: continue
+            val destFile = temporaryFolder.root.resolve(file.value ?: file.key)
+            destFile.parentFile!!.mkdirs()
+            destFile.outputStream().use {
+                sourceStream.copyTo(it)
+            }
+        }
+    }
+}
+
 @RunWith(Parameterized::class)
 class TrebleDetectorTest(
     private val result: Result<TrebleResult?>,
@@ -66,36 +94,309 @@ class TrebleDetectorTest(
         @Suppress("BooleanLiteralArgument")
         @Parameterized.Parameters
         @JvmStatic
+        // vndk1a is cepheus on MIUI
+        // vndk2a is TP1803 with an old ROM
+        // vndk3a is TP1803 on LOS 18.1(?)
+        // vndk4a is crosshatch-user-11-RQ2A.210305.006-7119741-release-keys
+        // vndk5a is bullhead-user-8.1.0-OPM7.181205.001-5080180-release-keys
         fun data() = listOf(
             // data-free tests
             arrayOf(Result.success(null), "", "", null, null, null, ""),
             arrayOf(Result.success(null), "false", "", null, null, null, ""),
-            arrayOf(Result.failure<Nothing?, ParseException>(), "true", "false", null, null, null, ""),
+            arrayOf(
+                Result.success(TrebleResult(false, false, 30, 0)),
+                "true",
+                "",
+                null,
+                null,
+                "30",
+                ""
+            ),
+            arrayOf(
+                Result.failure<Nothing?, ParseException>(),
+                "true",
+                "false",
+                null,
+                null,
+                null,
+                ""
+            ),
             // tests with cepheus data
-            arrayOf(Result.success(TrebleResult(false, false, 30, 0)), "true", "false", "", "", "30", "vndk1a"),
-            arrayOf(Result.success(TrebleResult(false, true, 30, 0)), "true", "true", "", "", null, "vndk1b"),
-            arrayOf(Result.success(TrebleResult(false, false, 30, 0)), "true", "false", "", "", null, "vndk1c"),
-            arrayOf(Result.success(TrebleResult(false, true, 30, 0)), "true", "true", "", "", null, "vndk1d"),
-            arrayOf(Result.success(TrebleResult(false, false, 30, 0)), "true", "false", "", "", null, "vndk1e"),
+            arrayOf(
+                Result.success(TrebleResult(false, false, 30, 0)),
+                "true",
+                "false",
+                "",
+                "",
+                "30",
+                "vndk1a"
+            ),
+            arrayOf(
+                Result.success(TrebleResult(false, true, 30, 0)),
+                "true",
+                "true",
+                "",
+                "",
+                null,
+                "vndk1b"
+            ),
+            arrayOf(
+                Result.success(TrebleResult(false, false, 30, 0)),
+                "true",
+                "false",
+                "",
+                "",
+                null,
+                "vndk1c"
+            ),
+            arrayOf(
+                Result.success(TrebleResult(false, true, 30, 0)),
+                "true",
+                "true",
+                "",
+                "",
+                null,
+                "vndk1d"
+            ),
+            arrayOf(
+                Result.success(TrebleResult(false, false, 30, 0)),
+                "true",
+                "false",
+                "",
+                "",
+                null,
+                "vndk1e"
+            ),
             // tests with TP1803 data
-            arrayOf(Result.success(TrebleResult(false, true, 30, 0)), "true", "true", "", "", "30", "vndk2a"),
-            arrayOf(Result.success(TrebleResult(false, false, 30, 0)), "true", "false", "", "", null, "vndk2b"),
-            arrayOf(Result.success(TrebleResult(false, true, 30, 0)), "true", "true", "", "", null, "vndk2c"),
-            arrayOf(Result.success(TrebleResult(false, false, 30, 0)), "true", "false", "", "", null, "vndk2d"),
-            arrayOf(Result.success(TrebleResult(false, true, 30, 0)), "true", "true", "", "", null, "vndk2e"),
+            arrayOf(
+                Result.success(TrebleResult(false, true, 30, 0)),
+                "true",
+                "true",
+                "",
+                "",
+                "30",
+                "vndk2a"
+            ),
+            arrayOf(
+                Result.success(TrebleResult(false, false, 30, 0)),
+                "true",
+                "false",
+                "",
+                "",
+                null,
+                "vndk2b"
+            ),
+            arrayOf(
+                Result.success(TrebleResult(false, true, 30, 0)),
+                "true",
+                "true",
+                "",
+                "",
+                null,
+                "vndk2c"
+            ),
+            arrayOf(
+                Result.success(TrebleResult(false, false, 30, 0)),
+                "true",
+                "false",
+                "",
+                "",
+                null,
+                "vndk2d"
+            ),
+            arrayOf(
+                Result.success(TrebleResult(false, true, 30, 0)),
+                "true",
+                "true",
+                "",
+                "",
+                null,
+                "vndk2e"
+            ),
+            arrayOf(
+                Result.success(TrebleResult(false, false, 32, 0)),
+                "true",
+                "false",
+                "",
+                "",
+                null,
+                "vndk3a"
+            ),
+            arrayOf(
+                Result.success(TrebleResult(false, false, 32, 0)),
+                "true",
+                "false",
+                "",
+                "",
+                null,
+                "vndk3b"
+            ),
+            arrayOf(
+                Result.success(TrebleResult(false, false, 32, 0)),
+                "true",
+                "false",
+                "",
+                "",
+                null,
+                "vndk3c"
+            ),
+            // crosshatch
+            arrayOf(
+                Result.success(TrebleResult(false, false, 30, 0)),
+                "true",
+                "false",
+                "",
+                "",
+                null,
+                "vndk4a"
+            ),
+            arrayOf(
+                Result.success(TrebleResult(false, false, 30, 0)),
+                "true",
+                "false",
+                "",
+                "",
+                null,
+                "vndk4b"
+            ),
+            arrayOf(
+                Result.success(TrebleResult(false, false, 30, 0)),
+                "true",
+                "false",
+                "",
+                "",
+                null,
+                "vndk4c"
+            ),
+            arrayOf(
+                Result.success(TrebleResult(false, false, 30, 0)),
+                "true",
+                "false",
+                "",
+                "",
+                null,
+                "vndk4d"
+            ),
+            arrayOf(
+                Result.success(TrebleResult(false, false, 30, 0)),
+                "true",
+                "false",
+                "",
+                "sku",
+                null,
+                "vndk4e"
+            ),
+            arrayOf(
+                Result.success(TrebleResult(false, false, 30, 0)),
+                "true",
+                "false",
+                "sku",
+                "",
+                null,
+                "vndk4f"
+            ),
+            arrayOf(
+                Result.success(TrebleResult(true, false, 30, 0)),
+                "true",
+                "false",
+                "",
+                "",
+                null,
+                "vndk4g"
+            ),
+            arrayOf(
+                Result.success(TrebleResult(false, false, 30, 0)),
+                "true",
+                "false",
+                "",
+                "",
+                null,
+                "vndk4h"
+            ),
+            arrayOf(
+                Result.success(TrebleResult(false, false, 30, 0)),
+                "true",
+                "false",
+                "",
+                "sku",
+                null,
+                "vndk4i"
+            ),
+            arrayOf(
+                Result.success(TrebleResult(false, false, 30, 0)),
+                "true",
+                "false",
+                "",
+                "",
+                null,
+                "vndk4j"
+            ),
+            // bullhead
+            arrayOf(
+                Result.success(null),
+                "true",
+                "false",
+                "",
+                "",
+                null,
+                "vndk5a"
+            ),
         )
     }
 
     @get:Rule
     val temporaryFolder = TemporaryFolder()
 
+    private fun extractFiles(name: String, vendorSku: String, odmSku: String) {
+        println("Extracting $name $vendorSku $odmSku")
+        val files = mapOf(
+            "vendor/etc/vintf/manifest_sku.xml" to "vendor/etc/vintf/manifest_$vendorSku.xml",
+            "vendor/etc/vintf/manifest.xml" to null,
+            "vendor/etc/manifest/" to ".xml",
+            "vendor/manifest.xml" to null,
+            "odm/etc/vintf/manifest_sku.xml" to "odm/etc/vintf/manifest_$odmSku.xml",
+            "odm/etc/vintf/manifest.xml" to null,
+            "odm/etc/manifest_sku.xml" to "odm/etc/manifest_$odmSku.xml",
+            "odm/etc/manifest.xml" to null,
+            "odm/etc/manifest/" to ".xml",
+            "vendor/etc/vintf/compatibility_matrix.xml" to null,
+            "vendor/compatibility_matrix.xml" to null,
+            "vendor/etc/selinux/" to ".cil",
+            "vendor/etc/selinux/plat_sepolicy_vers.txt" to null
+        )
+
+        extractFiles(name, files, temporaryFolder)
+    }
+
     @Test
     fun getVndkData() {
         val function = if (testName.isEmpty()) {
-            { testGetVndkData(trebleEnabled, vndkLite, vendorSku, odmSku, { emptyList<File>() to false }, { null }, { null }, vndkVersion) }
+            {
+                testGetVndkData(
+                    trebleEnabled,
+                    vndkLite,
+                    vendorSku,
+                    odmSku,
+                    { emptyList<File>() to false },
+                    { null },
+                    { null },
+                    vndkVersion
+                )
+            }
         } else {
             extractFiles(testName, vendorSku!!, odmSku!!);
-            { testGetVndkData(trebleEnabled, vndkLite, vendorSku, odmSku, { callOriginal() }, { callOriginal() }, { callOriginal() }, vndkVersion) }
+            {
+                testGetVndkData(
+                    trebleEnabled,
+                    vndkLite,
+                    vendorSku,
+                    odmSku,
+                    { callOriginal() },
+                    { callOriginal() },
+                    { callOriginal() },
+                    vndkVersion
+                )
+            }
         }
         result.fold(
             { expected ->
@@ -107,49 +408,16 @@ class TrebleDetectorTest(
         )
     }
 
-
-    private fun extractFiles(name: String, vendorSku: String, odmSku: String) {
-        temporaryFolder.delete()
-        val classLoader = this::class.java.classLoader!!
-        val files = mapOf(
-            "vendor/etc/vintf/manifest_sku.xml" to "vendor/etc/vintf/manifest_$vendorSku.xml",
-            "vendor/etc/vintf/manifest.xml" to null,
-            "vendor/etc/manifest/" to ".xml",
-            "vendor/manifest.xml" to null,
-            "odm/etc/vintf/manifest_sku.xml" to "odm/etc/vintf/manifest_$odmSku.xml",
-            "odm/etc/vintf/manifest.xml" to null,
-            "odm/etc/sku.xml" to "odm/etc/$odmSku.xml",
-            "odm/etc/manifest.xml" to null,
-            "odm/etc/manifest/" to ".xml",
-            "vendor/etc/vintf/compatibility_matrix.xml" to null,
-            "vendor/etc/selinux/" to ".cil",
-            "vendor/etc/selinux/plat_sepolicy_vers.txt" to null
-        )
-
-        for (file in files.entries) {
-            if (file.key.endsWith('/')) {
-                var i = 0
-                children@while (true) {
-                    val sourceStream = classLoader.getResourceAsStream("$name/${file.key}$i") ?: break@children
-                    val destFile = temporaryFolder.root.resolve(file.key).resolve(i.toString() + file.value!!)
-                    destFile.parentFile!!.mkdirs()
-                    destFile.outputStream().use {
-                        sourceStream.copyTo(it)
-                    }
-                    i++
-                }
-            } else {
-                val sourceStream = classLoader.getResourceAsStream("$name/${file.key}") ?: continue
-                val destFile = temporaryFolder.root.resolve(file.value ?: file.key)
-                destFile.parentFile!!.mkdirs()
-                destFile.outputStream().use {
-                    sourceStream.copyTo(it)
-                }
-            }
-        }
-    }
-
-    private fun testGetVndkData(trebleEnabled: String?, vndkLite: String?, vendorSku: String?, odmSku: String?, manifestFiles: AnswerScope<Pair<List<File>, Boolean>>, vendorCompatibilityMatrix: AnswerScope<File?>, selinuxData: AnswerScope<Pair<Int, Int>?>, vndkVersion: String?): TrebleResult? {
+    private fun testGetVndkData(
+        trebleEnabled: String?,
+        vndkLite: String?,
+        vendorSku: String?,
+        odmSku: String?,
+        manifestFiles: AnswerScope<Pair<List<File>, Boolean>>,
+        vendorCompatibilityMatrix: AnswerScope<File?>,
+        selinuxData: AnswerScope<Pair<Int, Int>?>,
+        vndkVersion: String?
+    ): TrebleResult? {
         var ret: TrebleResult? = null
         TrebleDetector.root = temporaryFolder.root
         mockkStatic(::propertyGet.declaringKotlinFile) {
@@ -167,34 +435,100 @@ class TrebleDetectorTest(
         }
         return ret
     }
+}
 
-    // TODO more tests
-/*
+@RunWith(Parameterized::class)
+class ParseMatrixTest(private val testName: String, private val matrixPath: String, private val expected: Pair<Int, Int>?) {
+    companion object {
+        @Suppress("BooleanLiteralArgument")
+        @Parameterized.Parameters
+        @JvmStatic
+        fun data() = listOf(
+            arrayOf("vndk1a", "vendor/etc/vintf/manifest.xml", null),
+            arrayOf("vndk1a", "vendor/etc/vintf/compatibility_matrix.xml", 30 to 0),
+            arrayOf("vndk1a", "odm/etc/vintf/manifest.xml", null),
+            arrayOf("vndk2a", "vendor/etc/vintf/manifest.xml", null),
+            arrayOf("vndk2a", "vendor/etc/vintf/compatibility_matrix.xml", 30 to 0),
+            arrayOf("vndk2a", "odm/etc/vintf/manifest.xml", null),
+        )
+    }
+
+    @get:Rule
+    val temporaryFolder = TemporaryFolder()
+
+    private fun extractFile(name: String, path: String) {
+        val files = mapOf(
+            path to null
+        )
+
+        extractFiles(name, files, temporaryFolder)
+    }
+
     @Test
     fun parseMatrix() {
+        extractFile(testName, matrixPath)
+        assertEquals(expected, TrebleDetector.parseMatrix(temporaryFolder.root.resolve(matrixPath)))
+    }
+
+}
+
+
+@RunWith(Parameterized::class)
+class ParseManifestTest(private val testName: String, private val manifestPath: String, private val expected: Pair<Int, Int>?) {
+    companion object {
+        @Suppress("BooleanLiteralArgument")
+        @Parameterized.Parameters
+        @JvmStatic
+        fun data() = listOf(
+            arrayOf("vndk1a", "vendor/etc/vintf/manifest.xml", 30 to 0),
+            arrayOf("vndk1a", "vendor/etc/vintf/compatibility_matrix.xml", null),
+            arrayOf("vndk1a", "odm/etc/vintf/manifest.xml", null),
+            arrayOf("vndk2a", "vendor/etc/vintf/manifest.xml", 30 to 0),
+            arrayOf("vndk2a", "vendor/etc/vintf/compatibility_matrix.xml", null),
+            arrayOf("vndk2a", "odm/etc/vintf/manifest.xml", null),
+        )
+    }
+
+    @get:Rule
+    val temporaryFolder = TemporaryFolder()
+
+    private fun extractFile(name: String, path: String) {
+        val files = mapOf(
+            path to null
+        )
+
+        extractFiles(name, files, temporaryFolder)
     }
 
     @Test
     fun parseManifest() {
+        extractFile(testName, manifestPath)
+        assertEquals(expected, TrebleDetector.parseManifest(temporaryFolder.root.resolve(manifestPath)))
     }
-*/
-    // TODO this should be parameterized in a different class
+}
+
+@RunWith(Parameterized::class)
+class ParseVersionTests(private val expected: Pair<Int, Int>?, private val input: String) {
+    companion object {
+        @Suppress("BooleanLiteralArgument")
+        @Parameterized.Parameters
+        @JvmStatic
+        fun data() = listOf(
+            arrayOf(30 to 1, "30.1"),
+            arrayOf(30 to 1, "\n\n 30.1\u00A0 "),
+            arrayOf(30 to 0, "30"),
+            arrayOf(3 to 0, "3.a"),
+            arrayOf(null, "3b"),
+            arrayOf(3 to 0, "3.\u00A0e"),
+            arrayOf(null, "-3"),
+            arrayOf(1 to 0, "1.+3"),
+            arrayOf(null, "+1.+3"),
+            arrayOf(null, "\u0DEF")
+
+        )
+    }
     @Test
     fun parseVersion() {
-        assertEquals(30 to 1, TrebleDetector.parseVersion("30.1"))
-        assertEquals(30 to 1, TrebleDetector.parseVersion("\n\n 30.1\u00A0 "))
-        assertEquals(30 to 0, TrebleDetector.parseVersion("30"))
-        assertEquals(3 to 0, TrebleDetector.parseVersion("3.a"))
-        assertEquals(null, TrebleDetector.parseVersion("3b"))
-        assertEquals(3 to 0, TrebleDetector.parseVersion("3.\u00A0e"))
-        assertEquals(null, TrebleDetector.parseVersion("-3"))
-        assertEquals(1 to 0, TrebleDetector.parseVersion("1.+3"))
-        assertEquals(null, TrebleDetector.parseVersion("+1.+3"))
-        assertEquals(null, TrebleDetector.parseVersion("\u0DEF"))
+        assertEquals(expected, TrebleDetector.parseVersion(input))
     }
-/*
-    @Test
-    fun parseSelinuxData() {
-    }
-*/
 }
