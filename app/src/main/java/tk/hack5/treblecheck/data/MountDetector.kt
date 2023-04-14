@@ -60,10 +60,8 @@ object MountDetector {
             else -> if (BuildConfig.DEBUG) {
                 getMounts().toList().let { lines ->
                     val rootMounted = lines.any { it.device == "/dev/root" && it.mountpoint == "/" }
-                    val hasSystemPartition =
-                        lines.any { it.mountpoint == "/system" && it.type != "tmpfs" && it.device != "none" }
-                    val systemRoot =
-                        lines.any { it.mountpoint == "/system_root" && it.type != "tmpfs" }
+                    val hasSystemPartition = lines.any { it.mountpoint == "/system" && it.type != "tmpfs" && it.device != "none" }
+                    val systemRoot = lines.any { it.mountpoint == "/system_root" && it.type != "tmpfs" }
                     Log.v(
                         tag,
                         "rootMounted: $rootMounted, hasSystemPartition: $hasSystemPartition, systemRoot: $systemRoot"
@@ -72,21 +70,22 @@ object MountDetector {
                 }
             } else {
                 getMounts().let { lines ->
-                    val (rootMountedOrSystemRoot, hasSystemPartition) = lines.fold(false to false) { acc, it ->
-                        (
-                                acc.first
-                                        || it.device == "/dev/root" && it.mountpoint == "/"
-                                        || it.mountpoint == "/system_root" && it.type != "tmpfs"
-                        ) to (
-                                acc.second
-                                        || it.mountpoint == "/system" && it.type != "tmpfs" && it.device != "none"
-                        )
+                    var hasSystemPartition = false
+
+                    for (mount in lines) {
+                        if (
+                            /* rootMounted */
+                            mount.device == "/dev/root" && mount.mountpoint == "/"
+                            /* systemRoot */
+                            || mount.mountpoint == "/system_root" && mount.type != "tmpfs"
+                        ) {
+                            return@let true
+                        }
+                        hasSystemPartition = hasSystemPartition
+                                || mount.mountpoint == "/system" && mount.type != "tmpfs" && mount.device != "none"
                     }
-                    Log.v(
-                        tag,
-                        "rootMountedOrSystemRoot: $rootMountedOrSystemRoot, hasSystemPartition: $hasSystemPartition"
-                    )
-                    rootMountedOrSystemRoot || !hasSystemPartition
+
+                    !hasSystemPartition
                 }
             }
         }
