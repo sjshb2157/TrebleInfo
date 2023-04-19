@@ -313,23 +313,34 @@ fun MainActivityContent(
             }
 
             NavHost(navController = navController, startDestination = "images") {
-                composable(Screens.Images.route) { Images(
-                    innerPadding,
-                    topAppBarScrollBehavior.nestedScrollConnection,
-                    browseImages,
-                    {
-                        navController.navigate(Screens.Details.route) {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
+                composable(Screens.Images.route) {
+                    Images(
+                        innerPadding,
+                        topAppBarScrollBehavior.nestedScrollConnection,
+                        browseImages,
+                        {
+                            navController.navigate(Screens.Details.route) {
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = false
                             }
-                            launchSingleTop = true
-                            restoreState = false
-                        }
-                    },
-                    reportABug,
-                    treble.supported,
-                    fileName
-                ) }
+                        },
+                        {
+                            navController.navigate(Screens.Contribute.route) {
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = false
+                            }
+                        },
+                        reportABug,
+                        treble.supported,
+                        fileName
+                    )
+                }
                 composable(Screens.Details.route) {
                     DetailsList(innerPadding, topAppBarScrollBehavior.nestedScrollConnection, windowSizeClass.widthSizeClass > WindowWidthSizeClass.Compact, treble, ab, dynamic, sar, binderArch, cpuArch)
                 }

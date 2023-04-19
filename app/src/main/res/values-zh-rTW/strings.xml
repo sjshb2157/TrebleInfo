@@ -68,4 +68,5 @@
 	<string name="donation_successful_body">感謝你的捐贈。</string>
 	<string name="donation_failed_title">捐款失敗</string>
 	<string name="donation_failed_body">抱歉，出了點問題……請稍後再試！</string>
+	<string name="contribute">貢獻</string>
 </resources>

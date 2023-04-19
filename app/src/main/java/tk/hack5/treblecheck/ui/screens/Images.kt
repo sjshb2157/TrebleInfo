@@ -35,6 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import tk.hack5.treblecheck.R
 import tk.hack5.treblecheck.horizontal
+import tk.hack5.treblecheck.ui.buttonIconSpacerWidth
 import tk.hack5.treblecheck.ui.imagesIconSize
 import tk.hack5.treblecheck.ui.pageHorizontalPadding
 import tk.hack5.treblecheck.ui.verticalSpacer
@@ -46,6 +47,7 @@ fun Images(
     scrollConnection: NestedScrollConnection,
     browseImages: () -> Unit,
     navigateToDetails: () -> Unit,
+    navigateToContribute: () -> Unit,
     reportBug: () -> Unit,
     treble: Boolean?,
     fileName: String?,
@@ -92,16 +94,33 @@ fun Images(
         } else if (treble != false && fileName != null) {
             Text(fileName, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
             Spacer(Modifier.height(verticalSpacer))
-            Button(browseImages) { Text(stringResource(R.string.browse_images)) }
+            Button(browseImages) {
+                Icon(painterResource(R.drawable.images_found), null)
+                Spacer(Modifier.width(buttonIconSpacerWidth))
+                Text(stringResource(R.string.browse_images))
+            }
             true
         } else {
             false
         }
         if (button) {
-            OutlinedButton(navigateToDetails) { Text(stringResource(R.string.view_details)) }
+            OutlinedButton(navigateToDetails) {
+                Icon(painterResource(R.drawable.screen_details), null)
+                Spacer(Modifier.width(buttonIconSpacerWidth))
+                Text(stringResource(R.string.view_details))
+            }
         } else {
             Spacer(Modifier.height(verticalSpacer))
-            Button(navigateToDetails) { Text(stringResource(R.string.view_details)) }
+            Button(navigateToDetails) {
+                Icon(painterResource(R.drawable.screen_details), null)
+                Spacer(Modifier.width(buttonIconSpacerWidth))
+                Text(stringResource(R.string.view_details))
+            }
+        }
+        OutlinedButton(navigateToContribute) {
+            Icon(painterResource(R.drawable.screen_contribute), null)
+            Spacer(Modifier.width(buttonIconSpacerWidth))
+            Text(stringResource(R.string.contribute))
         }
         Spacer(Modifier.height(innerPadding.calculateBottomPadding()))
     }

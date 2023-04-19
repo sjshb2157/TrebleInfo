@@ -70,4 +70,5 @@
 	<string name="donation_successful_body">Vielen Dank für deinen Support.</string>
 	<string name="donation_failed_title">Spende fehlgeschlagen</string>
 	<string name="donation_failed_body">Entschuldigung, etwas ist schief gelaufen… Bitte versuche es später erneut!</string>
+	<string name="contribute">Einen Beitrag leisten</string>
 </resources>

@@ -28,6 +28,7 @@ val verticalSpacer = 32.dp
 val listVerticalPadding = verticalSpacer / 2
 
 val cardIconSpacerWidth = 16.dp
+val buttonIconSpacerWidth = 8.dp
 
 val imagesIconSize = 48.dp
 

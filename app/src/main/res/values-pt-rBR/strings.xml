@@ -1,2 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<resources/>
+<resources>
+	<string name="title">Informações sobre o Treble</string>
+	<string name="sar_title">Sistema como raiz</string>
+	<string name="ab_title">Atualizações perfeitas</string>
+	<string name="donate">Doar</string>
+	<string name="dynamicpartitions_title">Partições dinâmicas</string>
+	<string name="screen_images">Imagens</string>
+	<string name="screen_details">Detalhes</string>
+	<string name="screen_licenses">Licenças</string>
+	<string name="screen_contribute">Contribuir</string>
+	<string name="no_treble_title">Seu dispositivo não oferece suporte ao Project Treble</string>
+	<string name="no_treble_body">Infelizmente, seu dispositivo não suporta a instalação de GSIs. Em alguns dispositivos, é possível instalar uma ROM específica do dispositivo a partir da Internet.</string>
+	<string name="detection_error_title">Oops!</string>
+	<string name="browse_images">Pesquisar imagens</string>
+	<string name="view_details">Mais detalhes</string>
+	<string name="report_this_bug">Reporte o bug</string>
+</resources>
