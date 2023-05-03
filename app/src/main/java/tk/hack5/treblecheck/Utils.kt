@@ -33,6 +33,10 @@ fun propertyGet(prop: String): String? {
     return try {
         val c = Class.forName("android.os.SystemProperties")
         val g = c.getMethod("get", String::class.java, String::class.java)
+        if (!g.isAccessible) {
+            Log.w(tag, "SystemProperties.get is inaccessible")
+            g.isAccessible = true
+        }
         g.invoke(null, prop, "") as String
     } catch (e: Exception) {
         Log.e(tag, "Failed to get property $prop", e)
