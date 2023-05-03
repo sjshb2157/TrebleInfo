@@ -362,12 +362,12 @@ fun MainActivityContent(
 
 @Suppress("BooleanLiteralArgument")
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
-@Preview
+@Preview(widthDp=443, heightDp=911)
 @Composable
 fun MainActivityPreview() {
     TrebleCheckTheme(darkTheme = false) {
         MainActivityContent(
-            WindowSizeClass.calculateFromSize(DpSize(400.dp, 400.dp)),
+            WindowSizeClass.calculateFromSize(DpSize(443.dp, 911.dp)),
             Optional.Value(
                 TrebleResult(false, true, 30, 0)
             ),

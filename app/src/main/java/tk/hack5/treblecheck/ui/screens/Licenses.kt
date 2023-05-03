@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -50,8 +51,12 @@ fun Licenses(
     val libraries = remember { mutableStateOf<Libs?>(null) }
 
     val context = LocalContext.current
-    LaunchedEffect(libraries) {
-        libraries.value = Libs.Builder().withContext(context).build()
+    if (!LocalInspectionMode.current) {
+        LaunchedEffect(libraries) {
+            libraries.value = Libs.Builder().withContext(context).build()
+        }
+    } else {
+        libraries.value = Libs(emptyList(), emptySet())
     }
 
     val licenses = setOf(
