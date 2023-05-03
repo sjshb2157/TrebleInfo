@@ -23,10 +23,7 @@ import android.util.Log
 import androidx.annotation.VisibleForTesting
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
-import tk.hack5.treblecheck.Mock
-import tk.hack5.treblecheck.compareTo
-import tk.hack5.treblecheck.get
-import tk.hack5.treblecheck.propertyGet
+import tk.hack5.treblecheck.*
 import java.io.File
 
 data class TrebleResult(val legacy: Boolean, val lite: Boolean,
@@ -40,16 +37,18 @@ object TrebleDetector {
     fun getVndkData(): TrebleResult? {
         Mock.data?.let { return it.treble.get() }
 
-        val trebleEnabled = propertyGet("ro.treble.enabled")
+        val trebleEnabled = propertyGet("ro.treble.enabled") ?: throw ParseException("Can't check treble status")
         Log.v(tag, "trebleEnabled: $trebleEnabled")
-        if (trebleEnabled != "true")
+        if (parseBool(trebleEnabled) != true) {
             return null
+        }
 
         val liteProp = propertyGet("ro.vndk.lite")
         Log.v(tag, "lite: $liteProp")
-        if (liteProp == null)
-            return null
-        val lite = liteProp == "true"
+        if (liteProp == null) {
+            throw ParseException("Can't check lite status")
+        }
+        val lite = parseBool(liteProp) ?: false
 
         val (manifests, legacy) = locateManifestFiles()
         Log.v(tag, "manifests: ${manifests.joinToString { it.absolutePath }}, legacy: $legacy")

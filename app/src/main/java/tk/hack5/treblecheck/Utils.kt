@@ -40,6 +40,21 @@ fun propertyGet(prop: String): String? {
     }
 }
 
+
+/**
+ * https://cs.android.com/android/platform/superproject/+/refs/heads/master:system/libbase/parsebool.cpp
+ */
+fun parseBool(s: String): Boolean? {
+    if (s == "1" || s == "y" || s == "yes" || s == "on" || s == "true") {
+        return true
+    }
+    if (s == "0" || s == "n" || s == "no" || s == "off" || s == "false") {
+        return false
+    }
+    return null
+}
+
+
 operator fun <A1 : Comparable<A2>, B1 : Comparable<B2>, A2, B2>Pair<A1, B1>.compareTo(other: Pair<A2, B2>): Int =
     if (first == other.first)
         second.compareTo(other.second)

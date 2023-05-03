@@ -21,6 +21,7 @@ package tk.hack5.treblecheck.data
 
 import android.util.Log
 import tk.hack5.treblecheck.Mock
+import tk.hack5.treblecheck.parseBool
 import tk.hack5.treblecheck.propertyGet
 
 object DynamicPartitionsDetector {
@@ -30,7 +31,7 @@ object DynamicPartitionsDetector {
         val dynamicPartitions = propertyGet("ro.boot.dynamic_partitions")
 
         Log.v(tag, "dynamicPartitions: $dynamicPartitions")
-        return (dynamicPartitions ?: return null) == "true"
+        return parseBool(dynamicPartitions ?: return null) ?: false
     }
 }
 

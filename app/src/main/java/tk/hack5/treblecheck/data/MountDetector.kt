@@ -23,6 +23,7 @@ import android.util.Log
 import androidx.annotation.VisibleForTesting
 import tk.hack5.treblecheck.BuildConfig
 import tk.hack5.treblecheck.Mock
+import tk.hack5.treblecheck.parseBool
 import tk.hack5.treblecheck.propertyGet
 import java.io.BufferedReader
 import java.io.File
@@ -58,8 +59,8 @@ object MountDetector {
         Log.v(tag, "systemRootImage: $systemRootImage, dynamicPartitions: $dynamicPartitions")
 
         return when {
-            dynamicPartitions == "true" -> true
-            systemRootImage == "true" -> true
+            parseBool(dynamicPartitions ?: "") ?: false -> true
+            parseBool(systemRootImage ?: "") ?: false -> true
             else -> if (BuildConfig.DEBUG) {
                 getMounts().toList().let { lines ->
                     val rootMounted = lines.any { it.device == "/dev/root" && it.mountpoint == "/" }
