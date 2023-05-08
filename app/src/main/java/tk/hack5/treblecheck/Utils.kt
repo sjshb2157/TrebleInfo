@@ -35,7 +35,11 @@ fun propertyGet(prop: String): String? {
         val g = c.getMethod("get", String::class.java, String::class.java)
         if (!g.isAccessible) {
             Log.w(tag, "SystemProperties.get is inaccessible")
-            g.isAccessible = true
+            try {
+                g.isAccessible = true
+            } catch (e: Exception) {
+                Log.w(tag, "Failed to set accessibility", e)
+            }
         }
         g.invoke(null, prop, "") as String
     } catch (e: Exception) {

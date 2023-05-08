@@ -104,7 +104,7 @@ class TrebleDetectorTest(
             arrayOf(Result.success(null), "", "", null, null, null, ""),
             arrayOf(Result.success(null), "false", "", null, null, null, ""),
             arrayOf(
-                Result.success(TrebleResult(false, false, 30, 0)),
+                Result.success(TrebleResult(false, false, false, 30, 0)),
                 "true",
                 "",
                 null,
@@ -123,7 +123,7 @@ class TrebleDetectorTest(
             ),
             // tests with cepheus data
             arrayOf(
-                Result.success(TrebleResult(false, false, 30, 0)),
+                Result.success(TrebleResult(false, false, false, 30, 0)),
                 "true",
                 "false",
                 "",
@@ -132,7 +132,7 @@ class TrebleDetectorTest(
                 "vndk1a"
             ),
             arrayOf(
-                Result.success(TrebleResult(false, true, 30, 0)),
+                Result.success(TrebleResult(false, true, false, 30, 0)),
                 "true",
                 "true",
                 "",
@@ -141,7 +141,7 @@ class TrebleDetectorTest(
                 "vndk1b"
             ),
             arrayOf(
-                Result.success(TrebleResult(false, false, 30, 0)),
+                Result.success(TrebleResult(false, false, false, 30, 0)),
                 "true",
                 "false",
                 "",
@@ -150,7 +150,7 @@ class TrebleDetectorTest(
                 "vndk1c"
             ),
             arrayOf(
-                Result.success(TrebleResult(false, true, 30, 0)),
+                Result.success(TrebleResult(false, true, false, 30, 0)),
                 "true",
                 "true",
                 "",
@@ -159,7 +159,7 @@ class TrebleDetectorTest(
                 "vndk1d"
             ),
             arrayOf(
-                Result.success(TrebleResult(false, false, 30, 0)),
+                Result.success(TrebleResult(false, false, false, 30, 0)),
                 "true",
                 "false",
                 "",
@@ -169,7 +169,7 @@ class TrebleDetectorTest(
             ),
             // tests with TP1803 data
             arrayOf(
-                Result.success(TrebleResult(false, true, 30, 0)),
+                Result.success(TrebleResult(false, true, false, 30, 0)),
                 "true",
                 "true",
                 "",
@@ -178,7 +178,7 @@ class TrebleDetectorTest(
                 "vndk2a"
             ),
             arrayOf(
-                Result.success(TrebleResult(false, false, 30, 0)),
+                Result.success(TrebleResult(false, false, false, 30, 0)),
                 "true",
                 "false",
                 "",
@@ -187,7 +187,7 @@ class TrebleDetectorTest(
                 "vndk2b"
             ),
             arrayOf(
-                Result.success(TrebleResult(false, true, 30, 0)),
+                Result.success(TrebleResult(false, true, false, 30, 0)),
                 "true",
                 "true",
                 "",
@@ -196,7 +196,7 @@ class TrebleDetectorTest(
                 "vndk2c"
             ),
             arrayOf(
-                Result.success(TrebleResult(false, false, 30, 0)),
+                Result.success(TrebleResult(false, false, false, 30, 0)),
                 "true",
                 "false",
                 "",
@@ -205,7 +205,7 @@ class TrebleDetectorTest(
                 "vndk2d"
             ),
             arrayOf(
-                Result.success(TrebleResult(false, true, 30, 0)),
+                Result.success(TrebleResult(false, true, false, 30, 0)),
                 "true",
                 "true",
                 "",
@@ -214,7 +214,7 @@ class TrebleDetectorTest(
                 "vndk2e"
             ),
             arrayOf(
-                Result.success(TrebleResult(false, false, 32, 0)),
+                Result.success(TrebleResult(false, false, false, 32, 0)),
                 "true",
                 "false",
                 "",
@@ -223,7 +223,7 @@ class TrebleDetectorTest(
                 "vndk3a"
             ),
             arrayOf(
-                Result.success(TrebleResult(false, false, 32, 0)),
+                Result.success(TrebleResult(false, false, false, 32, 0)),
                 "true",
                 "false",
                 "",
@@ -232,7 +232,7 @@ class TrebleDetectorTest(
                 "vndk3b"
             ),
             arrayOf(
-                Result.success(TrebleResult(false, false, 32, 0)),
+                Result.success(TrebleResult(false, false, false, 32, 0)),
                 "true",
                 "false",
                 "",
@@ -242,7 +242,7 @@ class TrebleDetectorTest(
             ),
             // crosshatch
             arrayOf(
-                Result.success(TrebleResult(false, false, 30, 0)),
+                Result.success(TrebleResult(false, false, false, 30, 0)),
                 "true",
                 "false",
                 "",
@@ -251,7 +251,7 @@ class TrebleDetectorTest(
                 "vndk4a"
             ),
             arrayOf(
-                Result.success(TrebleResult(false, false, 30, 0)),
+                Result.success(TrebleResult(false, false, false, 30, 0)),
                 "true",
                 "false",
                 "",
@@ -260,7 +260,7 @@ class TrebleDetectorTest(
                 "vndk4b"
             ),
             arrayOf(
-                Result.success(TrebleResult(false, false, 30, 0)),
+                Result.success(TrebleResult(false, false, false, 30, 0)),
                 "true",
                 "false",
                 "",
@@ -269,7 +269,7 @@ class TrebleDetectorTest(
                 "vndk4c"
             ),
             arrayOf(
-                Result.success(TrebleResult(false, false, 30, 0)),
+                Result.success(TrebleResult(false, false, false, 30, 0)),
                 "true",
                 "false",
                 "",
@@ -278,7 +278,7 @@ class TrebleDetectorTest(
                 "vndk4d"
             ),
             arrayOf(
-                Result.success(TrebleResult(false, false, 30, 0)),
+                Result.success(TrebleResult(false, false, false, 30, 0)),
                 "true",
                 "false",
                 "",
@@ -287,7 +287,7 @@ class TrebleDetectorTest(
                 "vndk4e"
             ),
             arrayOf(
-                Result.success(TrebleResult(false, false, 30, 0)),
+                Result.success(TrebleResult(false, false, false, 30, 0)),
                 "true",
                 "false",
                 "sku",
@@ -296,7 +296,7 @@ class TrebleDetectorTest(
                 "vndk4f"
             ),
             arrayOf(
-                Result.success(TrebleResult(true, false, 30, 0)),
+                Result.success(TrebleResult(true, false, false, 30, 0)),
                 "true",
                 "false",
                 "",
@@ -305,7 +305,7 @@ class TrebleDetectorTest(
                 "vndk4g"
             ),
             arrayOf(
-                Result.success(TrebleResult(false, false, 30, 0)),
+                Result.success(TrebleResult(false, false, false, 30, 0)),
                 "true",
                 "false",
                 "",
@@ -314,7 +314,7 @@ class TrebleDetectorTest(
                 "vndk4h"
             ),
             arrayOf(
-                Result.success(TrebleResult(false, false, 30, 0)),
+                Result.success(TrebleResult(false, false, false, 30, 0)),
                 "true",
                 "false",
                 "",
@@ -323,7 +323,7 @@ class TrebleDetectorTest(
                 "vndk4i"
             ),
             arrayOf(
-                Result.success(TrebleResult(false, false, 30, 0)),
+                Result.success(TrebleResult(false, false, false, 30, 0)),
                 "true",
                 "false",
                 "",
@@ -341,6 +341,7 @@ class TrebleDetectorTest(
                 null,
                 "vndk5a"
             ),
+            // TODO test cph1823
         )
     }
 
@@ -480,12 +481,13 @@ class ParseManifestTest(private val testName: String, private val manifestPath: 
         @Parameterized.Parameters
         @JvmStatic
         fun data() = listOf(
-            arrayOf("vndk1a", "vendor/etc/vintf/manifest.xml", 30 to 0),
-            arrayOf("vndk1a", "vendor/etc/vintf/compatibility_matrix.xml", null),
-            arrayOf("vndk1a", "odm/etc/vintf/manifest.xml", null),
-            arrayOf("vndk2a", "vendor/etc/vintf/manifest.xml", 30 to 0),
-            arrayOf("vndk2a", "vendor/etc/vintf/compatibility_matrix.xml", null),
-            arrayOf("vndk2a", "odm/etc/vintf/manifest.xml", null),
+            arrayOf("vndk1a", "vendor/etc/vintf/manifest.xml", 30 to 0 to emptySet<String>()),
+            arrayOf("vndk1a", "vendor/etc/vintf/compatibility_matrix.xml", null to emptySet<String>()),
+            arrayOf("vndk1a", "odm/etc/vintf/manifest.xml", null to emptySet<String>()),
+            arrayOf("vndk2a", "vendor/etc/vintf/manifest.xml", 30 to 0 to emptySet<String>()),
+            arrayOf("vndk2a", "vendor/etc/vintf/compatibility_matrix.xml", null to emptySet<String>()),
+            arrayOf("vndk2a", "odm/etc/vintf/manifest.xml", null to emptySet<String>()),
+            // TODO check passthru results
         )
     }
 

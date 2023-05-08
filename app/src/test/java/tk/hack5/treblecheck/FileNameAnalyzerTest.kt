@@ -33,11 +33,12 @@ class FileNameAnalyzerTest(private val expected: String, private val treble: Tre
         @Parameterized.Parameters
         @JvmStatic
         fun data() = listOf(
-            arrayOf("system-arm64-aonly.img.xz", TrebleResult(false, false, 31, 0), BinderArch.Binder8, CPUArch.ARM64, false),
-            arrayOf("system-arm64-aonly.img.xz", TrebleResult(false, true, 31, 0), BinderArch.Binder8, CPUArch.ARM64, false),
-            arrayOf("system-arm32_binder64-ab-vndklite.img.xz", TrebleResult(false, true, 31, 0), BinderArch.Binder8, CPUArch.ARM32, true),
-            arrayOf("system-arm32_binder64-ab-vndklite.img.xz", TrebleResult(true, false, 31, 0), BinderArch.Binder8, CPUArch.ARM32, true),
-            arrayOf("system-arm32-???-vndklite.img.xz", TrebleResult(true, false, 31, 0), BinderArch.Binder7, CPUArch.ARM32, null),
+            arrayOf("system-arm64-aonly.img.xz", TrebleResult(false, false, false, 31, 0), BinderArch.Binder8, CPUArch.ARM64, false),
+            arrayOf("system-arm64-aonly.img.xz", TrebleResult(false, true, false, 31, 0), BinderArch.Binder8, CPUArch.ARM64, false),
+            arrayOf("system-arm32_binder64-ab-vndklite.img.xz", TrebleResult(false, true, false, 31, 0), BinderArch.Binder8, CPUArch.ARM32, true),
+            arrayOf("system-arm32_binder64-ab-vndklite.img.xz", TrebleResult(true, false, false, 31, 0), BinderArch.Binder8, CPUArch.ARM32, true),
+            arrayOf("system-arm64-aonly-vndklite.img.xz", TrebleResult(false, true, true, 31, 0), BinderArch.Binder8, CPUArch.ARM64, false),
+            arrayOf("system-arm32-???-vndklite.img.xz", TrebleResult(true, false, false, 31, 0), BinderArch.Binder7, CPUArch.ARM32, null),
             arrayOf("system-???-???.img.xz", null, BinderArch.Unknown(null), CPUArch.Unknown(null), null),
         )
     }

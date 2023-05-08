@@ -45,6 +45,7 @@ fun com.android.build.api.dsl.BuildType.setupBilling() {
 android {
     compileSdk = 33
     buildToolsVersion = "33.0.0"
+    ndkVersion = "25.2.9519653"
     defaultConfig {
         applicationId = "tk.hack5.treblecheck"
         minSdk = 22

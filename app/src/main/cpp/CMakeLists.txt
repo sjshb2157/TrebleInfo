@@ -18,7 +18,68 @@ add_library( # Specifies the name of the library.
         SHARED
 
         # Provides a relative path to your source file(s).
-        BinderDetector.cpp)
-
+        BinderDetector.cpp
+)
 # Disable build ID for reproducible builds
 target_link_libraries(binderdetector -Wl,--build-id=none)
+
+find_library(log-lib log)
+
+
+add_library(
+        trebledetector
+        SHARED
+        libvintf/parse_string.cpp
+        libvintf/parse_xml.cpp
+        libvintf/CompatibilityMatrix.cpp
+        libvintf/FileSystem.cpp
+        libvintf/FQName.cpp
+        libvintf/FqInstance.cpp
+        libvintf/HalManifest.cpp
+        libvintf/HalInterface.cpp
+        libvintf/KernelConfigTypedValue.cpp
+        libvintf/KernelConfigParser.cpp
+        libvintf/KernelInfo.cpp
+        libvintf/RuntimeInfo.cpp
+        libvintf/ManifestHal.cpp
+        libvintf/ManifestInstance.cpp
+        libvintf/MatrixHal.cpp
+        libvintf/MatrixInstance.cpp
+        libvintf/MatrixKernel.cpp
+        libvintf/PropertyFetcher.cpp
+        libvintf/Regex.cpp
+        libvintf/SystemSdk.cpp
+        libvintf/TransportArch.cpp
+        libvintf/VintfObject.cpp
+        libvintf/XmlFile.cpp
+        libvintf/utils.cpp
+
+        libvintf/HostFileSystem.cpp
+        libvintf/RuntimeInfo-host.cpp
+
+        libvintf-shims/Apex.cpp
+        libvintf-shims/utils/Errors.cpp
+        libvintf-shims/android/fdsan.cpp
+        libvintf-shims/android/log.cpp
+        libvintf-shims/libbase/properties.cpp
+
+        libbase/strings.cpp
+        libbase/stringprintf.cpp
+        libbase/logging.cpp
+        libbase/threads.cpp
+        libbase/errors_unix.cpp
+        libbase/file.cpp
+        libbase/posix_strerror_r.cpp
+        libbase/parsebool.cpp
+
+        Gki/libkver/kernel_release.cpp
+
+        tinyxml2/tinyxml2.cpp
+
+        TrebleDetector.cpp
+)
+
+target_compile_features(trebledetector PRIVATE cxx_std_17)
+target_include_directories(trebledetector PRIVATE libvintf/include/vintf libvintf/include libbase/include libvintf/include-host libvintf-shims/include Gki/libkver/include tinyxml2 fmtlib/include)
+target_compile_options(trebledetector PRIVATE -Wno-c++11-narrowing -Wno-inconsistent-missing-override -Wno-c99-designator)
+target_link_libraries(trebledetector PRIVATE -Wl,--build-id=none ${log-lib})

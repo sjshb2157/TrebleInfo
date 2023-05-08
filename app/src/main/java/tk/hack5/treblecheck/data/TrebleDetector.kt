@@ -19,28 +19,53 @@
 
 package tk.hack5.treblecheck.data
 
+import android.content.Context
 import android.util.Log
+import androidx.annotation.Keep
 import androidx.annotation.VisibleForTesting
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
 import tk.hack5.treblecheck.*
 import java.io.File
 
-data class TrebleResult(val legacy: Boolean, val lite: Boolean,
+data class TrebleResult(val legacy: Boolean, val lite: Boolean, val upgradeCompliant: Boolean,
                         val vndkVersion: Int, val vndkSubVersion: Int)
+
+
+enum class PassthroughResult {
+    FULLY_COMPLIANT,
+    UPGRADE_COMPLIANT,
+    NOT_COMPLIANT,
+}
 
 object TrebleDetector {
     private val SELINUX_REGEX = Regex("""\Winit_(\d+)_(\d+)\W""")
+
+    // https://source.android.com/docs/core/architecture/hal
+    private val LEGACY_REQUIRED_BINDERIZED = setOf("android.hardware.biometrics.fingerprint", "android.hardware.configstore", "android.hardware.dumpstate", "android.hardware.graphics.allocator", "android.hardware.radio", "android.hardware.usb", "android.hardware.wifi", "android.hardware.wifi.supplicant")
+    private val ALLOWED_PASSTHROUGHS = setOf("android.hardware.graphics.mapper", "android.hardware.renderscript")
+
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     internal var root: File? = null
 
-    fun getVndkData(): TrebleResult? {
+    fun getVndkData(context: Context): TrebleResult? {
         Mock.data?.let { return it.treble.get() }
 
-        val trebleEnabled = propertyGet("ro.treble.enabled") ?: throw ParseException("Can't check treble status")
-        Log.v(tag, "trebleEnabled: $trebleEnabled")
-        if (parseBool(trebleEnabled) != true) {
-            return null
+        var supportsTreble = false
+
+        val vndkVersionProp = propertyGet("ro.vndk.version")?.let {
+            Log.v(tag, "vndk prop: $it")
+            parseVersion(it)
+        }?.also {
+            Log.v(tag, "vndk prop result: $it")
+            supportsTreble = true
+        }
+
+        propertyGet("ro.treble.enabled")?.let {
+            Log.v(tag, "trebleEnabled prop: $it")
+            if (parseBool(it) == true) {
+                supportsTreble = true
+            }
         }
 
         val liteProp = propertyGet("ro.vndk.lite")
@@ -49,48 +74,135 @@ object TrebleDetector {
             throw ParseException("Can't check lite status")
         }
         val lite = parseBool(liteProp) ?: false
+        if (lite) {
+            supportsTreble = true
+        }
 
         val (manifests, legacy) = locateManifestFiles()
         Log.v(tag, "manifests: ${manifests.joinToString { it.absolutePath }}, legacy: $legacy")
+
+
+        var targetLevel: Int? = null
+        val (versions, passthroughs) = manifests
+            .asSequence()
+            .map {
+                parseManifest(it)
+                    .let { res ->
+                        Log.v(tag, "manifest ${it.absolutePath}: $res")
+                        targetLevel = targetLevel ?: res.third?.toIntOrNull()
+                        res.first to res.second
+                    }
+            }
+            .unzip()
+
+        val version = versions.filterNotNull().firstOrNull()
+
+        if (version != null) {
+            when (checkCompatibilityMatrix(context, targetLevel, version)) {
+                false -> {
+                    if (supportsTreble) {
+                        throw ParseException("Device claims Treble support but fails compatibility checks with AOSP matrices")
+                    } else {
+                        return null
+                    }
+                }
+                true -> supportsTreble = true
+                else -> { }
+            }
+        }
+
+        val upgradePassthrough = when (checkPassthroughs(passthroughs.flatten().toSet())) {
+            PassthroughResult.NOT_COMPLIANT -> {
+                // they claim Treble support but are non-compliant
+                if (supportsTreble) {
+                    throw ParseException("Device reports Treble compliance but does not meet VNDK requirements")
+                }
+                return null
+            }
+            PassthroughResult.UPGRADE_COMPLIANT -> {
+                Log.d(tag, "VNDK upgrade compliant")
+                true
+            }
+            PassthroughResult.FULLY_COMPLIANT -> {
+                // if we fail to read any manifests, we certainly won't find any passthrough HALs, so this is the default case
+                false
+            }
+        }
+        version?.let {
+                return TrebleResult(legacy, lite, upgradePassthrough, it.first, it.second)
+            }
 
         val matrix = locateVendorCompatibilityMatrix()
         matrix?.let {
             Log.v(tag, "matrix: ${matrix.absolutePath}")
             parseMatrix(it)
         }?.let {
-            if (it == 0 to 0) {
-                return null // no treble support
-            }
             Log.v(tag, "vendor matrix result: $it")
-            return TrebleResult(legacy, lite, it.first, it.second)
+            return TrebleResult(legacy, lite, upgradePassthrough, it.first, it.second)
         }
 
+        vndkVersionProp?.let {
+            return TrebleResult(legacy, lite, upgradePassthrough, it.first, it.second)
+        }
         parseSelinuxData()?.let {
             Log.v(tag, "selinux result: $it")
-            return TrebleResult(legacy, lite, it.first, it.second)
-        }
-
-        manifests
-            .asSequence()
-            .map {
-                parseManifest(it)
-                    .also { res -> Log.v(tag, "manifest ${it.absolutePath}: $res") }
-            }
-            .filterNotNull()
-            .firstOrNull()
-            ?.let {
-                return TrebleResult(legacy, lite, it.first, it.second)
-            }
-
-        propertyGet("ro.vndk.version")?.let {
-            Log.v(tag, "vndk: $it")
-            parseVersion(it)
-        }?.let {
-            Log.v(tag, "vndk result: $it")
-            return TrebleResult(legacy, lite, it.first, it.second)
+            return TrebleResult(legacy, lite, upgradePassthrough, it.first, it.second)
         }
 
         throw ParseException("No method to detect version")
+    }
+
+    private fun checkPassthroughs(passthroughs: Set<String>): PassthroughResult {
+        if ((passthroughs - ALLOWED_PASSTHROUGHS).none { it.startsWith("android.") }) {
+            return PassthroughResult.FULLY_COMPLIANT
+        }
+        if (passthroughs.intersect(LEGACY_REQUIRED_BINDERIZED).none { it.startsWith("android.") }) {
+            return PassthroughResult.UPGRADE_COMPLIANT
+        }
+        return PassthroughResult.NOT_COMPLIANT
+    }
+
+    private fun getFrameworkCompatibilityMatrices(context: Context, sepolicyVersion: Pair<Int, Int>) = sequence {
+        // Although SP usually contains a valid FCM,
+        // we could be running a device-specific image which has a weird FCM,
+        // or it could be older than vendor.
+        // Therefore, we don't fallback to SP, even when we don't have a matching FCM.
+        arrayOf(
+            R.raw.compatibility_matrix_legacy_xml,
+            R.raw.compatibility_matrix_1_xml,
+            R.raw.compatibility_matrix_2_xml,
+            R.raw.compatibility_matrix_3_xml,
+            R.raw.compatibility_matrix_4_xml,
+            R.raw.compatibility_matrix_5_xml,
+            R.raw.compatibility_matrix_6_xml,
+            R.raw.compatibility_matrix_7_xml,
+        ).forEach { id ->
+            val original = context.resources.openRawResource(id).bufferedReader().readText()
+
+            val insertIndex = original.lastIndexOf("</compatibility-matrix>")
+            yield(original.substring(0, insertIndex) +
+                    "<sepolicy><kernel-sepolicy-version>0</kernel-sepolicy-version><sepolicy-version>${sepolicyVersion.first}.${sepolicyVersion.second}</sepolicy-version></sepolicy>" +
+                    original.substring(insertIndex))
+        }
+    } to 7
+
+    private fun checkCompatibilityMatrix(context: Context, level: Int?, sepolicyVersion: Pair<Int, Int>): Boolean? {
+        val (matrices, maxLevel) = getFrameworkCompatibilityMatrices(context, sepolicyVersion)
+        for (matrix in matrices) {
+            val result = try {
+                checkCompatibilityMatrix(matrix)
+            } catch (e: UnsatisfiedLinkError) {
+                Log.w(tag, "Native library unavailable", e)
+                return null
+            }
+            return when (result) {
+                0 -> continue
+                1 -> true
+                -1 -> null // error logged in native code
+                else -> throw ParseException("Unknown return value from check_compatibility_matrix")
+            }
+        }
+        return if (level != null && level > maxLevel) null else false // nothing matched
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
@@ -103,7 +215,7 @@ object TrebleDetector {
         var event = xpp.eventType
         while (event != XmlPullParser.END_DOCUMENT) {
             if (event == XmlPullParser.START_TAG) {
-                if (xpp.name == "vendor-ndk" || xpp.name == "vndk") {
+                if (xpp.name == "vendor-ndk") {
                     inVndkTag = true
                 } else if (inVndkTag && xpp.name == "version") {
                     inVersionTag = true
@@ -123,35 +235,82 @@ object TrebleDetector {
             xpp.next()
             event = xpp.eventType
         }
-        versions
+        bestVersion(versions)
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     internal fun parseManifest(manifest: File) = parseXml(manifest) { xpp ->
         val versions = mutableListOf<String>()
+        val passthroughs = mutableSetOf<String>()
+
         val versionBuilder = StringBuilder(4) // 2 is the normal size of the version number, 'xy'
 
+        // https://source.android.com/docs/core/architecture/vintf/objects#manifest-file-schema
+        val nameBuilder = StringBuilder(64)
+        val transportBuilder = StringBuilder(11)
+
+        var targetLevel: String? = null
+
+        var inSepolicyTag = false
         var inVersionTag = false
+
+        var inHalTag = false
+        var inNameTag = false
+        var inTransportTag = false
+
         var event = xpp.eventType
         while (event != XmlPullParser.END_DOCUMENT) {
-            if (event == XmlPullParser.START_TAG && xpp.name == "sepolicy") {
-                inVersionTag = true
-            } else if (event == XmlPullParser.END_TAG && inVersionTag) {
-                inVersionTag = false
-                versions += versionBuilder.toString()
-                versionBuilder.clear()
-            } else if (event == XmlPullParser.TEXT && inVersionTag) {
-                // This is the version number
-                versionBuilder.append(xpp.text.trim())
+            when (event) {
+                XmlPullParser.START_TAG -> {
+                    when (xpp.name) {
+                        "manifest" -> targetLevel = xpp.getAttributeValue(null, "target-level")
+
+                        "sepolicy" -> inSepolicyTag = true
+                        "version" -> inVersionTag = inSepolicyTag
+
+                        "hal" -> inHalTag = true
+                        "name" -> inNameTag = inHalTag
+                        "transport" -> inTransportTag = inHalTag
+                    }
+                }
+                XmlPullParser.END_TAG -> {
+                    when {
+                        inVersionTag -> {
+                            inVersionTag = false
+                            versions += versionBuilder.toString()
+                            versionBuilder.clear()
+                        }
+                        inSepolicyTag -> inSepolicyTag = false
+
+                        inNameTag -> inNameTag = false
+                        inTransportTag -> inTransportTag = false
+                        inHalTag -> {
+                            inHalTag = false
+                            if (transportBuilder.toString() == "passthrough") {
+                                passthroughs += nameBuilder.toString()
+                            }
+                            nameBuilder.clear()
+                        }
+                    }
+                }
+                XmlPullParser.TEXT -> {
+                    when {
+                        inSepolicyTag && inVersionTag -> versionBuilder.append(xpp.text.trim())
+
+                        inHalTag && inNameTag -> nameBuilder.append(xpp.text.trim())
+                        inHalTag && inTransportTag -> transportBuilder.append(xpp.text.trim())
+                    }
+                }
             }
+
             xpp.next()
             event = xpp.eventType
         }
-        versions
+        Triple(bestVersion(versions), passthroughs, targetLevel)
     }
 
-    private fun parseXml(file: File, block: (XmlPullParser) -> List<String>): Pair<Int, Int>? {
-        val versions = file.inputStream().use { inputStream ->
+    private fun <T>parseXml(file: File, block: (XmlPullParser) -> T): T =
+        file.inputStream().use { inputStream ->
             inputStream.reader().use { reader ->
                 val factory = XmlPullParserFactory.newInstance()
                 factory.isNamespaceAware = false
@@ -163,6 +322,7 @@ object TrebleDetector {
             }
         }
 
+    private fun bestVersion(versions: List<String>): Pair<Int, Int>? {
         return versions
             .mapNotNull { parseVersion(it) }
             .maxWithOrNull { left, right -> left.compareTo(right) }
@@ -172,7 +332,7 @@ object TrebleDetector {
     internal fun parseVersion(string: String): Pair<Int, Int>? {
         val split = string.split('.').map(String::trim)
         if (split.isNotEmpty() && split.all { it == "0" }) {
-            return 0 to 0 // we have a manifest but no treble
+            return null
         }
         if (split.size != 1 && split.size != 2) {
             return null
@@ -328,11 +488,16 @@ object TrebleDetector {
                 return it
             }
         }
+        /*
+         * /vendor/compatibility_matrix.xml -> <vndk> does not contain the Android version; it is always 0.0.0 (only present in VNDK 27)
+         * We could use this to detect VNDK 27 but we will just ignore it.
+
         File(root, "/vendor/compatibility_matrix.xml").let {
             if (it.exists() && it.canRead()) {
                 return it
             }
         }
+         */
         return null
     }
 
@@ -363,6 +528,27 @@ object TrebleDetector {
         if (version <= Pair(0, 0)) return null
         return version
     }
+
+
+    private var loaded = false
+
+    @Synchronized
+    private fun ensureLoaded() {
+        if (!loaded) {
+            System.loadLibrary("trebledetector")
+            loaded = true
+        }
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun checkCompatibilityMatrix(matrix: String): Int {
+        ensureLoaded()
+        return checkCompatibilityMatrixNative(matrix)
+    }
+
+    @Keep
+    @JvmName("check_compatibility_matrix")
+    private external fun checkCompatibilityMatrixNative(matrix: String): Int
 }
 
 private const val tag = "TrebleDetector"

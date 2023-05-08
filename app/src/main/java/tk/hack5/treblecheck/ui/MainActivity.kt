@@ -89,7 +89,7 @@ class MainActivity : ComponentActivity() {
 
             val treble = remember {
                 try {
-                    Optional.Value(TrebleDetector.getVndkData())
+                    Optional.Value(TrebleDetector.getVndkData(this))
                 } catch (e: Exception) {
                     Log.e(tag, "Failed to get VNDK data", e)
                     Optional.Nothing
@@ -369,7 +369,7 @@ fun MainActivityPreview() {
         MainActivityContent(
             WindowSizeClass.calculateFromSize(DpSize(443.dp, 911.dp)),
             Optional.Value(
-                TrebleResult(false, true, 30, 0)
+                TrebleResult(false, true, false, 30, 0)
             ),
             true,
             true,

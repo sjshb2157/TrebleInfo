@@ -41,7 +41,7 @@ object FileNameAnalyzer {
     )
 
     private fun StringBuilder.appendVndkLite(sar: Boolean?, treble: TrebleResult?) =
-        if (sar != false && (treble?.lite == true || treble?.legacy == true)) {
+        if (sar != false && (treble?.lite == true || treble?.legacy == true || treble?.upgradeCompliant == true)) {
             append("-vndklite")
         } else {
             this

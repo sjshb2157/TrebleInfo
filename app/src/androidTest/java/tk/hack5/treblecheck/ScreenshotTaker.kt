@@ -66,12 +66,42 @@ class ScreenshotTaker(
         fun data() = listOf(
             arrayOf(false, BinderArch.Binder7, CPUArch.ARM32, false, false, null, false, 0),
             arrayOf(false, BinderArch.Binder7, CPUArch.ARM32, false, false, null, false, 1),
-            arrayOf(true, BinderArch.Binder8, CPUArch.ARM64, true, true, TrebleResult(false, false, 33, 0), false, 0),
-            arrayOf(true, BinderArch.Binder8, CPUArch.ARM64, true, true, TrebleResult(false, false, 33, 0), false, 1),
-            arrayOf(false, BinderArch.Binder8, CPUArch.ARM32, false, false, TrebleResult(true, true, 26, 0), false, 0),
-            arrayOf(false, BinderArch.Binder8, CPUArch.ARM32, false, false, TrebleResult(true, true, 26, 0), false, 1),
-            arrayOf(true, BinderArch.Binder8, CPUArch.ARM64, false, true, TrebleResult(false, false, 28, 0), false, 2),
-            arrayOf(true, BinderArch.Binder8, CPUArch.ARM64, false, true, TrebleResult(false, false, 28, 0), true, 3),
+            arrayOf(true, BinderArch.Binder8, CPUArch.ARM64, true, true, TrebleResult(
+                false,
+                false,,
+                33,
+                0
+            ), false, 0),
+            arrayOf(true, BinderArch.Binder8, CPUArch.ARM64, true, true, TrebleResult(
+                false,
+                false,,
+                33,
+                0
+            ), false, 1),
+            arrayOf(false, BinderArch.Binder8, CPUArch.ARM32, false, false, TrebleResult(
+                true,
+                true,,
+                26,
+                0
+            ), false, 0),
+            arrayOf(false, BinderArch.Binder8, CPUArch.ARM32, false, false, TrebleResult(
+                true,
+                true,,
+                26,
+                0
+            ), false, 1),
+            arrayOf(true, BinderArch.Binder8, CPUArch.ARM64, false, true, TrebleResult(
+                false,
+                false,,
+                28,
+                0
+            ), false, 2),
+            arrayOf(true, BinderArch.Binder8, CPUArch.ARM64, false, true, TrebleResult(
+                false,
+                false,,
+                28,
+                0
+            ), true, 3),
         )
     }
 
