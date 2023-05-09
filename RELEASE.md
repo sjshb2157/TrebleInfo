@@ -7,6 +7,6 @@
 7. [ ] Verify the screenshots
 8. [ ] Commit and tag
 9. [ ] Push and push tags
-10. [ ] Run `bundle exec fastlane production:<bool> release`
+10. [ ] Run `SUPPLY_JSON_KEY=<path> bundle exec fastlane production:<bool> release`
 
 See `fastlane/Fastfile` comments for debugging information on Fastlane crashes.
