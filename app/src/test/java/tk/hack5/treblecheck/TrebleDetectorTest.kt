@@ -351,8 +351,27 @@ class TrebleDetectorTest(
                 0,
                 "vndk5a"
             ),
-            // TODO test cph1823
-            // TODO instrument native libs
+            // cph1823
+            arrayOf(
+                Result.failure<Nothing?, ParseException>(),
+                "false",
+                "false",
+                "",
+                "",
+                null,
+                null,
+                "vndk6a"
+            ),
+            arrayOf(
+                Result.success(TrebleResult(true, false, false, 27, 0)),
+                "false",
+                "false",
+                "",
+                "",
+                null,
+                1,
+                "vndk6a"
+            ),
         )
     }
 

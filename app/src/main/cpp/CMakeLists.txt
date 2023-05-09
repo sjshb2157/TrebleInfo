@@ -60,7 +60,6 @@ add_library(
         libvintf/RuntimeInfo-host.cpp
 
         libvintf-shims/Apex.cpp
-        libvintf-shims/utils/Errors.cpp
         libvintf-shims/android/fdsan.cpp
         libvintf-shims/android/log.cpp
         libvintf-shims/libbase/properties.cpp
