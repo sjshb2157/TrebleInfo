@@ -134,12 +134,10 @@ fun LibraryDialog(library: Library, setOpenItem: (OpenItem<*>?) -> Unit, openLin
                 }
                 Spacer(Modifier.height(verticalSmallSpacer))
                 Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(verticalSmallSpacer, Alignment.Top)) {
-                    library.artifactVersion?.let { version ->
-                        Text(
-                            library.artifactId + " " + version,
-                            style = MaterialTheme.typography.bodySmall
-                        )
-                    }
+                    Text(
+                        library.artifactId,
+                        style = MaterialTheme.typography.bodySmall
+                    )
                     Spacer(Modifier.height(verticalMediumSpacer - verticalSmallSpacer))
                     if (library.website != null || library.scm?.url != null) {
                         Text(stringResource(R.string.library_links), style = MaterialTheme.typography.titleMedium)
