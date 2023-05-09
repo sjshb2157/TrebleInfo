@@ -28,7 +28,9 @@ find_library(log-lib log)
 
 add_library(
         trebledetector
+
         SHARED
+
         libvintf/parse_string.cpp
         libvintf/parse_xml.cpp
         libvintf/CompatibilityMatrix.cpp
@@ -76,10 +78,29 @@ add_library(
 
         tinyxml2/tinyxml2.cpp
 
+        hardware_interfaces/compatibility_matrices/exclude/fcm_exclude.cpp
+
+        system_core/libutils/Errors.cpp
+
         TrebleDetector.cpp
 )
 
 target_compile_features(trebledetector PRIVATE cxx_std_17)
-target_include_directories(trebledetector PRIVATE libvintf/include/vintf libvintf/include libbase/include libvintf/include-host libvintf-shims/include Gki/libkver/include tinyxml2 fmtlib/include)
+target_include_directories(
+        trebledetector
+
+        PRIVATE
+
+        libvintf/include/vintf
+        libvintf/include
+        libvintf/include-host
+        libvintf-shims/include
+        libbase/include
+        Gki/libkver/include
+        tinyxml2
+        fmtlib/include
+        hardware_interfaces/compatibility_matrices/exclude/include
+        system_core/libutils/include
+)
 target_compile_options(trebledetector PRIVATE -Wno-c++11-narrowing -Wno-inconsistent-missing-override -Wno-c99-designator)
 target_link_libraries(trebledetector PRIVATE -Wl,--build-id=none ${log-lib})

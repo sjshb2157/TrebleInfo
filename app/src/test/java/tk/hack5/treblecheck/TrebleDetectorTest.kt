@@ -52,33 +52,6 @@ sealed class Result<T> {
     }
 }
 
-private fun Any.extractFiles(name: String, files: Map<String, String?>, temporaryFolder: TemporaryFolder) {
-    temporaryFolder.delete()
-    val classLoader = this::class.java.classLoader!!
-
-    for (file in files.entries) {
-        if (file.key.endsWith('/')) {
-            var i = 0
-            children@ while (true) {
-                classLoader.getResourceAsStream("$name/${file.key}$i")?.use { sourceStream ->
-                    val destFile = temporaryFolder.root.resolve(file.key).resolve(i.toString() + file.value!!)
-                    destFile.parentFile!!.mkdirs()
-                    destFile.outputStream().use { destStream ->
-                        sourceStream.copyTo(destStream)
-                    }
-                    i++
-                } ?: break
-            }
-        } else {
-            val sourceStream = classLoader.getResourceAsStream("$name/${file.key}") ?: continue
-            val destFile = temporaryFolder.root.resolve(file.value ?: file.key)
-            destFile.parentFile!!.mkdirs()
-            destFile.outputStream().use {
-                sourceStream.copyTo(it)
-            }
-        }
-    }
-}
 
 @RunWith(Parameterized::class)
 class TrebleDetectorTest(
@@ -86,8 +59,9 @@ class TrebleDetectorTest(
     private val trebleEnabled: String?,
     private val vndkLite: String?,
     private val vendorSku: String?,
-    private val odmSku: String?,
+    private val hardwareSku: String?,
     private val vndkVersion: String?,
+    private val matchesMatrices: Int?,
     private val testName: String
 ) {
     companion object {
@@ -101,8 +75,8 @@ class TrebleDetectorTest(
         // vndk5a is bullhead-user-8.1.0-OPM7.181205.001-5080180-release-keys
         fun data() = listOf(
             // data-free tests
-            arrayOf(Result.success(null), "", "", null, null, null, ""),
-            arrayOf(Result.success(null), "false", "", null, null, null, ""),
+            arrayOf(Result.failure<Nothing?, ParseException>(), "", "", null, null, null, null, ""),
+            arrayOf(Result.failure<Nothing?, ParseException>(), "false", "", null, null, null, null, ""),
             arrayOf(
                 Result.success(TrebleResult(false, false, false, 30, 0)),
                 "true",
@@ -110,12 +84,14 @@ class TrebleDetectorTest(
                 null,
                 null,
                 "30",
+                null,
                 ""
             ),
             arrayOf(
                 Result.failure<Nothing?, ParseException>(),
                 "true",
                 "false",
+                null,
                 null,
                 null,
                 null,
@@ -129,6 +105,7 @@ class TrebleDetectorTest(
                 "",
                 "",
                 "30",
+                1,
                 "vndk1a"
             ),
             arrayOf(
@@ -138,6 +115,7 @@ class TrebleDetectorTest(
                 "",
                 "",
                 null,
+                1,
                 "vndk1b"
             ),
             arrayOf(
@@ -147,6 +125,7 @@ class TrebleDetectorTest(
                 "",
                 "",
                 null,
+                1,
                 "vndk1c"
             ),
             arrayOf(
@@ -156,6 +135,7 @@ class TrebleDetectorTest(
                 "",
                 "",
                 null,
+                1,
                 "vndk1d"
             ),
             arrayOf(
@@ -165,6 +145,7 @@ class TrebleDetectorTest(
                 "",
                 "",
                 null,
+                1,
                 "vndk1e"
             ),
             // tests with TP1803 data
@@ -175,6 +156,7 @@ class TrebleDetectorTest(
                 "",
                 "",
                 "30",
+                1,
                 "vndk2a"
             ),
             arrayOf(
@@ -184,6 +166,7 @@ class TrebleDetectorTest(
                 "",
                 "",
                 null,
+                1,
                 "vndk2b"
             ),
             arrayOf(
@@ -193,6 +176,7 @@ class TrebleDetectorTest(
                 "",
                 "",
                 null,
+                1,
                 "vndk2c"
             ),
             arrayOf(
@@ -202,6 +186,7 @@ class TrebleDetectorTest(
                 "",
                 "",
                 null,
+                1,
                 "vndk2d"
             ),
             arrayOf(
@@ -211,6 +196,7 @@ class TrebleDetectorTest(
                 "",
                 "",
                 null,
+                1,
                 "vndk2e"
             ),
             arrayOf(
@@ -220,6 +206,7 @@ class TrebleDetectorTest(
                 "",
                 "",
                 null,
+                1,
                 "vndk3a"
             ),
             arrayOf(
@@ -229,6 +216,7 @@ class TrebleDetectorTest(
                 "",
                 "",
                 null,
+                1,
                 "vndk3b"
             ),
             arrayOf(
@@ -238,6 +226,7 @@ class TrebleDetectorTest(
                 "",
                 "",
                 null,
+                1,
                 "vndk3c"
             ),
             // crosshatch
@@ -248,6 +237,7 @@ class TrebleDetectorTest(
                 "",
                 "",
                 null,
+                1,
                 "vndk4a"
             ),
             arrayOf(
@@ -257,6 +247,7 @@ class TrebleDetectorTest(
                 "",
                 "",
                 null,
+                1,
                 "vndk4b"
             ),
             arrayOf(
@@ -266,6 +257,7 @@ class TrebleDetectorTest(
                 "",
                 "",
                 null,
+                1,
                 "vndk4c"
             ),
             arrayOf(
@@ -275,6 +267,7 @@ class TrebleDetectorTest(
                 "",
                 "",
                 null,
+                1,
                 "vndk4d"
             ),
             arrayOf(
@@ -284,6 +277,7 @@ class TrebleDetectorTest(
                 "",
                 "sku",
                 null,
+                1,
                 "vndk4e"
             ),
             arrayOf(
@@ -293,6 +287,7 @@ class TrebleDetectorTest(
                 "sku",
                 "",
                 null,
+                1,
                 "vndk4f"
             ),
             arrayOf(
@@ -302,6 +297,7 @@ class TrebleDetectorTest(
                 "",
                 "",
                 null,
+                1,
                 "vndk4g"
             ),
             arrayOf(
@@ -311,6 +307,7 @@ class TrebleDetectorTest(
                 "",
                 "",
                 null,
+                1,
                 "vndk4h"
             ),
             arrayOf(
@@ -320,6 +317,7 @@ class TrebleDetectorTest(
                 "",
                 "sku",
                 null,
+                1,
                 "vndk4i"
             ),
             arrayOf(
@@ -329,44 +327,42 @@ class TrebleDetectorTest(
                 "",
                 "",
                 null,
+                1,
                 "vndk4j"
             ),
             // bullhead
             arrayOf(
-                Result.success(null),
-                "true",
+                Result.failure<Nothing?, ParseException>(),
+                "false",
                 "false",
                 "",
                 "",
                 null,
+                null,
+                "vndk5a"
+            ),
+            arrayOf(
+                Result.success(null),
+                "false",
+                "false",
+                "",
+                "",
+                null,
+                0,
                 "vndk5a"
             ),
             // TODO test cph1823
+            // TODO instrument native libs
         )
     }
 
     @get:Rule
     val temporaryFolder = TemporaryFolder()
 
-    private fun extractFiles(name: String, vendorSku: String, odmSku: String) {
-        println("Extracting $name $vendorSku $odmSku")
-        val files = mapOf(
-            "vendor/etc/vintf/manifest_sku.xml" to "vendor/etc/vintf/manifest_$vendorSku.xml",
-            "vendor/etc/vintf/manifest.xml" to null,
-            "vendor/etc/manifest/" to ".xml",
-            "vendor/manifest.xml" to null,
-            "odm/etc/vintf/manifest_sku.xml" to "odm/etc/vintf/manifest_$odmSku.xml",
-            "odm/etc/vintf/manifest.xml" to null,
-            "odm/etc/manifest_sku.xml" to "odm/etc/manifest_$odmSku.xml",
-            "odm/etc/manifest.xml" to null,
-            "odm/etc/manifest/" to ".xml",
-            "vendor/etc/vintf/compatibility_matrix.xml" to null,
-            "vendor/compatibility_matrix.xml" to null,
-            "vendor/etc/selinux/" to ".cil",
-            "vendor/etc/selinux/plat_sepolicy_vers.txt" to null
-        )
+    private fun extractFiles(name: String, vendorSku: String, hardwareSku: String) {
+        println("Extracting $name $vendorSku $hardwareSku")
 
-        extractFiles(name, files, temporaryFolder)
+        extractFiles(name, allFiles(vendorSku, hardwareSku), temporaryFolder)
     }
 
     @Test
@@ -377,24 +373,26 @@ class TrebleDetectorTest(
                     trebleEnabled,
                     vndkLite,
                     vendorSku,
-                    odmSku,
+                    hardwareSku,
                     { emptyList<File>() to false },
                     { null },
                     { null },
+                    { -2 },
                     vndkVersion
                 )
             }
         } else {
-            extractFiles(testName, vendorSku!!, odmSku!!);
+            extractFiles(testName, vendorSku!!, hardwareSku!!);
             {
                 testGetVndkData(
                     trebleEnabled,
                     vndkLite,
                     vendorSku,
-                    odmSku,
+                    hardwareSku,
                     { callOriginal() },
                     { callOriginal() },
                     { callOriginal() },
+                    { matchesMatrices ?: throw UnsatisfiedLinkError() },
                     vndkVersion
                 )
             }
@@ -413,10 +411,11 @@ class TrebleDetectorTest(
         trebleEnabled: String?,
         vndkLite: String?,
         vendorSku: String?,
-        odmSku: String?,
+        hardwareSku: String?,
         manifestFiles: AnswerScope<Pair<List<File>, Boolean>>,
         vendorCompatibilityMatrix: AnswerScope<File?>,
         selinuxData: AnswerScope<Pair<Int, Int>?>,
+        compatibilityResult: AnswerScope<Int>,
         vndkVersion: String?
     ): TrebleResult? {
         var ret: TrebleResult? = null
@@ -426,17 +425,19 @@ class TrebleDetectorTest(
             every { propertyGet("ro.vndk.lite") } returns vndkLite
             every { propertyGet("ro.vndk.version") } returns vndkVersion
             every { propertyGet("ro.boot.product.vendor.sku") } returns vendorSku
-            every { propertyGet("ro.boot.product.hardware.sku") } returns odmSku
+            every { propertyGet("ro.boot.product.hardware.sku") } returns hardwareSku
             mockkObject(TrebleDetector) {
                 every { TrebleDetector.locateManifestFiles() } answers manifestFiles
                 every { TrebleDetector.locateVendorCompatibilityMatrix() } answers vendorCompatibilityMatrix
                 every { TrebleDetector.parseSelinuxData() } answers selinuxData
+                every { TrebleDetector.checkCompatibilityMatrix(any(), any(), any()) } answers compatibilityResult
                 ret = TrebleDetector.getVndkData()
             }
         }
         return ret
     }
 }
+
 
 @RunWith(Parameterized::class)
 class ParseMatrixTest(private val testName: String, private val matrixPath: String, private val expected: Pair<Int, Int>?) {
@@ -475,18 +476,18 @@ class ParseMatrixTest(private val testName: String, private val matrixPath: Stri
 
 
 @RunWith(Parameterized::class)
-class ParseManifestTest(private val testName: String, private val manifestPath: String, private val expected: Pair<Int, Int>?) {
+class ParseManifestTest(private val testName: String, private val manifestPath: String, private val expected: Triple<Int, Set<String>, String?>) {
     companion object {
         @Suppress("BooleanLiteralArgument")
         @Parameterized.Parameters
         @JvmStatic
         fun data() = listOf(
-            arrayOf("vndk1a", "vendor/etc/vintf/manifest.xml", 30 to 0 to emptySet<String>()),
-            arrayOf("vndk1a", "vendor/etc/vintf/compatibility_matrix.xml", null to emptySet<String>()),
-            arrayOf("vndk1a", "odm/etc/vintf/manifest.xml", null to emptySet<String>()),
-            arrayOf("vndk2a", "vendor/etc/vintf/manifest.xml", 30 to 0 to emptySet<String>()),
-            arrayOf("vndk2a", "vendor/etc/vintf/compatibility_matrix.xml", null to emptySet<String>()),
-            arrayOf("vndk2a", "odm/etc/vintf/manifest.xml", null to emptySet<String>()),
+            arrayOf("vndk1a", "vendor/etc/vintf/manifest.xml", Triple(30 to 0, emptySet<String>(), "3")),
+            arrayOf("vndk1a", "vendor/etc/vintf/compatibility_matrix.xml", Triple(null, emptySet<String>(), null)),
+            arrayOf("vndk1a", "odm/etc/vintf/manifest.xml", Triple(null, emptySet<String>(), "3")),
+            arrayOf("vndk2a", "vendor/etc/vintf/manifest.xml", Triple(30 to 0, emptySet<String>(), "5")),
+            arrayOf("vndk2a", "vendor/etc/vintf/compatibility_matrix.xml", Triple(null, emptySet<String>(), null)),
+            arrayOf("vndk2a", "odm/etc/vintf/manifest.xml", Triple(null, emptySet<String>(), "5")),
             // TODO check passthru results
         )
     }
@@ -508,6 +509,7 @@ class ParseManifestTest(private val testName: String, private val manifestPath: 
         assertEquals(expected, TrebleDetector.parseManifest(temporaryFolder.root.resolve(manifestPath)))
     }
 }
+
 
 @RunWith(Parameterized::class)
 class ParseVersionTests(private val expected: Pair<Int, Int>?, private val input: String) {

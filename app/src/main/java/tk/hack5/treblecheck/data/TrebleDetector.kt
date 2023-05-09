@@ -19,7 +19,6 @@
 
 package tk.hack5.treblecheck.data
 
-import android.content.Context
 import android.util.Log
 import androidx.annotation.Keep
 import androidx.annotation.VisibleForTesting
@@ -48,7 +47,7 @@ object TrebleDetector {
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     internal var root: File? = null
 
-    fun getVndkData(context: Context): TrebleResult? {
+    fun getVndkData(): TrebleResult? {
         Mock.data?.let { return it.treble.get() }
 
         var supportsTreble = false
@@ -98,7 +97,7 @@ object TrebleDetector {
         val version = versions.filterNotNull().firstOrNull()
 
         if (version != null) {
-            when (checkCompatibilityMatrix(context, targetLevel, version)) {
+            when (checkCompatibilityMatrix(targetLevel, version)) {
                 false -> {
                     if (supportsTreble) {
                         throw ParseException("Device claims Treble support but fails compatibility checks with AOSP matrices")
@@ -128,9 +127,24 @@ object TrebleDetector {
                 false
             }
         }
+
+        vndkVersionProp?.let {
+            return TrebleResult(legacy, lite, upgradePassthrough, it.first, it.second)
+        }
+
         version?.let {
+            if (supportsTreble) {
                 return TrebleResult(legacy, lite, upgradePassthrough, it.first, it.second)
+            } else {
+                // checkCompatibilityMatrix is unavailable, no props support existence of Treble.
+                // The only case where the device can be Treble is VNDK <= 27 running non-GSI system.
+                // In that case, we need more confirmation...
+                if (version >= 28 to 0) {
+                    return null
+                }
+                Log.w(tag, "Manifest contains sepolicy version but support unconfirmed")
             }
+        }
 
         val matrix = locateVendorCompatibilityMatrix()
         matrix?.let {
@@ -138,18 +152,30 @@ object TrebleDetector {
             parseMatrix(it)
         }?.let {
             Log.v(tag, "vendor matrix result: $it")
-            return TrebleResult(legacy, lite, upgradePassthrough, it.first, it.second)
+            if (supportsTreble) {
+                return TrebleResult(legacy, lite, upgradePassthrough, it.first, it.second)
+            } else {
+                // This should never happen on Treble devices as (VNDK <= 27 intersect DCM version != 0) should be empty.
+                // But if it does happen, we can treat it as proof
+                Log.w(tag, "Unexpectedly found matrix sepolicy version on (VNDK <= 27 OR missing manifest version)")
+                if (version != null) {
+                    if (version == it) {
+                        return TrebleResult(legacy, lite, upgradePassthrough, it.first, it.second)
+                    } else {
+                        throw ParseException("Found differing versions in manifest ($version) and matrix ($it)")
+                    }
+                }
+            }
         }
 
-        vndkVersionProp?.let {
-            return TrebleResult(legacy, lite, upgradePassthrough, it.first, it.second)
-        }
         parseSelinuxData()?.let {
             Log.v(tag, "selinux result: $it")
-            return TrebleResult(legacy, lite, upgradePassthrough, it.first, it.second)
+            if (supportsTreble) {
+                return TrebleResult(legacy, lite, upgradePassthrough, it.first, it.second)
+            }
         }
 
-        throw ParseException("No method to detect version")
+        throw ParseException("No method to detect version ($supportsTreble)")
     }
 
     private fun checkPassthroughs(passthroughs: Set<String>): PassthroughResult {
@@ -162,22 +188,25 @@ object TrebleDetector {
         return PassthroughResult.NOT_COMPLIANT
     }
 
-    private fun getFrameworkCompatibilityMatrices(context: Context, sepolicyVersion: Pair<Int, Int>) = sequence {
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun getFrameworkCompatibilityMatrices(sepolicyVersion: Pair<Int, Int>) = sequence {
         // Although SP usually contains a valid FCM,
         // we could be running a device-specific image which has a weird FCM,
         // or it could be older than vendor.
         // Therefore, we don't fallback to SP, even when we don't have a matching FCM.
         arrayOf(
-            R.raw.compatibility_matrix_legacy_xml,
-            R.raw.compatibility_matrix_1_xml,
-            R.raw.compatibility_matrix_2_xml,
-            R.raw.compatibility_matrix_3_xml,
-            R.raw.compatibility_matrix_4_xml,
-            R.raw.compatibility_matrix_5_xml,
-            R.raw.compatibility_matrix_6_xml,
-            R.raw.compatibility_matrix_7_xml,
-        ).forEach { id ->
-            val original = context.resources.openRawResource(id).bufferedReader().readText()
+            "compatibility_matrix.legacy.xml",
+            "compatibility_matrix.1.xml",
+            "compatibility_matrix.2.xml",
+            "compatibility_matrix.3.xml",
+            "compatibility_matrix.4.xml",
+            "compatibility_matrix.5.xml",
+            "compatibility_matrix.6.xml",
+            "compatibility_matrix.7.xml",
+        ).forEach { name ->
+            val stream = this::class.java.classLoader!!.getResourceAsStream(name)
+            require(stream != null) { "$name not found" }
+            val original = stream.bufferedReader().readText()
 
             val insertIndex = original.lastIndexOf("</compatibility-matrix>")
             yield(original.substring(0, insertIndex) +
@@ -186,11 +215,11 @@ object TrebleDetector {
         }
     } to 7
 
-    private fun checkCompatibilityMatrix(context: Context, level: Int?, sepolicyVersion: Pair<Int, Int>): Boolean? {
-        val (matrices, maxLevel) = getFrameworkCompatibilityMatrices(context, sepolicyVersion)
+    private fun checkCompatibilityMatrix(level: Int?, sepolicyVersion: Pair<Int, Int>): Boolean? {
+        val (matrices, maxLevel) = getFrameworkCompatibilityMatrices(sepolicyVersion)
         for (matrix in matrices) {
             val result = try {
-                checkCompatibilityMatrix(matrix)
+                checkCompatibilityMatrix(matrix, propertyGet("ro.boot.product.vendor.sku") ?: "", propertyGet("ro.boot.product.hardware.sku") ?: "")
             } catch (e: UnsatisfiedLinkError) {
                 Log.w(tag, "Native library unavailable", e)
                 return null
@@ -198,7 +227,9 @@ object TrebleDetector {
             return when (result) {
                 0 -> continue
                 1 -> true
-                -1 -> null // error logged in native code
+                // error already logged in native code
+                -1 -> null // failed to parse built-in manifest, should never happen
+                -2 -> if (level != null && level > maxLevel) null else false // device manifest load failed, so it can't support Treble unless it is newer than us and we don't recognise it properly
                 else -> throw ParseException("Unknown return value from check_compatibility_matrix")
             }
         }
@@ -541,14 +572,14 @@ object TrebleDetector {
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    fun checkCompatibilityMatrix(matrix: String): Int {
+    fun checkCompatibilityMatrix(matrix: String, vendorSku: String, hardwareSku: String): Int {
         ensureLoaded()
-        return checkCompatibilityMatrixNative(matrix)
+        return checkCompatibilityMatrixNative(matrix, root?.absolutePath ?: "", vendorSku, hardwareSku)
     }
 
     @Keep
     @JvmName("check_compatibility_matrix")
-    private external fun checkCompatibilityMatrixNative(matrix: String): Int
+    private external fun checkCompatibilityMatrixNative(matrix: String, root: String, vendorSku: String, hardwareSku: String): Int
 }
 
 private const val tag = "TrebleDetector"

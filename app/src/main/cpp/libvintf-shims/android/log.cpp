@@ -97,6 +97,7 @@ int32_t __android_log_get_minimum_priority(void) {
 }
 
 void __android_log_set_default_tag(const char* tag) {
+    // TODO
 }
 #endif
 

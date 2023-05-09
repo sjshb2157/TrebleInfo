@@ -19,3 +19,9 @@
 [submodule "app/src/main/cpp/fmtlib"]
 	path = app/src/main/cpp/fmtlib
 	url = https://android.googlesource.com/platform/external/fmtlib
+[submodule "app/src/main/cpp/interfaces"]
+	path = app/src/main/cpp/hardware_interfaces
+	url = https://android.googlesource.com/platform/hardware/interfaces
+[submodule "app/src/main/cpp/core"]
+	path = app/src/main/cpp/core
+	url = https://android.googlesource.com/platform/system/core

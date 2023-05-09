@@ -89,7 +89,7 @@ class MainActivity : ComponentActivity() {
 
             val treble = remember {
                 try {
-                    Optional.Value(TrebleDetector.getVndkData(this))
+                    Optional.Value(TrebleDetector.getVndkData())
                 } catch (e: Exception) {
                     Log.e(tag, "Failed to get VNDK data", e)
                     Optional.Nothing

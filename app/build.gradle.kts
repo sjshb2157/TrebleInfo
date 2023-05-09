@@ -134,6 +134,15 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
+    sourceSets {
+        get("test").java.srcDir("src/sharedTest/java")
+        get("test").kotlin.srcDir("src/sharedTest/java")
+        get("test").resources.srcDir("src/sharedTest/resources")
+        get("androidTest").java.srcDir("src/sharedTest/java")
+        get("androidTest").kotlin.srcDir("src/sharedTest/java")
+        get("androidTest").resources.srcDir("src/sharedTest/resources")
+
+    }
     namespace = "tk.hack5.treblecheck"
 }
 
