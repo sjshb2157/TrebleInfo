@@ -38,7 +38,7 @@ import tk.hack5.treblecheck.horizontal
 import tk.hack5.treblecheck.ui.buttonIconSpacerWidth
 import tk.hack5.treblecheck.ui.imagesIconSize
 import tk.hack5.treblecheck.ui.pageHorizontalPadding
-import tk.hack5.treblecheck.ui.verticalSpacer
+import tk.hack5.treblecheck.ui.verticalBigSpacer
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -88,12 +88,12 @@ fun Images(
         Text(title, style = MaterialTheme.typography.titleLarge, textAlign = TextAlign.Center)
         Text(body, textAlign = TextAlign.Center)
         val button = if (bug) {
-            Spacer(Modifier.height(verticalSpacer))
+            Spacer(Modifier.height(verticalBigSpacer))
             Button(reportBug) { Text(stringResource(R.string.report_this_bug)) }
             true
         } else if (treble != false && fileName != null) {
             Text(fileName, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
-            Spacer(Modifier.height(verticalSpacer))
+            Spacer(Modifier.height(verticalBigSpacer))
             Button(browseImages) {
                 Icon(painterResource(R.drawable.images_found), null)
                 Spacer(Modifier.width(buttonIconSpacerWidth))
@@ -110,7 +110,7 @@ fun Images(
                 Text(stringResource(R.string.view_details))
             }
         } else {
-            Spacer(Modifier.height(verticalSpacer))
+            Spacer(Modifier.height(verticalBigSpacer))
             Button(navigateToDetails) {
                 Icon(painterResource(R.drawable.screen_details), null)
                 Spacer(Modifier.width(buttonIconSpacerWidth))

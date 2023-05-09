@@ -139,7 +139,7 @@ fun DetailsList(
                     Text(detail.subtitle, modifier, style = MaterialTheme.typography.titleMedium)
                     Text(detail.body, modifier, style = MaterialTheme.typography.bodyMedium)
                 } ?: run {
-                    Spacer(Modifier.height(verticalSpacer))
+                    Spacer(Modifier.height(verticalBigSpacer))
                     Text(stringResource(R.string.detail_placeholder), modifier)
                 }
                 Spacer(Modifier.height(innerPadding.calculateBottomPadding()))

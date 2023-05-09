@@ -73,4 +73,11 @@
 	<string name="donation_failed_title">Donation failed</string>
 	<string name="donation_failed_body">Sorry, something went wrong… Please do try again later!</string>
 	<string name="contribute">Contribute</string>
+	<string name="library_developers">Developers</string>
+	<string name="library_organization">Organization</string>
+	<string name="library_website">Visit website</string>
+	<string name="library_source">View source</string>
+	<string name="library_funding">Funding</string>
+	<string name="library_licenses">Licenses</string>
+	<string name="library_links">Links</string>
 </resources>

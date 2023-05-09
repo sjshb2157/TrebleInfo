@@ -23,9 +23,12 @@ import androidx.compose.ui.unit.dp
 
 val pageHorizontalPadding = 16.dp
 
-val verticalSpacer = 32.dp
+val verticalBigSpacer = 32.dp
+val verticalSmallSpacer = 8.dp
+val verticalMediumSpacer = 12.dp
+val horizontalSpacer = 8.dp
 
-val listVerticalPadding = verticalSpacer / 2
+val listVerticalPadding = verticalBigSpacer / 2
 
 val cardIconSpacerWidth = 16.dp
 val buttonIconSpacerWidth = 8.dp

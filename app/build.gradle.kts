@@ -24,6 +24,7 @@ plugins {
     kotlin("android")
     id("poeditor-android")
     id("materialdesignicons-android")
+    id("kotlin-parcelize")
     alias(libs.plugins.aboutlibraries)
 }
 

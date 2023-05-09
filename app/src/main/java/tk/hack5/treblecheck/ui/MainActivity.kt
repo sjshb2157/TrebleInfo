@@ -207,6 +207,14 @@ class MainActivity : ComponentActivity() {
                 { scope.launch { iabHelper.makePayment() } },
                 donationPopup,
                 { donationPopup = null },
+                { url ->
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                    try {
+                        startActivity(intent)
+                    } catch (e: ActivityNotFoundException) {
+                        Log.w(tag, "Launch browser failed", e)
+                    }
+                }
             )
         }
     }
@@ -245,6 +253,7 @@ fun MainActivityContent(
     donate: () -> Unit,
     donationPopup: Boolean?,
     dismissDonationPopup: () -> Unit,
+    openLink: (String) -> Unit,
 ) {
     val navController = rememberNavController()
     val topAppBarState = remember(navController.currentBackStackEntryAsState().value) { TopAppBarState(-Float.MAX_VALUE, 0f, 0f) }
@@ -344,7 +353,9 @@ fun MainActivityContent(
                 composable(Screens.Details.route) {
                     DetailsList(innerPadding, topAppBarScrollBehavior.nestedScrollConnection, windowSizeClass.widthSizeClass > WindowWidthSizeClass.Compact, treble, ab, dynamic, sar, binderArch, cpuArch)
                 }
-                composable(Screens.Licenses.route) { Licenses(innerPadding, topAppBarScrollBehavior.nestedScrollConnection) }
+                composable(Screens.Licenses.route) {
+                    Licenses(innerPadding, topAppBarScrollBehavior.nestedScrollConnection, openLink)
+                }
                 composable(Screens.Contribute.route) { Contribute(
                     innerPadding,
                     topAppBarScrollBehavior.nestedScrollConnection,
@@ -385,6 +396,7 @@ fun MainActivityPreview() {
             { },
             null,
             { },
+            { }
         )
     }
 }

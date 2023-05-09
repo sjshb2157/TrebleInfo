@@ -19,6 +19,8 @@
 
 package tk.hack5.treblecheck.ui.screens
 
+import android.os.Parcelable
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -27,6 +29,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -34,19 +37,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import com.mikepenz.aboutlibraries.Libs
 import com.mikepenz.aboutlibraries.entity.*
 import com.mikepenz.aboutlibraries.util.withContext
+import kotlinx.parcelize.Parcelize
 import tk.hack5.treblecheck.*
 import tk.hack5.treblecheck.R
-import tk.hack5.treblecheck.ui.listVerticalPadding
-import tk.hack5.treblecheck.ui.pageHorizontalPadding
+import tk.hack5.treblecheck.ui.*
 
 @Composable
 fun Licenses(
     innerPadding: PaddingValues,
     scrollConnection: NestedScrollConnection,
+    openLink: (String) -> Unit,
 ) {
     val libraries = remember { mutableStateOf<Libs?>(null) }
 
@@ -78,9 +81,9 @@ fun Licenses(
         listOf(Developer("hackintosh5", "https://hack5.dev/about")),
         null,
         Scm(
-            "https://hack5.dev/about/projects/TrebleInfo",
+            "scm:git:https://hack5.dev/about/projects/TrebleInfo",
             "scm:git:ssh://git@gitlab.com/TrebleInfo/TrebleInfo.git",
-            "scm:git:https://gitlab.com/TrebleInfo/TrebleInfo.git"
+            "https://gitlab.com/TrebleInfo/TrebleInfo.git"
         ),
         licenses,
         setOf(),
@@ -89,34 +92,188 @@ fun Licenses(
 
     val newLibraries = libraries.value?.let { Libs(listOf(thisLibrary) + it.libraries, licenses + it.licenses) }
 
-    newLibraries?.let { Libraries(innerPadding, scrollConnection, it) }
+    newLibraries?.let { Libraries(innerPadding, scrollConnection, it, openLink) }
+}
+
+@Parcelize
+sealed class OpenItem<T> : Parcelable {
+    abstract fun getItem(libraries: Libs): T
+
+    @Parcelize
+    data class OpenLibrary(val uniqueId: String) : OpenItem<Library>(), Parcelable {
+        override fun getItem(libraries: Libs): Library {
+            return libraries.libraries.first { it.uniqueId == uniqueId }
+        }
+    }
+
+    @Parcelize
+    data class OpenLicense(val libraryUniqueId: String, val hash: String) : OpenItem<Pair<Library, License>>() {
+        override fun getItem(libraries: Libs): Pair<Library, License> {
+            return libraries.libraries.first { it.uniqueId == libraryUniqueId } to libraries.licenses.first { it.hash == hash }
+        }
+    }
 }
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun Libraries(innerPadding: PaddingValues, scrollConnection: NestedScrollConnection, libraries: Libs) {
-    var openLicenseIndex by rememberSaveable { mutableStateOf<String?>(null) }
-    val openLicense = openLicenseIndex?.let { libraries.licenses.first { license -> license.hash == it } }
-
-    openLicense?.let {
-        AlertDialog(
-            onDismissRequest = { openLicenseIndex = null },
-            confirmButton = {
-                TextButton(onClick = { openLicenseIndex = null }) {
-                    Text(stringResource(R.string.close_dialog))
+fun LibraryDialog(library: Library, setOpenItem: (OpenItem<*>?) -> Unit, openLink: (String) -> Unit) {
+    AlertDialog(
+        onDismissRequest = { setOpenItem(null) },
+        confirmButton = {
+            TextButton(onClick = { setOpenItem(null) }) {
+                Text(stringResource(R.string.close_dialog))
+            }
+        },
+        title = {
+            Text(library.name)
+        },
+        text = {
+            Column {
+                library.description?.let { description ->
+                    Text(description)
                 }
-            },
-            title = {
-                Text(it.name)
-            },
-            text = {
-                it.licenseContent?.let { content ->
-                    Column(Modifier.verticalScroll(rememberScrollState())) {
-                        Text(content)
+                Spacer(Modifier.height(verticalSmallSpacer))
+                Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(verticalSmallSpacer, Alignment.Top)) {
+                    library.artifactVersion?.let { version ->
+                        Text(
+                            library.artifactId + " " + version,
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }
+                    Spacer(Modifier.height(verticalMediumSpacer - verticalSmallSpacer))
+                    if (library.website != null || library.scm?.url != null) {
+                        Text(stringResource(R.string.library_links), style = MaterialTheme.typography.titleMedium)
+                        FlowRow(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(horizontalSpacer, Alignment.Start)) {
+                            if (!library.website.isNullOrEmpty()) {
+                                library.website?.let { website ->
+                                    OutlinedButton({
+                                        openLink(website)
+                                    }) {
+                                        Text(stringResource(R.string.library_website))
+                                    }
+                                }
+                            }
+                            if (!library.scm?.url.isNullOrEmpty()) {
+                                library.scm?.url?.let { url ->
+                                    OutlinedButton({
+                                        openLink(url)
+                                    }) {
+                                        Text(stringResource(R.string.library_source))
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    val developers =
+                        library.developers.filter { developer -> developer.name != null }
+                    if (developers.isNotEmpty()) {
+                        Text(stringResource(R.string.library_developers), style = MaterialTheme.typography.titleMedium)
+                        FlowRow(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(horizontalSpacer, Alignment.Start)) {
+                            developers.forEachIndexed { i, developer ->
+                                if (i != 0) {
+                                    Spacer(Modifier.width(horizontalSpacer))
+                                }
+                                TextButton(
+                                    {
+                                        if (!developer.organisationUrl.isNullOrEmpty()) {
+                                            developer.organisationUrl?.let { url ->
+                                                openLink(url)
+                                            }
+                                        }
+                                    }
+                                ) {
+                                    Text(developer.name!!)
+                                }
+                            }
+                        }
+                    }
+                    library.organization?.let { organization ->
+                        Text(stringResource(R.string.library_organization), style = MaterialTheme.typography.titleMedium)
+                        TextButton({
+                            if (!organization.url.isNullOrEmpty()) {
+                                organization.url?.let { url ->
+                                    openLink(url)
+                                }
+                            }
+                        }) {
+                            Text(organization.name)
+                        }
+                    }
+                    if (library.funding.isNotEmpty()) {
+                        Text(stringResource(R.string.library_funding), style = MaterialTheme.typography.titleMedium)
+                        library.funding.forEach { funding ->
+                            TextButton({
+                                openLink(funding.url)
+                            }) {
+                                Text(funding.platform)
+                            }
+                        }
+                    }
+                    if (library.licenses.isNotEmpty()) {
+                        Text(
+                            stringResource(R.string.library_licenses),
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                        FlowRow(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(
+                                horizontalSpacer,
+                                Alignment.Start
+                            )
+                        ) {
+                            library.licenses.forEach {
+                                TextButton(
+                                    onClick = {
+                                        setOpenItem(OpenItem.OpenLicense(library.uniqueId, it.hash))
+                                    }
+                                ) {
+                                    Text(it.name)
+                                }
+                            }
+                        }
                     }
                 }
             }
-        )
+        }
+    )
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+fun Libraries(innerPadding: PaddingValues, scrollConnection: NestedScrollConnection, libraries: Libs, openLink: (String) -> Unit) {
+    var openItem by rememberSaveable { mutableStateOf<OpenItem<*>?>(null) }
+    openItem?.let {
+        when (it) {
+            is OpenItem.OpenLibrary -> {
+                val library = remember(it, libraries) { it.getItem(libraries) }
+
+                LibraryDialog(library, { newItem -> openItem = newItem }, openLink)
+            }
+            is OpenItem.OpenLicense -> {
+                val (library, license) = remember { it.getItem(libraries) }
+
+                AlertDialog(
+                    onDismissRequest = { openItem = null },
+                    confirmButton = {
+                        TextButton(onClick = { openItem = null }) {
+                            Text(stringResource(R.string.close_dialog))
+                        }
+                    },
+                    title = {
+                        Text(license.name)
+                    },
+                    text = {
+                        Column(Modifier.verticalScroll(rememberScrollState())) {
+                            Text(library.name, style = MaterialTheme.typography.titleMedium)
+                            Spacer(Modifier.height(verticalMediumSpacer))
+                            license.licenseContent?.let { content ->
+                                Text(content)
+                            }
+                        }
+                    }
+                )
+            }
+        }
     }
 
     LazyColumn(
@@ -130,6 +287,7 @@ fun Libraries(innerPadding: PaddingValues, scrollConnection: NestedScrollConnect
             Column(
                 Modifier
                     .fillMaxWidth()
+                    .clickable { openItem = OpenItem.OpenLibrary(library.uniqueId) }
                     .padding(vertical = listVerticalPadding, horizontal = pageHorizontalPadding)
                     .safeDrawingPadding()
             ) {
@@ -145,20 +303,18 @@ fun Libraries(innerPadding: PaddingValues, scrollConnection: NestedScrollConnect
                         Text(
                             it,
                             Modifier
-                                .padding(start = 8.dp),
+                                .padding(start = horizontalSpacer),
                             style = MaterialTheme.typography.bodySmall
                         )
                     }
                 }
-                (library.organization?.name ?: library.developers.firstOrNull()?.name)?.let {
-                    Text(
-                        it
-                    )
+                (library.developers.firstOrNull()?.name ?: library.organization?.name)?.let {
+                    Text(it)
                 }
-                FlowRow {
+                FlowRow(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(horizontalSpacer, Alignment.Start)) {
                     library.licenses.forEach {
-                        OutlinedButton(
-                            onClick = { openLicenseIndex = it.hash }
+                        TextButton(
+                            onClick = { openItem = OpenItem.OpenLicense(library.uniqueId, it.hash) }
                         ) {
                             Text(it.name)
                         }
