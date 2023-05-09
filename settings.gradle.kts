@@ -27,27 +27,25 @@ dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
             // build
-            plugin("agp", "com.android.application").version("7.4.2")
-            plugin("kotlin-android", "org.jetbrains.kotlin.android").version("1.8.20")
-            version("compose-compiler", "1.4.5")
+            plugin("agp", "com.android.application").version("8.0.1")
+            plugin("kotlin-android", "org.jetbrains.kotlin.android").version("1.8.21")
+            version("compose-compiler", "1.4.7")
 
 
             // main
-            version("aboutlibraries", "10.6.2")
+            version("aboutlibraries", "10.6.3")
             plugin("aboutlibraries", "com.mikepenz.aboutlibraries.plugin").versionRef("aboutlibraries")
             library("main-aboutlibraries", "com.mikepenz", "aboutlibraries-core").versionRef("aboutlibraries")
 
-            library("main-material", "com.google.android.material:material:1.8.0")
-
-            library("compose-bom", "androidx.compose:compose-bom:2023.04.00")
+            library("compose-bom", "androidx.compose:compose-bom:2023.05.00")
             library("main-compose-ui", "androidx.compose.ui", "ui").withoutVersion()
             library("main-compose-animation", "androidx.compose.animation", "animation").withoutVersion()
 
-            version("compose-material3", "1.1.0-beta02")
+            version("compose-material3", "1.1.0-rc01")
             library("main-compose-material3", "androidx.compose.material3", "material3").versionRef("compose-material3")
             library("main-compose-material3-windowsizeclass", "androidx.compose.material3", "material3-window-size-class").versionRef("compose-material3")
 
-            library("main-activity-compose", "androidx.activity:activity-compose:1.7.0")
+            library("main-activity-compose", "androidx.activity:activity-compose:1.7.1")
 
             library("main-navigation-compose", "androidx.navigation:navigation-compose:2.5.3")
 

@@ -46,7 +46,6 @@ fun com.android.build.api.dsl.BuildType.setupBilling() {
 android {
     compileSdk = 33
     buildToolsVersion = "33.0.0"
-    ndkVersion = "25.2.9519653"
     defaultConfig {
         applicationId = "tk.hack5.treblecheck"
         minSdk = 22
@@ -56,6 +55,7 @@ android {
             versionName = getProperty("versionName")
         }
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunnerArguments["notClass"] = "tk.hack5.treblecheck.ScreenshotTaker"
     }
 
     flavorDimensions += "freedom"
@@ -103,8 +103,9 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
-    packagingOptions {
+    packaging {
         jniLibs {
             useLegacyPackaging = false
         }
@@ -162,7 +163,6 @@ dependencies {
     val composeBom = platform(libs.compose.bom)
 
     implementation(composeBom)
-    //implementation(libs.main.material)
     implementation(libs.main.compose.ui)
     implementation(libs.main.compose.material3)
     implementation(libs.main.compose.material3.windowsizeclass)

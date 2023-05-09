@@ -10,8 +10,6 @@
       </option>
       <option name="taskNames">
         <list>
-          <option value=":app:connectedFreeReleaseAndroidTest" />
-          <option value=":app:connectedNonfreeReleaseAndroidTest" />
           <option value=":app:connectedFreeDebugAndroidTest" />
           <option value=":app:connectedNonfreeDebugAndroidTest" />
         </list>
