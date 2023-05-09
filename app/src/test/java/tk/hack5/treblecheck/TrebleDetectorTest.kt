@@ -507,7 +507,7 @@ class ParseManifestTest(private val testName: String, private val manifestPath: 
             arrayOf("vndk2a", "vendor/etc/vintf/manifest.xml", Triple(30 to 0, emptySet<String>(), "5")),
             arrayOf("vndk2a", "vendor/etc/vintf/compatibility_matrix.xml", Triple(null, emptySet<String>(), null)),
             arrayOf("vndk2a", "odm/etc/vintf/manifest.xml", Triple(null, emptySet<String>(), "5")),
-            // TODO check passthru results
+            // TODO check passthrough results (non-blocker as not yet displayed in UI)
         )
     }
 

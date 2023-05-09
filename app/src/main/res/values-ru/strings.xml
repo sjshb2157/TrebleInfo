@@ -8,12 +8,15 @@
 	<string name="screen_images">Образы</string>
 	<string name="screen_details">Подробно</string>
 	<string name="screen_licenses">Лицензии</string>
+	<string name="screen_contribute">Помощь</string>
 	<string name="no_treble_title">Ваше устройство не поддерживает Project Treble</string>
 	<string name="no_treble_body">Ваше устройство не поддерживает установку GSI образов. Возможно, для вашего устройства доступна установка нативных кастомных прошивок.</string>
 	<string name="detection_error_title">Упс!</string>
 	<string name="detection_error_body">Что-то пошло не так при попытке загрузки данных.</string>
+	<string name="images_found_title">GSI найден!</string>
 	<string name="images_found_body">Ваше устройство поддерживает Project Treble. Требуемый тип образа:</string>
 	<string name="browse_images">Доступные образы</string>
+	<string name="view_details">Подробная информация</string>
 	<string name="report_this_bug">Сообщить о баге</string>
 	<string name="ask_a_question">Задать вопрос</string>
 	<string name="report_a_bug">Сообщить о проблеме</string>
@@ -29,6 +32,8 @@
 	<string name="treble_version_explanation">Версия VNDK - это версия Android API для работы с которой изначально был рассчитан vendor раздел. Использование более новой версии Android может привести к отсутствующим возможностям. Так же, вы не сможете использовать GSI ниже установленной версии VNDK.</string>
 	<string name="treble_lite_title">Изоляция Linker Namespace</string>
 	<string name="treble_lite_explanation">Тип конфигурации VNDK отвечает за принудительное разделение разных компонентов системы. VNDK Lite смягчает эти требования, уменьшая требуемый объем хранилища, однако при этом отсутствует полноценная гарантия совместимости.</string>
+	<string name="treble_lite_true">VNDK работает в Lite режиме</string>
+	<string name="treble_lite_false">VNDK работает не в Lite режиме</string>
 	<string name="treble_legacy_title">Расположение манифеста</string>
 	<string name="treble_legacy_explanation">Это список поддерживаемых устройством возможностей, который хранится в манифесте VINTF. Изначально этот файл хранился в корне vendor раздела, но в современных реалиях это плохая практика.</string>
 	<string name="treble_legacy_true">Устаревшее</string>
@@ -67,4 +72,5 @@
 	<string name="donation_successful_body">Спасибо Вам за поддержку.</string>
 	<string name="donation_failed_title">Ошибка при пожертвовании</string>
 	<string name="donation_failed_body">Извините, что-то пошло не так… Пожалуйста, попробуйте ещё раз позже!</string>
+	<string name="contribute">Предоставить помощь</string>
 </resources>

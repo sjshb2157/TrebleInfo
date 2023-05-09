@@ -40,6 +40,8 @@ platform :android do
   desc "Import translations and icons and generate screenshots if release-ready"
   lane :pre_release do
     gradle(task: "importTranslations importTranslationsForFastlane updateDrawables lintReportFreeDebug lintReportFreeRelease lintReportNonfreeDebug lintReportNonfreeRelease test")
+    gradle(task: "connectedFreeDebugAndroidTest")
+    gradle(task: "connectedNonfreeDebugAndroidTest")
     sh('! grep -qv "^No issues found.$" ../app/build/reports/lint-results-*.txt || ( cat ../app/build/reports/lint-results-*.txt; exit 1; )')
     build_and_screengrab()
   end

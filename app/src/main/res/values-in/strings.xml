@@ -5,7 +5,7 @@
 	<string name="ab_title">Seamless Upgrade</string>
 	<string name="donate">Donasi</string>
 	<string name="dynamicpartitions_title">Partisi Dinamis</string>
-	<string name="screen_images">Images</string>
+	<string name="screen_images">Image</string>
 	<string name="screen_details">Detail</string>
 	<string name="screen_licenses">Lisensi</string>
 	<string name="screen_contribute">Kontribusi</string>
@@ -70,4 +70,5 @@
 	<string name="donation_successful_body">Terima kasih atas dukungan Anda.</string>
 	<string name="donation_failed_title">Donasi gagal</string>
 	<string name="donation_failed_body">Maaf, ada yang salah… Silakan coba lagi nanti!</string>
+	<string name="contribute">Kontribusi</string>
 </resources>
