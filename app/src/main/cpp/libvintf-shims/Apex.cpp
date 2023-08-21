@@ -25,12 +25,12 @@ namespace android {
 namespace vintf {
 namespace details {
 
-status_t Apex::DeviceVintfDirs(FileSystem* fileSystem, std::vector<std::string>* dirs,
-                               std::string* error) {
+status_t Apex::DeviceVintfDirs(FileSystem* fileSystem, PropertyFetcher* propertyFetcher,
+                               std::vector<std::string>* dirs, std::string* error) {
     return OK;
 }
 
-bool Apex::HasUpdate(FileSystem* fileSystem) const {
+bool Apex::HasUpdate(FileSystem* fileSystem, PropertyFetcher* propertyFetcher) const {
     return false;
 }
 

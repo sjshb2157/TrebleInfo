@@ -27,37 +27,37 @@ dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
             // build
-            plugin("agp", "com.android.application").version("8.0.1")
-            plugin("kotlin-android", "org.jetbrains.kotlin.android").version("1.8.21")
-            version("compose-compiler", "1.4.7")
+            plugin("agp", "com.android.application").version("8.1.0")
+            plugin("kotlin-android", "org.jetbrains.kotlin.android").version("1.9.0")
+            version("compose-compiler", "1.5.1")
 
 
             // main
-            version("aboutlibraries", "10.6.3")
+            version("aboutlibraries", "10.8.0")
             plugin("aboutlibraries", "com.mikepenz.aboutlibraries.plugin").versionRef("aboutlibraries")
             library("main-aboutlibraries", "com.mikepenz", "aboutlibraries-core").versionRef("aboutlibraries")
 
-            library("compose-bom", "androidx.compose:compose-bom:2023.05.00")
+            library("compose-bom", "androidx.compose:compose-bom:2023.08.00")
             library("main-compose-ui", "androidx.compose.ui", "ui").withoutVersion()
             library("main-compose-animation", "androidx.compose.animation", "animation").withoutVersion()
 
-            version("compose-material3", "1.1.0-rc01")
+            version("compose-material3", "1.1.1")
             library("main-compose-material3", "androidx.compose.material3", "material3").versionRef("compose-material3")
             library("main-compose-material3-windowsizeclass", "androidx.compose.material3", "material3-window-size-class").versionRef("compose-material3")
 
-            library("main-activity-compose", "androidx.activity:activity-compose:1.7.1")
+            library("main-activity-compose", "androidx.activity:activity-compose:1.7.2")
 
-            library("main-navigation-compose", "androidx.navigation:navigation-compose:2.5.3")
+            library("main-navigation-compose", "androidx.navigation:navigation-compose:2.6.0")
 
             // nonfree
-            version("billingclient", "5.2.0")
+            version("billingclient", "6.0.1")
             library("nonfree-billingclient", "com.android.billingclient", "billing").versionRef("billingclient")
             library("nonfree-billingclient-ktx", "com.android.billingclient", "billing-ktx").versionRef("billingclient")
 
             // test
             library("test-junit", "junit:junit:4.13.2")
 
-            version("mockk", "1.13.5")
+            version("mockk", "1.13.7")
             library("test-mockk", "io.mockk", "mockk").versionRef("mockk")
             library("test-mockk-jvm", "io.mockk", "mockk-agent-jvm").versionRef("mockk")
 

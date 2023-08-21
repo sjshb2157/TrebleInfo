@@ -18,6 +18,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import org.jetbrains.kotlin.konan.properties.loadProperties
+import com.android.build.api.variant.BuildConfigField
 
 plugins {
     id("com.android.application")
@@ -44,12 +45,12 @@ fun com.android.build.api.dsl.BuildType.setupBilling() {
 }
 
 android {
-    compileSdk = 33
-    buildToolsVersion = "33.0.0"
+    compileSdk = 34
+    buildToolsVersion = "34.0.0"
     defaultConfig {
         applicationId = "tk.hack5.treblecheck"
         minSdk = 22
-        targetSdk = 33
+        targetSdk = 34
         loadProperties(file("version.properties").absolutePath).run {
             versionCode = getProperty("versionCode").toInt()
             versionName = getProperty("versionName")
@@ -143,7 +144,6 @@ android {
         get("androidTest").java.srcDir("src/sharedTest/java")
         get("androidTest").kotlin.srcDir("src/sharedTest/java")
         get("androidTest").resources.srcDir("src/sharedTest/resources")
-
     }
     namespace = "tk.hack5.treblecheck"
 }

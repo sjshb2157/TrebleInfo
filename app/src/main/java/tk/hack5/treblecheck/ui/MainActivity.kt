@@ -43,6 +43,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -278,8 +279,9 @@ fun MainActivityContent(
                     windowInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal)
                 ) {
                     val navBackStackEntry by navController.currentBackStackEntryAsState()
+                    val currentScreen = remember(navBackStackEntry) { navBackStackEntry?.destination?.hierarchy?.lastOrNull { destination -> screens.any { it.route == destination.route } }?.route }
                     screens.forEach { screen ->
-                        val selected = remember(navBackStackEntry) { navController.backQueue.lastOrNull { entry -> screens.any { it.route == entry.destination.route } }?.destination?.route == screen.route }
+                        val selected = currentScreen == screen.route
                         NavigationBarItem(
                             selected = selected,
                             icon = { Icon(painterResource(screen.icon), null) },

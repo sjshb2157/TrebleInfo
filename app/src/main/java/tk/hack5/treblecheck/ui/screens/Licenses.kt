@@ -64,12 +64,12 @@ fun Licenses(
 
     val licenses = setOf(
         License(
-            SpdxLicense.GPL_3_0_or_later.fullName,
-            SpdxLicense.GPL_3_0_or_later.getUrl(),
+            "GNU General Public License v3.0 or later",
+            "https://spdx.org/licenses/GPL-3.0-or-later.html",
             null,
-            SpdxLicense.GPL_3_0_or_later.id,
+            "GPL-3.0-or-later",
             context.resources.openRawResource(R.raw.license).bufferedReader().readText(),
-            SpdxLicense.GPL_3_0_or_later.id + "-TrebleInfo"
+            "GPL-3.0-or-later-TrebleInfo"
         )
     )
     val thisLibrary = Library(
@@ -141,7 +141,7 @@ fun LibraryDialog(library: Library, setOpenItem: (OpenItem<*>?) -> Unit, openLin
                     Spacer(Modifier.height(verticalMediumSpacer - verticalSmallSpacer))
                     if (library.website != null || library.scm?.url != null) {
                         Text(stringResource(R.string.library_links), style = MaterialTheme.typography.titleMedium)
-                        FlowRow(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(horizontalSpacer, Alignment.Start)) {
+                        FlowRow(verticalArrangement = Arrangement.Center, horizontalArrangement = Arrangement.spacedBy(horizontalSpacer, Alignment.Start)) {
                             if (!library.website.isNullOrEmpty()) {
                                 library.website?.let { website ->
                                     OutlinedButton({
@@ -166,7 +166,7 @@ fun LibraryDialog(library: Library, setOpenItem: (OpenItem<*>?) -> Unit, openLin
                         library.developers.filter { developer -> developer.name != null }
                     if (developers.isNotEmpty()) {
                         Text(stringResource(R.string.library_developers), style = MaterialTheme.typography.titleMedium)
-                        FlowRow(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(horizontalSpacer, Alignment.Start)) {
+                        FlowRow(verticalArrangement = Arrangement.Center, horizontalArrangement = Arrangement.spacedBy(horizontalSpacer, Alignment.Start)) {
                             developers.forEachIndexed { i, developer ->
                                 if (i != 0) {
                                     Spacer(Modifier.width(horizontalSpacer))
@@ -213,7 +213,7 @@ fun LibraryDialog(library: Library, setOpenItem: (OpenItem<*>?) -> Unit, openLin
                             style = MaterialTheme.typography.titleMedium
                         )
                         FlowRow(
-                            verticalAlignment = Alignment.CenterVertically,
+                            verticalArrangement = Arrangement.Center,
                             horizontalArrangement = Arrangement.spacedBy(
                                 horizontalSpacer,
                                 Alignment.Start
@@ -309,7 +309,7 @@ fun Libraries(innerPadding: PaddingValues, scrollConnection: NestedScrollConnect
                 (library.developers.firstOrNull()?.name ?: library.organization?.name)?.let {
                     Text(it)
                 }
-                FlowRow(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(horizontalSpacer, Alignment.Start)) {
+                FlowRow(verticalArrangement = Arrangement.Center, horizontalArrangement = Arrangement.spacedBy(horizontalSpacer, Alignment.Start)) {
                     library.licenses.forEach {
                         TextButton(
                             onClick = { openItem = OpenItem.OpenLicense(library.uniqueId, it.hash) }
