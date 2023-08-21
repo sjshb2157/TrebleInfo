@@ -5,7 +5,7 @@
 - Please stick to the intended meaning of the English text as much as possible.
 - Where a direct translation is not possible, use the text that makes the most sense for native readers of the language.
 - If you are in any doubt about a translation, please use the comments feature on PoEditor or send an email. Don't just copy the English.
-- Please use special characters (`“…”` rather than `"..."`).
+- Please use special characters (`“…” ’` rather than `"..." '`).
 - Any incomplete, doubtful or uncertain translations must be marked [fuzzy](https://poeditor.com/kb/fuzzy-translations#kb-article-title).
 
 ## Moderation
