@@ -73,4 +73,11 @@
 	<string name="donation_failed_title">Ошибка при пожертвовании</string>
 	<string name="donation_failed_body">Извините, что-то пошло не так… Пожалуйста, попробуйте ещё раз позже!</string>
 	<string name="contribute">Предоставить помощь</string>
+	<string name="library_developers">Разработчики</string>
+	<string name="library_organization">Организация</string>
+	<string name="library_website">Веб-страница</string>
+	<string name="library_source">Исходный код</string>
+	<string name="library_funding">Финансирование</string>
+	<string name="library_licenses">Лицензии</string>
+	<string name="library_links">Ссылки</string>
 </resources>

@@ -9,12 +9,12 @@
 	<string name="screen_details">Detaylar</string>
 	<string name="screen_licenses">Lisanslar</string>
 	<string name="screen_contribute">Katkıda Bulun</string>
-	<string name="no_treble_title">Cihazınız Project Treble\&apos;ı desteklemiyor</string>
+	<string name="no_treble_title">Cihazınız Project Treble’ı desteklemiyor</string>
 	<string name="no_treble_body">Maalesef, cihazınız GSI yüklemeyi desteklemiyor. Bazı cihazlarda, cihaza özel ROMları yüklemek mümkün olabiliyor.</string>
 	<string name="detection_error_title">Ups!</string>
 	<string name="detection_error_body">Maalesef, bu veriyi yüklerken bir şeyler yanlış gitti.</string>
 	<string name="images_found_title">Genel Sistem İmajı bulundu!</string>
-	<string name="images_found_body">Cihazınız Project Treble\&apos;yi desteklediğini raporluyor. Gereken imaj türü:</string>
+	<string name="images_found_body">Cihazınız Project Treble’yi desteklediğini raporluyor. Gereken imaj türü:</string>
 	<string name="browse_images">İmajları araştır:</string>
 	<string name="view_details">Detayları görüntüle</string>
 	<string name="report_this_bug">Hata raporla</string>
@@ -33,10 +33,10 @@
 	<string name="treble_lite_explanation">VNDK yapılandırması, sistemin farklı parçalarının ayrı tutulmasını zorlamakla sorumludur. VNDK Lite bu gereksinimi rahatlatır ve depolama gereksinimlerini azaltır fakat karşılığında uyumluluk garantisinden ödün verilir.</string>
 	<string name="treble_lite_true">VNDK lite modda.</string>
 	<string name="treble_legacy_title">Manifest konumu</string>
-	<string name="treble_legacy_explanation">Cihazın Android\&apos;e sağlayabileceği özelliklerin listesi VINTF manifestinde depolanır. Bu dosya eskiden vendor bölümünün kök dizninde tutulurdu, fakat bu artık doğru bir hareket değil.</string>
+	<string name="treble_legacy_explanation">Cihazın Android’e sağlayabileceği özelliklerin listesi VINTF manifestinde depolanır. Bu dosya eskiden vendor bölümünün kök dizninde tutulurdu, fakat bu artık doğru bir hareket değil.</string>
 	<string name="treble_legacy_true">Kalıt</string>
 	<string name="treble_legacy_false">Modern</string>
-	<string name="ab_explanation">Pürüzsüz Yükseltmeler, Android\&apos;in iki örneğini tutarak güncellemelerin en az aksama süresi ile yüklenmesini sağlar.</string>
+	<string name="ab_explanation">Pürüzsüz Yükseltmeler, Android’in iki örneğini tutarak güncellemelerin en az aksama süresi ile yüklenmesini sağlar.</string>
 	<string name="ab_unknown">Bilinmiyor</string>
 	<string name="ab_true">Etkin</string>
 	<string name="ab_false">Desteklenmiyor</string>

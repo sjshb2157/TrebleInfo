@@ -71,6 +71,6 @@
 	<string name="donation_successful_title">捐赠成功！</string>
 	<string name="donation_successful_body">感谢您的支持。</string>
 	<string name="donation_failed_title">捐赠失败</string>
-	<string name="donation_failed_body">很抱歉，出了点问题……请稍后再试！</string>
+	<string name="donation_failed_body">很抱歉，出了点问题…请稍后再试！</string>
 	<string name="contribute">贡献</string>
 </resources>

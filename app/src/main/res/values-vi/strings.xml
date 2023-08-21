@@ -14,7 +14,7 @@
 	<string name="detection_error_title">Oops!</string>
 	<string name="detection_error_body">Rất tiếc, có gì đó không ổn khi tải dữ liệu này.</string>
 	<string name="images_found_title">Phát hiện hình ảnh dùng chung!</string>
-	<string name="images_found_body">Thiết bị của bạn được báo cáo là có hỗ trợ dự án Project Treble. \nKiểu image yêu cầu là :</string>
+	<string name="images_found_body">Thiết bị của bạn được báo cáo là có hỗ trợ dự án Project Treble. Kiểu image yêu cầu là :</string>
 	<string name="browse_images">Xem các image</string>
 	<string name="view_details">Xem chi tiết</string>
 	<string name="report_this_bug">Báo cáo lỗi</string>
@@ -32,6 +32,7 @@
 	<string name="treble_version_explanation">Phiên bản VNDK là phiên bản của Android mà vendor được thiết kế để chạy với nó. Sử dụng phiên bản mới hơn của Android có thể dẫn đến thiếu một số tính năng, và bạn không thể sử dụng phiên bản cũ hơn.</string>
 	<string name="treble_lite_explanation">Cấu hình VNDK chịu trách nhiệm thực thi tách biệt giữa các phần khác nhau của hệ thống. VNDK Lite nới lỏng yêu cầu này, giảm yêu cầu lưu trữ với chi phí đảm bảo tính tương thích.</string>
 	<string name="treble_lite_true">VNDK đang ở chế độ lite</string>
+	<string name="treble_lite_false">VNDK đang không ở chế độ lite</string>
 	<string name="treble_legacy_title">Vị trí Manifest</string>
 	<string name="treble_legacy_explanation">Danh sách các tính năng được hỗ trợ mà thiết bị có thể cung cấp cho Android được lưu trữ trong bảng kê khai VINTF. Tệp này từng được lưu trữ trong thư mục gốc của phân vùng vendor, nhưng cách làm này không còn tốt nữa.</string>
 	<string name="treble_legacy_true">Cơ bản</string>
@@ -70,4 +71,10 @@
 	<string name="donation_successful_body">Cảm ơn bạn đã hỗ trợ.</string>
 	<string name="donation_failed_title">Ủng hộ thất bại</string>
 	<string name="donation_failed_body">Xin lỗi, có gì đó không ổn… Vui lòng thử lại sau!</string>
+	<string name="contribute">Đóng góp</string>
+	<string name="library_developers">Nhà phát triển</string>
+	<string name="library_website">Truy cập trang web</string>
+	<string name="library_source">Hiện nguồn</string>
+	<string name="library_licenses">Giấy phép</string>
+	<string name="library_links">Liên kết</string>
 </resources>

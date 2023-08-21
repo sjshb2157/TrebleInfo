@@ -71,4 +71,10 @@
 	<string name="donation_failed_title">Donasi gagal</string>
 	<string name="donation_failed_body">Maaf, ada yang salah… Silakan coba lagi nanti!</string>
 	<string name="contribute">Kontribusi</string>
+	<string name="library_developers">Pengembang</string>
+	<string name="library_organization">Organisasi</string>
+	<string name="library_website">Kunjungi website</string>
+	<string name="library_source">Lihat sunber</string>
+	<string name="library_licenses">Lisensi</string>
+	<string name="library_links">Link</string>
 </resources>

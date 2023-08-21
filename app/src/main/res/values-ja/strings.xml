@@ -72,4 +72,11 @@
 	<string name="donation_successful_body">ご支援ありがとうございます。</string>
 	<string name="donation_failed_title">寄付に失敗しました</string>
 	<string name="donation_failed_body">申し訳ありません、問題が発生しました。後でもう一度試してみてください。</string>
+	<string name="library_developers">開発者</string>
+	<string name="library_organization">組織</string>
+	<string name="library_website">ウェブサイトを表示</string>
+	<string name="library_source">ソースを表示</string>
+	<string name="library_funding">資金</string>
+	<string name="library_licenses">ライセンス</string>
+	<string name="library_links">リンク</string>
 </resources>

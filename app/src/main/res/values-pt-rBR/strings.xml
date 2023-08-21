@@ -34,6 +34,7 @@
 	<string name="treble_lite_explanation">A configuração do VNDK é responsável por impor a separação entre as diferentes partes do sistema.  O VNDK Lite relaxa esse requisito, reduzindo os requisitos de armazenamento ao custo de garantias de compatibilidade.</string>
 	<string name="treble_lite_true">VNDK está no modo lite</string>
 	<string name="treble_lite_false">VNDK não está no modo lite</string>
+	<string name="treble_legacy_title">Localização do manifesto</string>
 	<string name="treble_legacy_explanation">A lista de recursos suportados que o dispositivo pode fornecer ao Android é armazenada no manifesto VINTF.  Este arquivo costumava ser armazenado na raiz da partição do fornecedor, mas isso não é mais uma boa prática.</string>
 	<string name="treble_legacy_true">Antigo</string>
 	<string name="treble_legacy_false">Moderno</string>
@@ -69,6 +70,14 @@
 	<string name="detail_placeholder">Selecione um item para ver detalhes</string>
 	<string name="donation_successful_title">Doação realizada com sucesso!</string>
 	<string name="donation_successful_body">Obrigado pelo seu apoio.</string>
+	<string name="donation_failed_title">Falha na doação</string>
 	<string name="donation_failed_body">Desculpe, algo deu errado… Por favor, tente novamente mais tarde!</string>
 	<string name="contribute">Contribuir</string>
+	<string name="library_developers">Desenvolvedores</string>
+	<string name="library_organization">Organização</string>
+	<string name="library_website">Visitar o site</string>
+	<string name="library_source">Visualizar fonte</string>
+	<string name="library_funding">Financiamento</string>
+	<string name="library_licenses">Licenças</string>
+	<string name="library_links">Links</string>
 </resources>

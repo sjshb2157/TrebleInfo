@@ -14,7 +14,7 @@
 	<string name="detection_error_title">Oups !</string>
 	<string name="detection_error_body">Malheureusement, il y a eu un problème lors du chargement de ces données.</string>
 	<string name="images_found_title">Images système générique (GSI) trouvé!</string>
-	<string name="images_found_body">Votre appareil indique supporter le Projet Treble. Le type d\&apos;image requise est :</string>
+	<string name="images_found_body">Votre appareil indique supporter le Projet Treble. Le type d’image requise est :</string>
 	<string name="browse_images">Parcourir les images</string>
 	<string name="view_details">Voir les détails</string>
 	<string name="report_this_bug">Signaler ce bug</string>
@@ -33,7 +33,7 @@
 	<string name="treble_lite_title">Séparation totale des espaces de noms du linker</string>
 	<string name="treble_lite_explanation">La configuration du VNDK est responsable de la séparation des parties différentes du système. VNDK Lite assouplit cette exigence, réduisant le stockage requis au détriment des garanties de compatibilité.</string>
 	<string name="treble_lite_true">Le VNDK est en mode Lite</string>
-	<string name="treble_lite_false">Le VNDK n\&apos;est pas en mode Lite</string>
+	<string name="treble_lite_false">Le VNDK n’est pas en mode Lite</string>
 	<string name="treble_legacy_title">Localisation du manifeste</string>
 	<string name="treble_legacy_explanation">La liste de fonctionnalités que l\&apos;appareil peut fournir à Android se trouve dans le manifeste VINTF. Ce fichier était stocké à la racine de la partition vendor, mais ce n\&apos;est plus la recommandation.</string>
 	<string name="treble_legacy_true">Système antérieur</string>
@@ -51,9 +51,9 @@
 	<string name="sar_false">Désactivé</string>
 	<string name="sar_true">Activé</string>
 	<string name="cpu_arch_title">Architecture du processeur</string>
-	<string name="cpu_arch_explanation">L\&apos;architecture du processeur décide quels logiciels peuvent fonctionner sur l\&apos;appareil, et doit correspondre au système d\&apos;exploitation.</string>
+	<string name="cpu_arch_explanation">L’architecture du processeur décide quels logiciels peuvent fonctionner sur l\&apos;appareil, et doit correspondre au système d\&apos;exploitation.</string>
 	<string name="cpu_arch_unknown">Inconnue</string>
-	<string name="cpu_arch_unknown_name">Inconnue, qui s\&apos;appelle %s</string>
+	<string name="cpu_arch_unknown_name">Inconnue, qui s’appelle %s</string>
 	<string name="cpu_arch_arm64">ARM64</string>
 	<string name="cpu_arch_arm32">ARM32</string>
 	<string name="cpu_arch_x86_64">x86_64</string>

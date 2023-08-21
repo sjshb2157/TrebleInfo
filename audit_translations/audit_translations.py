@@ -25,6 +25,8 @@ import jinja2
 import webbrowser
 import os.path
 
+if len(sys.argv) != 3:
+    print("Usage: " + sys.argv[0] + " <token> <project>")
 
 token = sys.argv[1]
 project = int(sys.argv[2])
