@@ -101,5 +101,5 @@ target_include_directories(
         hardware_interfaces/compatibility_matrices/exclude/include
         system_core/libutils/include
 )
-target_compile_options(trebledetector PRIVATE -Wno-c++11-narrowing -Wno-inconsistent-missing-override -Wno-c99-designator)
-target_link_libraries(trebledetector PRIVATE -Wl,--build-id=none ${log-lib})
+target_compile_options(trebledetector PRIVATE -Wno-c++11-narrowing -Wno-inconsistent-missing-override -Wno-c99-designator -ffile-prefix-map=${CMAKE_CURRENT_LIST_DIR}=src -ffile-prefix-map=${CMAKE_ANDROID_NDK}=ndk -ffile-prefix-map=${CMAKE_BINARY_DIR}=build)
+target_link_libraries(trebledetector PRIVATE -Wl,--build-id=none -ffile-prefix-map=${CMAKE_CURRENT_LIST_DIR}=src -ffile-prefix-map=${CMAKE_ANDROID_NDK}=ndk -ffile-prefix-map=${CMAKE_BINARY_DIR}=build ${log-lib})
