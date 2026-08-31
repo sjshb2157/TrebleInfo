@@ -22,7 +22,9 @@ kotlin = "2.4.10"
 # resolve -- it looks for a plain "android-37".
 compileSdk = "36"
 targetSdk = "36"
-minSdk = "22"
+# Raised from 22: Compose 1.11 (androidx.compose.material:material-ripple and
+# friends) declares minSdk 23, so the manifest merger rejects anything lower.
+minSdk = "23"
 
 # --- main ----------------------------------------------------------------
 # 14.2.1 is the last release that still supports compileSdk 36;
