@@ -1,6 +1,6 @@
 /*
  *     Treble Info
- *     Copyright (C) 2019-2023 Hackintosh Five
+ *     Copyright (C) 2019-2026 Hackintosh Five
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -17,44 +17,74 @@
  */
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import org.jetbrains.kotlin.konan.properties.loadProperties
-import com.android.build.api.variant.BuildConfigField
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
-    id("com.android.application")
-    kotlin("android")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.aboutlibraries)
     id("poeditor-android")
     id("materialdesignicons-android")
-    id("kotlin-parcelize")
-    alias(libs.plugins.aboutlibraries)
 }
 
-aboutLibraries {
-    configPath = projectDir.resolve("librariesConfig").toString()
-    excludeFields = arrayOf("generated")
-}
-
-fun com.android.build.api.dsl.BuildType.setupBilling() {
-    loadProperties(file("billing.properties").absolutePath).run {
-        buildConfigField("String", "GPLAY_PRODUCT", getProperty("gplayProduct"))
-
-        buildConfigField("String", "PAYPAL_EMAIL", getProperty("paypalEmail"))
-        buildConfigField("String", "PAYPAL_CURRENCY", getProperty("paypalCurrency"))
-        buildConfigField("String", "PAYPAL_DESCRIPTION", getProperty("paypalDescription"))
+/**
+ * Reads a `.properties` file from the module directory.
+ *
+ * Replaces `org.jetbrains.kotlin.konan.properties.loadProperties`, which is an
+ * internal Kotlin/Native helper that happened to be on the buildscript
+ * classpath and is not part of any supported API.
+ */
+fun readProperties(name: String): Properties = Properties().apply {
+    val propertiesFile = file(name)
+    if (propertiesFile.exists()) {
+        propertiesFile.inputStream().use { load(it) }
     }
 }
 
+val versionProperties = readProperties("version.properties")
+val billingProperties = readProperties("billing.properties")
+val signingProperties = readProperties("signing.properties")
+
+val appVersionName: String = versionProperties.getProperty("versionName")
+val appVersionCode: Int = versionProperties.getProperty("versionCode").toInt()
+
+aboutLibraries {
+    // `configPath` / `excludeFields` moved into the `collect` and `export`
+    // blocks in AboutLibraries 11. `excludeFields = ["generated"]` is gone;
+    // the timestamp is now controlled by `includeMetaData`, which must stay
+    // off for reproducible builds.
+    collect {
+        configPath = layout.projectDirectory.dir("librariesConfig")
+    }
+    export {
+        includeMetaData = false
+        prettyPrint = true
+    }
+}
+
+fun com.android.build.api.dsl.BuildType.setupBilling() {
+    buildConfigField("String", "GPLAY_PRODUCT", billingProperties.getProperty("gplayProduct"))
+
+    buildConfigField("String", "PAYPAL_EMAIL", billingProperties.getProperty("paypalEmail"))
+    buildConfigField("String", "PAYPAL_CURRENCY", billingProperties.getProperty("paypalCurrency"))
+    buildConfigField("String", "PAYPAL_DESCRIPTION", billingProperties.getProperty("paypalDescription"))
+}
+
 android {
-    compileSdk = 34
-    buildToolsVersion = "34.0.0"
+    compileSdk = libs.versions.compileSdk.get().toInt()
+    // AGP 8.13's default NDK. Pinned so native builds do not silently change
+    // when the toolchain default moves.
+    ndkVersion = "27.0.12077973"
+
     defaultConfig {
         applicationId = "tk.hack5.treblecheck"
-        minSdk = 22
-        targetSdk = 34
-        loadProperties(file("version.properties").absolutePath).run {
-            versionCode = getProperty("versionCode").toInt()
-            versionName = getProperty("versionName")
-        }
+        minSdk = libs.versions.minSdk.get().toInt()
+        targetSdk = libs.versions.targetSdk.get().toInt()
+        versionCode = appVersionCode
+        versionName = appVersionName
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments["notClass"] = "tk.hack5.treblecheck.ScreenshotTaker"
     }
@@ -70,14 +100,12 @@ android {
     }
 
     if (file("signing.properties").exists()) {
-        loadProperties(file("signing.properties").absolutePath).run {
-            signingConfigs {
-                create("release") {
-                    keyAlias = getProperty("keyAlias")
-                    storeFile = file(getProperty("storeFile"))
-                    keyPassword = getProperty("keyPassword")
-                    storePassword = getProperty("storePassword")
-                }
+        signingConfigs {
+            create("release") {
+                keyAlias = signingProperties.getProperty("keyAlias")
+                storeFile = file(signingProperties.getProperty("storeFile"))
+                keyPassword = signingProperties.getProperty("keyPassword")
+                storePassword = signingProperties.getProperty("storePassword")
             }
         }
     }
@@ -128,14 +156,8 @@ android {
         checkDependencies = true
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
     sourceSets {
         get("test").java.srcDir("src/sharedTest/java")
@@ -148,8 +170,15 @@ android {
     namespace = "tk.hack5.treblecheck"
 }
 
+kotlin {
+    jvmToolchain(21)
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_21
+    }
+}
+
 if (file("poeditor.properties").exists()) {
-    project.poeditor.apiToken = loadProperties(file("poeditor.properties").absolutePath).getProperty("apiToken")
+    project.poeditor.apiToken = readProperties("poeditor.properties").getProperty("apiToken")
 }
 
 project.poeditor.projectId = 285385
@@ -158,41 +187,46 @@ tasks.withType(com.github.penn5.ImportPoEditorStringsBaseTask::class) {
     allowFuzzy = false
 }
 
-
 dependencies {
     val composeBom = platform(libs.compose.bom)
 
     implementation(composeBom)
-    implementation(libs.main.compose.ui)
-    implementation(libs.main.compose.material3)
-    implementation(libs.main.compose.material3.windowsizeclass)
-    implementation(libs.main.compose.animation)
-    implementation(libs.main.activity.compose)
-    implementation(libs.main.navigation.compose)
-    implementation(libs.main.aboutlibraries)
-    "nonfreeImplementation"(libs.nonfree.billingclient)
-    "nonfreeImplementation"(libs.nonfree.billingclient.ktx)
+    implementation(libs.compose.ui)
+    implementation(libs.compose.material3)
+    implementation(libs.compose.material3.windowsizeclass)
+    implementation(libs.compose.animation)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.aboutlibraries.core)
+    implementation(libs.compose.ui.tooling.preview)
+    debugImplementation(libs.compose.ui.tooling)
+
+    "nonfreeImplementation"(libs.billing)
+    "nonfreeImplementation"(libs.billing.ktx)
+
     testImplementation(libs.test.junit)
     testImplementation(libs.test.mockk)
-    testImplementation(libs.test.mockk.jvm)
+    testImplementation(libs.test.mockk.agent.jvm)
     testImplementation(libs.test.xmlpull)
     testImplementation(libs.test.kxml2)
+
     androidTestImplementation(composeBom)
-    androidTestImplementation(libs.screenshots.runner)
-    androidTestImplementation(libs.screenshots.screengrab)
-    androidTestImplementation(libs.screenshots.junit.ext)
-    androidTestImplementation(libs.screenshots.compose.ui.junit)
-    debugImplementation(libs.tooling.compose.ui)
-    implementation(libs.tooling.compose.ui.preview)
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.screengrab)
+    androidTestImplementation(libs.androidx.test.junit)
+    androidTestImplementation(libs.compose.ui.test.junit4)
 }
 
-tasks.getByName("preBuild") {
+tasks.named("preBuild") {
     mustRunAfter("updateDrawables")
     mustRunAfter("importTranslations")
 }
 
 tasks.register("versionName") {
+    // Captured at configuration time so the task body does not reach back into
+    // the project, which the configuration cache forbids.
+    val version = appVersionName
     doLast {
-        println(android.defaultConfig.versionName)
+        println(version)
     }
 }

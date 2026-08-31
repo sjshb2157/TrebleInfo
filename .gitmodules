@@ -1,9 +1,3 @@
-[submodule "poeditor-android"]
-	path = poeditor-android
-	url = https://github.com/penn5/poeditor-android
-[submodule "materialdesignicons-android"]
-	path = materialdesignicons-android
-	url = https://github.com/penn5/materialdesignicons-android
 [submodule "app/src/main/cpp/libvintf"]
 	path = app/src/main/cpp/libvintf
 	url = https://android.googlesource.com/platform/system/libvintf

@@ -1,0 +1,92 @@
+#
+#     Treble Info
+#     Copyright (C) 2019-2026 Hackintosh Five
+#
+#     This program is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+[versions]
+# --- build ---------------------------------------------------------------
+# AGP is deliberately held on the 8.x line. Moving to 9.x is a separate,
+# larger migration (see docs/MODERNISATION.md).
+agp = "8.13.2"
+kotlin = "2.4.10"
+
+# --- Android SDK ---------------------------------------------------------
+# compileSdk cannot go past 36 while AGP is on 8.x: API 37 is only published
+# as minor-versioned platforms (android-37.0/37.1/...), which AGP 8.x cannot
+# resolve -- it looks for a plain "android-37".
+compileSdk = "36"
+targetSdk = "36"
+minSdk = "22"
+
+# --- main ----------------------------------------------------------------
+# 14.2.1 is the last release that still supports compileSdk 36;
+# 15.x requires compileSdk 37 and therefore AGP 9.x.
+aboutlibraries = "14.2.1"
+# 2026.06.01 is the last BOM whose compose-ui (1.11.4) still supports AGP 8.x;
+# the following BOM pulls ui 1.12.0, which demands AGP >= 9.1.0.
+composeBom = "2026.06.01"
+activityCompose = "1.13.0"
+# 2.10.0 requires AGP >= 9.1.0.
+navigationCompose = "2.9.8"
+
+# --- nonfree -------------------------------------------------------------
+billing = "9.1.0"
+
+# --- test ----------------------------------------------------------------
+junit = "4.13.2"
+mockk = "1.14.11"
+xmlpull = "1.1.3.1"
+kxml2 = "2.3.0"
+androidxTestRunner = "1.7.0"
+androidxTestJunit = "1.3.0"
+screengrab = "2.1.1"
+
+# --- build-logic ---------------------------------------------------------
+commonsIo = "2.22.0"
+kotlinXmlBuilder = "1.9.3"
+
+[libraries]
+# Consumed by the included builds in build-logic/ (compileOnly).
+agp = { module = "com.android.tools.build:gradle", version.ref = "agp" }
+commons-io = { module = "commons-io:commons-io", version.ref = "commonsIo" }
+kotlin-xml-builder = { module = "org.redundent:kotlin-xml-builder", version.ref = "kotlinXmlBuilder" }
+
+aboutlibraries-core = { module = "com.mikepenz:aboutlibraries-core", version.ref = "aboutlibraries" }
+
+compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
+compose-ui = { module = "androidx.compose.ui:ui" }
+compose-animation = { module = "androidx.compose.animation:animation" }
+compose-material3 = { module = "androidx.compose.material3:material3" }
+compose-material3-windowsizeclass = { module = "androidx.compose.material3:material3-window-size-class" }
+compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
+compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
+compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
+
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
+androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+
+billing = { module = "com.android.billingclient:billing", version.ref = "billing" }
+billing-ktx = { module = "com.android.billingclient:billing-ktx", version.ref = "billing" }
+
+test-junit = { module = "junit:junit", version.ref = "junit" }
+test-mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+test-mockk-agent-jvm = { module = "io.mockk:mockk-agent-jvm", version.ref = "mockk" }
+test-xmlpull = { module = "xmlpull:xmlpull", version.ref = "xmlpull" }
+test-kxml2 = { module = "net.sf.kxml:kxml2", version.ref = "kxml2" }
+
+androidx-test-runner = { module = "androidx.test:runner", version.ref = "androidxTestRunner" }
+androidx-test-junit = { module = "androidx.test.ext:junit", version.ref = "androidxTestJunit" }
+screengrab = { module = "tools.fastlane:screengrab", version.ref = "screengrab" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+aboutlibraries = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "aboutlibraries" }
