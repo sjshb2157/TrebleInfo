@@ -97,7 +97,6 @@ target_include_directories(
 
         PRIVATE
 
-        libvintf/include/vintf
         libvintf/include
         libvintf/include-host
         libvintf-shims/include
@@ -108,5 +107,15 @@ target_include_directories(
         hardware_interfaces/compatibility_matrices/exclude/include
         system_core/libutils/include
 )
+# libvintf/include/vintf holds bare headers, one of which is Regex.h. On a
+# case-insensitive filesystem (Windows, and macOS by default) having that
+# directory on the normal -I path makes the `#include <regex.h>` inside Regex.h
+# resolve to Regex.h itself, so regex_t/regcomp/REG_EXTENDED are never
+# declared and the whole library fails to compile. -iquote is searched only for
+# "quoted" includes, which is the form every libvintf source actually uses, so
+# the bare headers stay reachable while <regex.h> falls through to the sysroot.
+# The joined -iquote<dir> form is used so paths containing spaces survive.
+target_compile_options(trebledetector PRIVATE "-iquote${CMAKE_CURRENT_LIST_DIR}/libvintf/include/vintf")
+
 target_compile_options(trebledetector PRIVATE -Wno-c++11-narrowing -Wno-inconsistent-missing-override -Wno-c99-designator -ffile-prefix-map=${CMAKE_CURRENT_LIST_DIR}=src -ffile-prefix-map=${CMAKE_ANDROID_NDK}=ndk -ffile-prefix-map=${CMAKE_BINARY_DIR}=build)
 target_link_libraries(trebledetector PRIVATE -Wl,--build-id=none -ffile-prefix-map=${CMAKE_CURRENT_LIST_DIR}=src -ffile-prefix-map=${CMAKE_ANDROID_NDK}=ndk -ffile-prefix-map=${CMAKE_BINARY_DIR}=build ${log-lib})

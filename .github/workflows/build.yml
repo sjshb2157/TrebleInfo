@@ -35,6 +35,43 @@ jobs:
       - name: Resolve dependencies
         run: ./gradlew :app:dependencies --configuration freeDebugRuntimeClasspath --stacktrace
 
+  # Windows (and macOS) have case-insensitive filesystems, where a bare header
+  # such as libvintf's Regex.h shadows the system <regex.h>. Linux CI cannot see
+  # that class of bug at all, so compile the native code on Windows as well.
+  build-windows:
+    name: Build (Windows)
+    runs-on: windows-latest
+    timeout-minutes: 90
+    steps:
+      - name: Allow long paths
+        run: git config --global core.longpaths true
+
+      - uses: actions/checkout@v5
+        with:
+          submodules: recursive
+          fetch-depth: 1
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: android-actions/setup-android@v3
+
+      - name: Install NDK and CMake
+        shell: bash
+        run: |
+          NDK=$(grep -oP '(?<=^ndk = ")[^"]+' gradle/libs.versions.toml)
+          SDKM="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager.bat"
+          [ -f "$SDKM" ] || SDKM=sdkmanager
+          "$SDKM" --install "ndk;$NDK" "cmake;3.22.1"
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Assemble debug
+        shell: bash
+        run: ./gradlew assembleFreeDebug --stacktrace
+
   build:
     name: Build
     runs-on: ubuntu-latest
