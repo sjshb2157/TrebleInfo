@@ -189,7 +189,7 @@ class MainActivity : ComponentActivity() {
                     }
                 },
                 {
-                    val intent = Intent(Intent.ACTION_VIEW, "https://gitlab.com/TrebleInfo/TrebleInfo/-/blob/dev/TRANSLATING.md".toUri())
+                    val intent = Intent(Intent.ACTION_VIEW, "https://github.com/sjshb2157/TrebleInfo#翻译".toUri())
                     try {
                         startActivity(intent)
                     } catch (e: ActivityNotFoundException) {

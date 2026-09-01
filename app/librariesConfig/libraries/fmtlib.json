@@ -1,7 +1,7 @@
 {
   "uniqueId": "com.android.platform:external.fmtlib",
   "artifactVersion": "97ceae9d",
-  "name": "{fmt}",
+  "name": "fmtlib",
   "description": "A modern formatting library for C++, providing a fast and safe alternative to C stdio and C++ iostreams.",
   "website": "https://android.googlesource.com/platform/external/fmtlib/+/97ceae9d27415d6444f3e24f491da8ed6902ecfa/",
   "organization": {

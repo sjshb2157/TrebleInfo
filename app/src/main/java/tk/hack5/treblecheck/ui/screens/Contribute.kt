@@ -46,23 +46,29 @@ fun Contribute(
     contributeCode: () -> Unit,
     donate: () -> Unit,
 ) {
-    Column(
-        Modifier
-            .verticalScroll(rememberScrollState())
-            .nestedScroll(scrollConnection)
-            .fillMaxSize()
-            .padding(innerPadding.horizontal())
-            .consumeWindowInsets(innerPadding)
-            .padding(horizontal = pageHorizontalPadding),
-        Arrangement.Center,
-        Alignment.CenterHorizontally
-    ) {
-        Spacer(Modifier.height(innerPadding.calculateTopPadding()))
-        Button(askAQuestion) { Text(stringResource(R.string.ask_a_question)) }
-        OutlinedButton(reportBug) { Text(stringResource(R.string.report_a_bug)) }
-        OutlinedButton(helpTranslate) { Text(stringResource(R.string.help_translate)) }
-        OutlinedButton(contributeCode) { Text(stringResource(R.string.contribute_code)) }
-        OutlinedButton(donate) { Text(stringResource(R.string.donate)) }
-        Spacer(Modifier.height(innerPadding.calculateBottomPadding()))
+    // heightIn(min = maxHeight) is what makes Arrangement.Center do anything: a
+    // scrolling Column is measured with an unbounded height, so it would
+    // otherwise wrap its content and sit at the top of the screen.
+    BoxWithConstraints(Modifier.fillMaxSize()) {
+        Column(
+            Modifier
+                .verticalScroll(rememberScrollState())
+                .nestedScroll(scrollConnection)
+                .heightIn(min = maxHeight)
+                .fillMaxWidth()
+                .padding(innerPadding.horizontal())
+                .consumeWindowInsets(innerPadding)
+                .padding(horizontal = pageHorizontalPadding),
+            Arrangement.Center,
+            Alignment.CenterHorizontally
+        ) {
+            Spacer(Modifier.height(innerPadding.calculateTopPadding()))
+            Button(askAQuestion) { Text(stringResource(R.string.ask_a_question)) }
+            OutlinedButton(reportBug) { Text(stringResource(R.string.report_a_bug)) }
+            OutlinedButton(helpTranslate) { Text(stringResource(R.string.help_translate)) }
+            OutlinedButton(contributeCode) { Text(stringResource(R.string.contribute_code)) }
+            OutlinedButton(donate) { Text(stringResource(R.string.donate)) }
+            Spacer(Modifier.height(innerPadding.calculateBottomPadding()))
+        }
     }
 }
