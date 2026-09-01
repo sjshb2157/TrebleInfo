@@ -67,6 +67,15 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private fun openLink(url: String) {
+        try {
+            startActivity(Intent(Intent.ACTION_VIEW, url.toUri()))
+        } catch (e: ActivityNotFoundException) {
+            Log.w(tag, "Launch browser failed", e)
+            Toast.makeText(this, R.string.no_browser, Toast.LENGTH_LONG).show()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         super.onCreate(savedInstanceState)
@@ -138,28 +147,13 @@ class MainActivity : ComponentActivity() {
                 binderArch,
                 cpuArch,
                 fileName,
-                {
-                    val intent = Intent(Intent.ACTION_VIEW, "https://github.com/phhusson/treble_experimentations/wiki/Generic-System-Image-%28GSI%29-list".toUri())
-                    try {
-                        startActivity(intent)
-                    } catch (e: ActivityNotFoundException) {
-                        Log.w(tag, "Launch browser failed", e)
-                        Toast.makeText(this, R.string.no_browser, Toast.LENGTH_LONG).show()
-                    }
-                },
+                { openLink("https://github.com/phhusson/treble_experimentations/wiki/Generic-System-Image-%28GSI%29-list") },
                 { openLink("https://github.com/sjshb57/TrebleInfo/issues") },
                 { openLink("https://github.com/sjshb57/TrebleInfo/issues/new") },
                 { openLink("https://github.com/sjshb57/TrebleInfo#翻译") },
                 { openLink("https://github.com/sjshb57/TrebleInfo/pulls") },
                 { openLink("https://github.com/sjshb57/TrebleInfo") },
-                { url ->
-                    val intent = Intent(Intent.ACTION_VIEW, url.toUri())
-                    try {
-                        startActivity(intent)
-                    } catch (e: ActivityNotFoundException) {
-                        Log.w(tag, "Launch browser failed", e)
-                    }
-                }
+                ::openLink,
             )
         }
     }
