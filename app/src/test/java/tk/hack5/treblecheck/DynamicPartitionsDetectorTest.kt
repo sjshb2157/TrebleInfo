@@ -35,10 +35,10 @@ class DynamicPartitionsDetectorTest(private val expected: Boolean?, private val 
         @Parameterized.Parameters
         @JvmStatic
         fun data() = listOf(
-            arrayOf(false, ""),
-            arrayOf(true, "true"),
-            arrayOf(false, "false"),
-            arrayOf(false, "weird-value 1.40$"),
+            arrayOf<Any?>(false, ""),
+            arrayOf<Any?>(true, "true"),
+            arrayOf<Any?>(false, "false"),
+            arrayOf<Any?>(false, "weird-value 1.40$"),
             arrayOf<Any?>(null, null),
         )
     }

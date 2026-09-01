@@ -2,9 +2,16 @@
 # This ensures that a certain set of CMake features is available to
 # your build.
 
-cmake_minimum_required(VERSION 3.4.1)
+cmake_minimum_required(VERSION 3.22.1)
 
 project(TrebleCheck)
+
+# Android 15 introduced devices with a 16 KB page size, and Android 16 enforces
+# 16 KB alignment for every app that targets SDK 36 or newer. A 4 KB aligned
+# .so simply fails to dlopen there, which silently turns Treble detection into
+# "unknown". NDK r28+ passes this by default; set it explicitly so the result
+# does not depend on which NDK happens to be in use.
+add_link_options(-Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384)
 
 # Specifies a library name, specifies whether the library is STATIC or
 # SHARED, and provides relative paths to the source code. You can

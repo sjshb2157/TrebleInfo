@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    AboutLibraries 11+ generates res/raw/aboutlibraries.json at build time and
+    loads it reflectively via Libs.Builder().withContext(). Resource shrinking
+    is enabled for release builds, so it has to be kept explicitly or the
+    licence screen is empty on release APKs.
+
+    SPDX-License-Identifier: GPL-3.0-or-later
+-->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@raw/aboutlibraries" />

@@ -1,6 +1,6 @@
 /*
  *     Treble Info
- *     Copyright (C) 2019-2023 Hackintosh Five
+ *     Copyright (C) 2019-2026 Hackintosh Five
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -17,14 +17,14 @@
  */
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-
 plugins {
-    alias(libs.plugins.agp) apply false
-    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.kotlin.compose) apply false
+    alias(libs.plugins.aboutlibraries) apply false
 }
 
 tasks.register<Delete>("clean") {
-    delete(rootProject.buildDir)
+    delete(rootProject.layout.buildDirectory)
     gradle.includedBuilds.forEach {
         dependsOn(it.task(":clean"))
     }

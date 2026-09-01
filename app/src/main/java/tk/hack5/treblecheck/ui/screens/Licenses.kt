@@ -19,7 +19,6 @@
 
 package tk.hack5.treblecheck.ui.screens
 
-import android.os.Parcelable
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -28,6 +27,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,7 +41,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import com.mikepenz.aboutlibraries.Libs
 import com.mikepenz.aboutlibraries.entity.*
 import com.mikepenz.aboutlibraries.util.withContext
-import kotlinx.parcelize.Parcelize
 import tk.hack5.treblecheck.*
 import tk.hack5.treblecheck.R
 import tk.hack5.treblecheck.ui.*
@@ -95,22 +95,48 @@ fun Licenses(
     newLibraries?.let { Libraries(innerPadding, scrollConnection, it, openLink) }
 }
 
-@Parcelize
-sealed class OpenItem<T> : Parcelable {
+sealed class OpenItem<T> {
     abstract fun getItem(libraries: Libs): T
 
-    @Parcelize
-    data class OpenLibrary(val uniqueId: String) : OpenItem<Library>(), Parcelable {
+    data class OpenLibrary(val uniqueId: String) : OpenItem<Library>() {
         override fun getItem(libraries: Libs): Library {
             return libraries.libraries.first { it.uniqueId == uniqueId }
         }
     }
 
-    @Parcelize
     data class OpenLicense(val libraryUniqueId: String, val hash: String) : OpenItem<Pair<Library, License>>() {
         override fun getItem(libraries: Libs): Pair<Library, License> {
             return libraries.libraries.first { it.uniqueId == libraryUniqueId } to libraries.licenses.first { it.hash == hash }
         }
+    }
+
+    companion object {
+        private const val LIBRARY = "library"
+        private const val LICENSE = "license"
+
+        /**
+         * Saves the open dialog as a plain list of strings.
+         *
+         * This used to be `@Parcelize`, but AGP 9's built-in Kotlin does not
+         * run the parcelize compiler plugin, and a Saver is the idiomatic
+         * Compose way to survive configuration changes anyway.
+         */
+        val Saver: Saver<OpenItem<*>?, Any> = listSaver(
+            save = { item ->
+                when (item) {
+                    null -> emptyList()
+                    is OpenLibrary -> listOf(LIBRARY, item.uniqueId)
+                    is OpenLicense -> listOf(LICENSE, item.libraryUniqueId, item.hash)
+                }
+            },
+            restore = { saved ->
+                when (saved.firstOrNull()) {
+                    LIBRARY -> OpenLibrary(saved[1] as String)
+                    LICENSE -> OpenLicense(saved[1] as String, saved[2] as String)
+                    else -> null
+                }
+            }
+        )
     }
 }
 
@@ -199,7 +225,11 @@ fun LibraryDialog(library: Library, setOpenItem: (OpenItem<*>?) -> Unit, openLin
                     }
                     if (library.funding.isNotEmpty()) {
                         Text(stringResource(R.string.library_funding), style = MaterialTheme.typography.titleMedium)
-                        library.funding.forEach { funding ->
+                        // A plain `for` rather than `forEach`: these are
+                        // `Set`s, and on a `java.util.Set` receiver Kotlin now
+                        // resolves `forEach` to the inherited
+                        // `java.lang.Iterable#forEach`, which is API 24+.
+                        for (funding in library.funding) {
                             TextButton({
                                 openLink(funding.url)
                             }) {
@@ -219,13 +249,13 @@ fun LibraryDialog(library: Library, setOpenItem: (OpenItem<*>?) -> Unit, openLin
                                 Alignment.Start
                             )
                         ) {
-                            library.licenses.forEach {
+                            for (license in library.licenses) {
                                 TextButton(
                                     onClick = {
-                                        setOpenItem(OpenItem.OpenLicense(library.uniqueId, it.hash))
+                                        setOpenItem(OpenItem.OpenLicense(library.uniqueId, license.hash))
                                     }
                                 ) {
-                                    Text(it.name)
+                                    Text(license.name)
                                 }
                             }
                         }
@@ -239,7 +269,7 @@ fun LibraryDialog(library: Library, setOpenItem: (OpenItem<*>?) -> Unit, openLin
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun Libraries(innerPadding: PaddingValues, scrollConnection: NestedScrollConnection, libraries: Libs, openLink: (String) -> Unit) {
-    var openItem by rememberSaveable { mutableStateOf<OpenItem<*>?>(null) }
+    var openItem by rememberSaveable(stateSaver = OpenItem.Saver) { mutableStateOf<OpenItem<*>?>(null) }
     openItem?.let {
         when (it) {
             is OpenItem.OpenLibrary -> {
@@ -310,11 +340,11 @@ fun Libraries(innerPadding: PaddingValues, scrollConnection: NestedScrollConnect
                     Text(it)
                 }
                 FlowRow(verticalArrangement = Arrangement.Center, horizontalArrangement = Arrangement.spacedBy(horizontalSpacer, Alignment.Start)) {
-                    library.licenses.forEach {
+                    for (license in library.licenses) {
                         TextButton(
-                            onClick = { openItem = OpenItem.OpenLicense(library.uniqueId, it.hash) }
+                            onClick = { openItem = OpenItem.OpenLicense(library.uniqueId, license.hash) }
                         ) {
-                            Text(it.name)
+                            Text(license.name)
                         }
                     }
                 }

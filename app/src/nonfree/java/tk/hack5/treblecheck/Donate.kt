@@ -70,7 +70,16 @@ class GoogleIABHelper(private val activity: Activity, private val listener: IABL
             val job = Job()
             try {
                 billingClient =
-                    BillingClient.newBuilder(activity).setListener(this).enablePendingPurchases()
+                    BillingClient.newBuilder(activity)
+                        .setListener(this)
+                        // The no-argument overload was removed in Billing 8.0;
+                        // pending purchase support must now be opted into per
+                        // product type.
+                        .enablePendingPurchases(
+                            PendingPurchasesParams.newBuilder()
+                                .enableOneTimeProducts()
+                                .build()
+                        )
                         .build()
                 billingClient.startConnection(object : BillingClientStateListener {
                     /**
