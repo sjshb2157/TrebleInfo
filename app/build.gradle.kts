@@ -127,6 +127,9 @@ android {
         includeInApk = false
         includeInBundle = false
     }
+    androidResources {
+        localeFilters += listOf("zh-rCN", "zh-rTW")
+    }
     lint {
         checkDependencies = true
         disable += setOf("GradleDependency", "NewerVersionAvailable")
