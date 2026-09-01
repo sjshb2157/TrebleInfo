@@ -100,7 +100,12 @@ object MountDetector {
             return null
         }
         val fields = line.split(" ")
-        if (fields.size != 6) throw ParseException("Incorrect /proc/mounts format")
+        if (fields.size != 6) {
+            // Skip the line rather than failing the whole detection: the caller
+            // already drops nulls, and one odd entry says nothing about /system.
+            Log.w(tag, "Skipping unparseable /proc/mounts line")
+            return null
+        }
         return Mount(fields[0], fields[1], fields[2], fields[3], fields[4], fields[5])
     }
 }

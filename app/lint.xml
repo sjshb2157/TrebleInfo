@@ -19,7 +19,7 @@
 <!-- SPDX-License-Identifier: GPL-3.0-or-later -->
 
 <lint>
-  <issue id="MissingTranslation" severity="ignore" />
+  <issue id="MissingTranslation" severity="warning" />
   <issue id="StopShip" severity="error" />
   <issue id="TypographyQuotes" severity="warning" />
 </lint>

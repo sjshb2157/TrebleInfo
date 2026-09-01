@@ -73,4 +73,11 @@
 	<string name="donation_failed_title">捐赠失败</string>
 	<string name="donation_failed_body">很抱歉，出了点问题…请稍后再试！</string>
 	<string name="contribute">贡献</string>
+    <string name="library_developers">开发者</string>
+    <string name="library_funding">资助</string>
+    <string name="library_licenses">许可证</string>
+    <string name="library_links">链接</string>
+    <string name="library_organization">组织</string>
+    <string name="library_source">查看源代码</string>
+    <string name="library_website">访问网站</string>
 </resources>

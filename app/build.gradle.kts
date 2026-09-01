@@ -34,12 +34,15 @@ fun readProperties(name: String): Properties = Properties().apply {
     }
 }
 
+fun Properties.require(key: String, file: String): String = getProperty(key)
+    ?: error("$key is missing from app/$file")
+
 val versionProperties = readProperties("version.properties")
 val billingProperties = readProperties("billing.properties")
 val signingProperties = readProperties("signing.properties")
 
-val appVersionName: String = versionProperties.getProperty("versionName")
-val appVersionCode: Int = versionProperties.getProperty("versionCode").toInt()
+val appVersionName: String = versionProperties.require("versionName", "version.properties")
+val appVersionCode: Int = versionProperties.require("versionCode", "version.properties").toInt()
 
 aboutLibraries {
     collect {
@@ -53,11 +56,11 @@ aboutLibraries {
 }
 
 fun com.android.build.api.dsl.BuildType.setupBilling() {
-    buildConfigField("String", "GPLAY_PRODUCT", billingProperties.getProperty("gplayProduct"))
+    buildConfigField("String", "GPLAY_PRODUCT", billingProperties.require("gplayProduct", "billing.properties"))
 
-    buildConfigField("String", "PAYPAL_EMAIL", billingProperties.getProperty("paypalEmail"))
-    buildConfigField("String", "PAYPAL_CURRENCY", billingProperties.getProperty("paypalCurrency"))
-    buildConfigField("String", "PAYPAL_DESCRIPTION", billingProperties.getProperty("paypalDescription"))
+    buildConfigField("String", "PAYPAL_EMAIL", billingProperties.require("paypalEmail", "billing.properties"))
+    buildConfigField("String", "PAYPAL_CURRENCY", billingProperties.require("paypalCurrency", "billing.properties"))
+    buildConfigField("String", "PAYPAL_DESCRIPTION", billingProperties.require("paypalDescription", "billing.properties"))
 }
 
 android {

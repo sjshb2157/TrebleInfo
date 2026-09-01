@@ -69,4 +69,15 @@
 	<string name="donation_failed_title">捐款失敗</string>
 	<string name="donation_failed_body">抱歉，出了點問題…請稍後再試！</string>
 	<string name="contribute">貢獻</string>
+    <string name="ab_explanation">無縫升級允許透過儲存兩個版本的 Android 韌體來安裝更新，以最小化停機時間。</string>
+    <string name="detection_error_title">糟糕！</string>
+    <string name="library_developers">開發者</string>
+    <string name="library_funding">資助</string>
+    <string name="library_licenses">許可證</string>
+    <string name="library_links">連結</string>
+    <string name="library_organization">組織</string>
+    <string name="library_source">檢視原始碼</string>
+    <string name="library_website">造訪網站</string>
+    <string name="treble_lite_false">VNDK 處於非 Lite 模式</string>
+    <string name="treble_lite_title">連結器命名空間隔離</string>
 </resources>
