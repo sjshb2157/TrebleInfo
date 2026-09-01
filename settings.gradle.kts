@@ -23,7 +23,6 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
     }
-    // Formerly unmaintained git submodules from github.com/penn5.
     includeBuild("build-logic/materialdesignicons-android")
 }
 

@@ -38,6 +38,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext as onDispatcher
 import androidx.compose.ui.text.style.TextOverflow
 import com.mikepenz.aboutlibraries.Libs
 import com.mikepenz.aboutlibraries.entity.*
@@ -58,22 +60,26 @@ fun Licenses(
     val resources = LocalResources.current
     if (!LocalInspectionMode.current) {
         LaunchedEffect(libraries) {
-            libraries.value = Libs.Builder().withContext(context).build()
+            libraries.value = onDispatcher(Dispatchers.IO) {
+                Libs.Builder().withContext(context).build()
+            }
         }
     } else {
         libraries.value = Libs(emptyList(), emptySet())
     }
 
-    val licenses = setOf(
-        License(
-            "GNU General Public License v3.0 or later",
-            "https://spdx.org/licenses/GPL-3.0-or-later.html",
-            null,
-            "GPL-3.0-or-later",
-            resources.openRawResource(R.raw.license).bufferedReader().readText(),
-            "GPL-3.0-or-later-TrebleInfo"
+    val licenses = remember(resources) {
+        setOf(
+            License(
+                "GNU General Public License v3.0 or later",
+                "https://spdx.org/licenses/GPL-3.0-or-later.html",
+                null,
+                "GPL-3.0-or-later",
+                resources.openRawResource(R.raw.license).bufferedReader().use { it.readText() },
+                "GPL-3.0-or-later-TrebleInfo"
+            )
         )
-    )
+    }
     val thisLibrary = Library(
         "tk.hack5:treblecheck",
         BuildConfig.VERSION_NAME + '-' + BuildConfig.BUILD_TYPE,
@@ -221,8 +227,7 @@ fun LibraryDialog(library: Library, setOpenItem: (OpenItem<*>?) -> Unit, openLin
                     }
                     if (library.funding.isNotEmpty()) {
                         Text(stringResource(R.string.library_funding), style = MaterialTheme.typography.titleMedium)
-                        // Not forEach: on a java.util.Set receiver that
-                        // resolves to Iterable#forEach, which is API 24+.
+                        // Not forEach: on a Set that binds to Iterable#forEach (API 24+).
                         for (funding in library.funding) {
                             TextButton({
                                 openLink(funding.url)

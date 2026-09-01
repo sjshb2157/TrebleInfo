@@ -1,9 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-// APEX packages cannot contribute VINTF data to an unprivileged app, so these
-// resolve to "nothing found". Upstream turned the old Apex class into an
-// android::vintf::apex namespace and split DeviceVintfDirs into per-partition
-// entry points.
+// An unprivileged app cannot read APEX VINTF data.
 
 #include "Apex.h"
 

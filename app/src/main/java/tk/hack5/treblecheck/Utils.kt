@@ -26,22 +26,33 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import tk.hack5.treblecheck.data.TrebleResult
+import java.lang.reflect.Method
 
 
 @SuppressLint("PrivateApi") // Oh well.
-fun propertyGet(prop: String): String? {
-    return try {
-        val c = Class.forName("android.os.SystemProperties")
-        val g = c.getMethod("get", String::class.java, String::class.java)
-        if (!g.isAccessible) {
-            Log.w(tag, "SystemProperties.get is inaccessible")
-            try {
-                g.isAccessible = true
-            } catch (e: Exception) {
-                Log.w(tag, "Failed to set accessibility", e)
+private fun findSystemPropertiesGet(): Method? = try {
+    Class.forName("android.os.SystemProperties")
+        .getMethod("get", String::class.java, String::class.java)
+        .apply {
+            if (!isAccessible) {
+                Log.w(tag, "SystemProperties.get is inaccessible")
+                try {
+                    isAccessible = true
+                } catch (e: Exception) {
+                    Log.w(tag, "Failed to set accessibility", e)
+                }
             }
         }
-        g.invoke(null, prop, "") as String
+} catch (e: Exception) {
+    Log.e(tag, "SystemProperties is unavailable", e)
+    null
+}
+
+private val systemPropertiesGet by lazy { findSystemPropertiesGet() }
+
+fun propertyGet(prop: String): String? {
+    return try {
+        systemPropertiesGet?.invoke(null, prop, "") as String?
     } catch (e: Exception) {
         Log.e(tag, "Failed to get property $prop", e)
         null

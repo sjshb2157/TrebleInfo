@@ -129,8 +129,6 @@ android {
     }
     lint {
         checkDependencies = true
-        // kotlin and kotlinStdlib are pinned to what AGP's built-in compiler
-        // accepts, so "a newer version exists" is never actionable here.
         disable += setOf("GradleDependency", "NewerVersionAvailable")
     }
     compileOptions {
@@ -183,8 +181,7 @@ tasks.named("preBuild") {
 }
 
 tasks.register("versionName") {
-    // Read now, not in doLast: the configuration cache forbids reaching back
-    // into the project at execution time.
+    // Read now: the configuration cache forbids project access in doLast.
     val version = appVersionName
     doLast {
         println(version)

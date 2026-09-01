@@ -16,9 +16,8 @@ kotlin = "2.2.10"
 
 
 aboutlibraries = "15.2.0"
-# AboutLibraries asks for kotlin-stdlib 2.4, whose metadata AGP's built-in 2.2
-# compiler cannot read, even though its own classes are stamped 2.0. Everything
-# else already resolves to 2.3.20.
+# AboutLibraries asks for stdlib 2.4, whose metadata AGP's 2.2 compiler cannot
+# read, though its own classes are stamped 2.0. Everything else wants 2.3.20.
 kotlinStdlib = "2.3.20"
 composeBom = "2026.08.00"
 activityCompose = "1.13.0"

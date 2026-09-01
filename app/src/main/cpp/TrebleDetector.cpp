@@ -69,9 +69,6 @@ extern "C" JNIEXPORT jint JNICALL
 Java_tk_hack5_treblecheck_data_TrebleDetector_check_1compatibility_1matrix(__unused JNIEnv *env, __unused jobject thiz, jstring matrixContentString, jstring rootString, jstring vendorSkuString, jstring hardwareSkuString) {
     using namespace android::vintf::details;
 
-    // Scoped accessor: the previous code released only matrixContentString, and
-    // released nothing at all on the early -1/-2 returns, leaking a copy of
-    // every other string on each call.
     class ScopedUtfChars {
     public:
         ScopedUtfChars(JNIEnv* env, jstring string) : env_(env), string_(string),
