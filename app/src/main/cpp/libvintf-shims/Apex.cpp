@@ -1,39 +1,32 @@
-/*
- *     Treble Info
- *     Copyright (C) 2019-2022 Hackintosh Five
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
 // SPDX-License-Identifier: GPL-3.0-or-later
+
+// APEX packages cannot contribute VINTF data to an unprivileged app, so these
+// resolve to "nothing found". Upstream turned the old Apex class into an
+// android::vintf::apex namespace and split DeviceVintfDirs into per-partition
+// entry points.
 
 #include "Apex.h"
 
 #include <utils/Errors.h>
 
-namespace android {
-namespace vintf {
-namespace details {
+namespace android::vintf::apex {
 
-status_t Apex::DeviceVintfDirs(FileSystem* fileSystem, PropertyFetcher* propertyFetcher,
-                               std::vector<std::string>* dirs, std::string* error) {
+std::optional<timespec> GetModifiedTime(FileSystem*, PropertyFetcher*) {
+    return std::nullopt;
+}
+
+status_t GetVendorVintfDirs(FileSystem*, PropertyFetcher*, std::vector<std::string>*,
+                            std::string*) {
     return OK;
 }
 
-bool Apex::HasUpdate(FileSystem* fileSystem, PropertyFetcher* propertyFetcher) const {
-    return false;
+status_t GetOdmVintfDirs(FileSystem*, PropertyFetcher*, std::vector<std::string>*, std::string*) {
+    return OK;
 }
 
-}  // namespace details
-}  // namespace vintf
-}  // namespace android
+status_t GetFrameworkVintfDirs(FileSystem*, PropertyFetcher*, std::vector<std::string>*,
+                               std::string*) {
+    return OK;
+}
+
+}  // namespace android::vintf::apex
