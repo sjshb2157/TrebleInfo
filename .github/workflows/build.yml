@@ -110,10 +110,16 @@ jobs:
         run: |
           fail=0
           readelf=$(ls "$ANDROID_HOME"/ndk/*/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-readelf | head -1)
-          for so in $(find app/build -name '*.so' | sort -u); do
-            align=$("$readelf" -lW "$so" | awk '$1=="LOAD"{print $NF}' | sort -u | tr '\n' ' ')
-            echo "$so -> $align"
-            case "$align" in *0x1000*) echo "::error::$so is not 16 KB aligned ($align)"; fail=1 ;; esac
+          work=$(mktemp -d)
+          for apk in $(find app/build/outputs/apk -name '*.apk' | sort); do
+            echo "== $apk"
+            rm -rf "$work/x"
+            unzip -oq "$apk" 'lib/*' -d "$work/x" || continue
+            for so in $(find "$work/x" -name '*.so' | sort); do
+              align=$("$readelf" -lW "$so" | awk '$1=="LOAD"{print $NF}' | sort -u | tr '\n' ' ')
+              echo "   ${so#$work/x/} -> $align"
+              case "$align" in *0x1000*) echo "::error::${so#$work/x/} in $apk is not 16 KB aligned ($align)"; fail=1 ;; esac
+            done
           done
           exit $fail
 
