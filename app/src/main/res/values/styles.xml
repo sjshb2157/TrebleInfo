@@ -29,7 +29,10 @@
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
     </style>
 
-    <style name="NewTheme.23" parent="NewTheme.1" />
+    <style name="NewTheme.23" parent="NewTheme.23.DayNight">
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
     <style name="NewTheme.27" parent="NewTheme.23" />
     <style name="NewTheme.29" parent="NewTheme.27" />
     <style name="NewTheme.30" parent="NewTheme.29" />

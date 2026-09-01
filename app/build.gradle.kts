@@ -143,6 +143,9 @@ android {
     }
     lint {
         checkDependencies = true
+        // kotlin and kotlinStdlib are pinned to what AGP's built-in compiler
+        // accepts, so "a newer version exists" is never actionable here.
+        disable += setOf("GradleDependency", "NewerVersionAvailable")
         // Otherwise findings only reach the HTML report, which nobody reads.
         textReport = true
     }
@@ -181,6 +184,7 @@ dependencies {
     implementation(libs.compose.material3)
     implementation(libs.compose.material3.windowsizeclass)
     implementation(libs.compose.animation)
+    implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.aboutlibraries.core)

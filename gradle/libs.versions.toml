@@ -27,6 +27,7 @@ aboutlibraries = "15.2.0"
 kotlinStdlib = "2.3.20"
 composeBom = "2026.08.00"
 activityCompose = "1.13.0"
+androidxCore = "1.19.0"
 navigationCompose = "2.10.0"
 
 billing = "9.1.0"
@@ -60,6 +61,7 @@ compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
 
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidxCore" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 
