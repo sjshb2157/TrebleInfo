@@ -35,10 +35,10 @@ class ABDetectorTest(private val expected: Boolean?, private val slotSuffix: Str
         @Parameterized.Parameters
         @JvmStatic
         fun data() = listOf(
-            arrayOf(false, ""),
-            arrayOf(true, "a"),
-            arrayOf(true, "b"),
-            arrayOf(true, "weird-suffix 1.40$"),
+            arrayOf<Any?>(false, ""),
+            arrayOf<Any?>(true, "a"),
+            arrayOf<Any?>(true, "b"),
+            arrayOf<Any?>(true, "weird-suffix 1.40$"),
             arrayOf<Any?>(null, null),
         )
     }
