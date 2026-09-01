@@ -20,9 +20,11 @@ targetSdk = "37"
 # Treble starts at API 26.
 minSdk = "26"
 
-# 15.x needs kotlin-stdlib 2.4, whose metadata AGP's built-in compiler cannot
-# read. Same runtime API.
 aboutlibraries = "15.2.0"
+# AboutLibraries asks for kotlin-stdlib 2.4, whose metadata AGP's built-in 2.2
+# compiler cannot read, even though its own classes are stamped 2.0. Everything
+# else already resolves to 2.3.20.
+kotlinStdlib = "2.3.20"
 composeBom = "2026.08.00"
 activityCompose = "1.13.0"
 navigationCompose = "2.10.0"
@@ -46,6 +48,7 @@ agp = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 commons-io = { module = "commons-io:commons-io", version.ref = "commonsIo" }
 kotlin-xml-builder = { module = "org.redundent:kotlin-xml-builder", version.ref = "kotlinXmlBuilder" }
 
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlinStdlib" }
 aboutlibraries-core = { module = "com.mikepenz:aboutlibraries-core", version.ref = "aboutlibraries" }
 
 compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }

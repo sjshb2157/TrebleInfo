@@ -88,6 +88,9 @@ target_include_directories(
         tinyxml2
         fmtlib/include
         hardware_interfaces/compatibility_matrices/exclude/include
+        # Before libutils/include, whose utils/*.h are symlinks into here.
+        # Windows checks those out as text files holding the link target.
+        system_core/libutils/binder/include
         system_core/libutils/include
 )
 # libvintf/include/vintf must not go on the -I path: it holds bare headers, and

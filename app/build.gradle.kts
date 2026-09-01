@@ -176,6 +176,10 @@ tasks.withType(com.github.penn5.ImportPoEditorStringsBaseTask::class) {
 }
 
 dependencies {
+    constraints {
+        implementation(libs.kotlin.stdlib) { version { strictly(libs.versions.kotlinStdlib.get()) } }
+    }
+
     val composeBom = platform(libs.compose.bom)
 
     implementation(composeBom)
