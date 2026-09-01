@@ -44,7 +44,7 @@ fun Contribute(
     reportBug: () -> Unit,
     helpTranslate: () -> Unit,
     contributeCode: () -> Unit,
-    donate: () -> Unit,
+    projectPage: () -> Unit,
 ) {
     // heightIn(min = maxHeight) is what makes Arrangement.Center do anything: a
     // scrolling Column is measured with an unbounded height, so it would
@@ -67,7 +67,7 @@ fun Contribute(
             OutlinedButton(reportBug) { Text(stringResource(R.string.report_a_bug)) }
             OutlinedButton(helpTranslate) { Text(stringResource(R.string.help_translate)) }
             OutlinedButton(contributeCode) { Text(stringResource(R.string.contribute_code)) }
-            OutlinedButton(donate) { Text(stringResource(R.string.donate)) }
+            OutlinedButton(projectPage) { Text(stringResource(R.string.project_page)) }
             Spacer(Modifier.height(innerPadding.calculateBottomPadding()))
         }
     }

@@ -23,7 +23,6 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.aboutlibraries)
-    id("poeditor-android")
     id("materialdesignicons-android")
 }
 
@@ -147,15 +146,6 @@ android {
     namespace = "tk.hack5.treblecheck"
 }
 
-if (file("poeditor.properties").exists()) {
-    project.poeditor.apiToken = readProperties("poeditor.properties").getProperty("apiToken")
-}
-
-project.poeditor.projectId = 285385
-
-tasks.withType(com.github.penn5.ImportPoEditorStringsBaseTask::class) {
-    allowFuzzy = false
-}
 
 dependencies {
     constraints {

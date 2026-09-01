@@ -316,7 +316,6 @@ obj/
 
 
 # Secrets
-/app/poeditor.properties
 /app/signing.properties
 
 

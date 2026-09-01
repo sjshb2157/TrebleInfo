@@ -21,12 +21,12 @@
 - 构建工具链升级到 AGP 9 / Gradle 9 / Kotlin 2.2（AGP 内置编译器）
 - compileSdk 与 targetSdk 提升到 37，minSdk 提升到 26
 - 依赖迁移到 `gradle/libs.versions.toml` 版本目录
-- 原本作为 git 子模块引用的两个构建插件已内置到 `build-logic/`
+- 原本作为 git 子模块引用的构建插件已内置到 `build-logic/`
 - 7 个 AOSP 原生子模块更新到上游最新
 - 补充了 FCM level 8 / 202404 / 202504 / 202604 的兼容性矩阵
 - 新增 GitHub Actions 构建流水线（含 Windows 构建与 16 KB 页对齐校验）
 - 上游的 fastlane 发布流水线与 PoEditor 翻译工具链已移除，它们依赖只有上游持有的凭据
-- 移除了 `nonfree` 产品风味与 Google Play 结算依赖，只保留 PayPal 网页捐赠
+- 移除了 `nonfree` 产品风味、Google Play 结算依赖与捐赠入口
 
 ## 构建
 
@@ -85,9 +85,8 @@ lint 的 `MissingTranslation` 检查处于开启状态，缺失的条目会在�
 
 GPL-3.0-or-later，与上游一致。完整条款见 [LICENSE](LICENSE)。
 
-`build-logic/` 下的两个 Gradle 插件源自 penn5 的
-[poeditor-android](https://github.com/penn5/poeditor-android) 与
+`build-logic/materialdesignicons-android` 源自 penn5 的
 [materialdesignicons-android](https://github.com/penn5/materialdesignicons-android)，
-各目录中的 `.upstream-commit` 记录了导入时的版本。
+目录中的 `.upstream-commit` 记录了导入时的版本。
 
 `app/src/main/cpp/` 下的子模块为 AOSP 代码，遵循各自的许可证。
