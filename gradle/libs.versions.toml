@@ -58,6 +58,9 @@ agp = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 commons-io = { module = "commons-io:commons-io", version.ref = "commonsIo" }
 kotlin-xml-builder = { module = "org.redundent:kotlin-xml-builder", version.ref = "kotlinXmlBuilder" }
 
+# Under AGP built-in Kotlin the parcelize Gradle plugin no longer contributes
+# its runtime artifact, so @Parcelize does not resolve unless it is declared.
+kotlin-parcelize-runtime = { module = "org.jetbrains.kotlin:kotlin-parcelize-runtime", version.ref = "kotlin" }
 aboutlibraries-core = { module = "com.mikepenz:aboutlibraries-core", version.ref = "aboutlibraries" }
 
 compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
