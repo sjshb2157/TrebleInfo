@@ -20,6 +20,8 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
+-dontobfuscate
+
 -assumenosideeffects class android.util.Log {
     public static *** i(...);
     public static *** d(...);
@@ -30,5 +32,3 @@
     static java.lang.String stringPlus(java.lang.String, java.lang.Object);
     static void checkParameterIsNotNull(java.lang.Object, java.lang.String);
 }
-
--optimizationpasses 10
