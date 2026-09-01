@@ -33,40 +33,6 @@ jobs:
       - name: Resolve dependencies
         run: ./gradlew :app:dependencies --configuration debugRuntimeClasspath --warning-mode all --stacktrace
 
-  build-windows:
-    name: Build (Windows)
-    runs-on: windows-latest
-    timeout-minutes: 90
-    steps:
-      - name: Allow long paths
-        run: git config --global core.longpaths true
-
-      - uses: actions/checkout@v7
-        with:
-          submodules: recursive
-          fetch-depth: 1
-
-      - uses: actions/setup-java@v6
-        with:
-          distribution: temurin
-          java-version: 21
-
-      - uses: android-actions/setup-android@v4
-
-      - name: Install NDK and CMake
-        shell: bash
-        run: |
-          NDK=$(grep -oP '(?<=ndkVersion = ")[^"]+' app/build.gradle.kts)
-          SDKM="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager.bat"
-          [ -f "$SDKM" ] || SDKM=sdkmanager
-          "$SDKM" --install "ndk;$NDK" "cmake;3.22.1"
-
-      - uses: gradle/actions/setup-gradle@v6
-
-      - name: Assemble debug
-        shell: bash
-        run: ./gradlew assembleDebug --stacktrace
-
   build:
     name: Build
     runs-on: ubuntu-latest
