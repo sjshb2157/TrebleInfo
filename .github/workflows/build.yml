@@ -64,16 +64,11 @@ jobs:
       # A 4 KB aligned .so fails to load on 16 KB page devices, which Android 16
       # mandates for apps targeting SDK 36+. The failure is silent at build
       # time, so assert it here instead.
+      # A 4 KB aligned .so fails to load on 16 KB page devices, which Android 16
+      # mandates for apps targeting SDK 36+. The failure is silent at build
+      # time, so assert it on the packaged APKs here.
       - name: Check 16 KB page alignment
-        run: |
-          fail=0
-          for so in $(find app/build -name '*.so' -path '*arm64-v8a*' | sort -u); do
-            align=$(${ANDROID_HOME}/ndk/*/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-readelf -l "$so" \
-                    | awk '$1=="LOAD"{print $NF}' | sort -u | tr '\n' ' ')
-            echo "$so -> $align"
-            case "$align" in *0x4000*) ;; *) echo "::error::$so is not 16 KB aligned ($align)"; fail=1 ;; esac
-          done
-          exit $fail
+        run: python3 tools/check_elf_alignment.py $(find app/build/outputs/apk -name '*.apk')
 
       - name: Unit tests
         run: ./gradlew testFreeDebugUnitTest --stacktrace

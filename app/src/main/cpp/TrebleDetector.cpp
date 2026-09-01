@@ -68,23 +68,50 @@ private:
 extern "C" JNIEXPORT jint JNICALL
 Java_tk_hack5_treblecheck_data_TrebleDetector_check_1compatibility_1matrix(__unused JNIEnv *env, __unused jobject thiz, jstring matrixContentString, jstring rootString, jstring vendorSkuString, jstring hardwareSkuString) {
     using namespace android::vintf::details;
-    const char* matrixContent = env->GetStringUTFChars(matrixContentString, nullptr);
-    const char* root = env->GetStringUTFChars(rootString, nullptr);
-    const char* vendorSku = env->GetStringUTFChars(vendorSkuString, nullptr);
-    const char* hardwareSku = env->GetStringUTFChars(hardwareSkuString, nullptr);
 
-    auto fileSystem = std::make_unique<android::vintf::details::FileSystemUnderPath>(FileSystemUnderPath(root));
+    // Scoped accessor: the previous code released only matrixContentString, and
+    // released nothing at all on the early -1/-2 returns, leaking a copy of
+    // every other string on each call.
+    class ScopedUtfChars {
+    public:
+        ScopedUtfChars(JNIEnv* env, jstring string) : env_(env), string_(string),
+                                                      chars_(env->GetStringUTFChars(string, nullptr)) {}
+        ~ScopedUtfChars() {
+            if (chars_ != nullptr) {
+                env_->ReleaseStringUTFChars(string_, chars_);
+            }
+        }
+        ScopedUtfChars(const ScopedUtfChars&) = delete;
+        ScopedUtfChars& operator=(const ScopedUtfChars&) = delete;
+        [[nodiscard]] const char* c_str() const { return chars_; }
+    private:
+        JNIEnv* const env_;
+        const jstring string_;
+        const char* const chars_;
+    };
+
+    const ScopedUtfChars matrixContent(env, matrixContentString);
+    const ScopedUtfChars root(env, rootString);
+    const ScopedUtfChars vendorSku(env, vendorSkuString);
+    const ScopedUtfChars hardwareSku(env, hardwareSkuString);
+
+    if (matrixContent.c_str() == nullptr || root.c_str() == nullptr ||
+        vendorSku.c_str() == nullptr || hardwareSku.c_str() == nullptr) {
+        LOG(ERROR) << "Failed to read JNI string arguments";
+        return -1;
+    }
+
+    auto fileSystem = std::make_unique<FileSystemUnderPath>(root.c_str());
     std::string error;
 
     auto matrix = std::make_unique<android::vintf::CompatibilityMatrix>();
-    //matrix->setFileName(matrixPathChars);
 
-    if (!fromXml(matrix.get(), matrixContent, &error)) {
+    if (!fromXml(matrix.get(), matrixContent.c_str(), &error)) {
         LOG(ERROR) << "Cannot parse packaged matrix: " << error;
         return -1;
     }
 
-    auto propertyFetcher = std::make_unique<SkuPropertyFetcher>(SkuPropertyFetcher(vendorSku, hardwareSku));
+    auto propertyFetcher = std::make_unique<SkuPropertyFetcher>(vendorSku.c_str(), hardwareSku.c_str());
 
     auto vintfObject =
             android::vintf::VintfObject::Builder()
@@ -97,11 +124,12 @@ Java_tk_hack5_treblecheck_data_TrebleDetector_check_1compatibility_1matrix(__unu
         LOG(ERROR) << "Loading device manifest failed";
         return -2;
     }
-    bool ret = manifest->checkCompatibility(*matrix.get(), &error, android::vintf::CheckFlags::DISABLE_ALL_CHECKS);
+    const bool ret = manifest->checkCompatibility(*matrix, &error,
+                                                  android::vintf::CheckFlags::DISABLE_ALL_CHECKS);
     if (!error.empty()) {
-        LOG(ERROR) << "Compatibility check failed: " << error;
+        LOG(ERROR) << "Compatibility check reported: " << error;
     }
+    LOG(INFO) << "checkCompatibility returned " << ret;
 
-    env->ReleaseStringUTFChars(matrixContentString, matrixContent);
-    return ret;
+    return ret ? 1 : 0;
 }

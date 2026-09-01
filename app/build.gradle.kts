@@ -74,7 +74,11 @@ fun com.android.build.api.dsl.BuildType.setupBilling() {
 }
 
 android {
-    compileSdk = libs.versions.compileSdk.get().toInt()
+    // AGP 9 replaces the plain `compileSdk = 37` assignment with a block, so
+    // that minor platform revisions (android-37.1, ...) can be expressed.
+    compileSdk {
+        version = release(libs.versions.compileSdk.get().toInt())
+    }
     ndkVersion = libs.versions.ndk.get()
 
     defaultConfig {

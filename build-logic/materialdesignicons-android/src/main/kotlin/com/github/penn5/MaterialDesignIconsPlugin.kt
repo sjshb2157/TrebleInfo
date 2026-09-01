@@ -1,6 +1,7 @@
 package com.github.penn5
 
-import com.android.build.gradle.BaseExtension
+import com.android.build.api.dsl.ApplicationExtension
+import org.gradle.api.GradleException
 import groovy.json.JsonSlurper
 import org.apache.commons.io.output.WriterOutputStream
 import org.gradle.api.DefaultTask
@@ -24,7 +25,23 @@ private const val BASE_CDN_URL = "https://cdn.jsdelivr.net/npm/@mdi/svg"
 
 private const val SIGNATURE = "<!-- File auto-synced, do not edit! MaterialDesignIcons ID: "
 
-val Project.android: BaseExtension? get() = findProperty("android") as BaseExtension?
+/**
+ * First `res` directory of the `main` source set.
+ *
+ * AGP 9 removed `com.android.build.gradle.BaseExtension`, so this goes through
+ * the supported `com.android.build.api.dsl` surface instead. Note that the new
+ * [AndroidSourceDirectorySet.directories] returns paths as strings rather than
+ * the `File`s the old `srcDirs` gave back.
+ */
+internal fun Project.mainResDir(): File {
+    val android = extensions.findByType(ApplicationExtension::class.java)
+        ?: throw GradleException("The Android application plugin must be applied before this plugin")
+    val directories = android.sourceSets.findByName("main")?.res?.directories
+        ?: throw GradleException("Unable to detect srcSet for res directory")
+    val first = directories.firstOrNull()
+        ?: throw GradleException("Unable to detect res directory for srcSet")
+    return file(first)
+}
 
 @Suppress("unused")
 class MaterialDesignIconsPlugin : Plugin<Project> {
@@ -156,9 +173,7 @@ open class UpdateDrawablesTask : DefaultTask() {
 
     @Internal
     fun getDrawableDirs(): List<File> {
-        val srcSet = project.android?.sourceSets?.associate { Pair(it.name, it.res.srcDirs) }?.getOrDefault("main", null)
-        val resDir = (srcSet ?: throw RuntimeException("Unable to detect srcSet for res directory")).elementAtOrNull(0)
-        resDir ?: throw RuntimeException("Unable to detect res directory for srcSet")
+        val resDir = project.mainResDir()
 
         return resDir.list { _, name -> name.startsWith("drawable") }!!.mapNotNull { name ->
             val dir = resDir.resolve(name)

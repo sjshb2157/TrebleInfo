@@ -1,6 +1,7 @@
 package com.github.penn5
 
-import com.android.build.gradle.BaseExtension
+import com.android.build.api.dsl.ApplicationExtension
+import org.gradle.api.GradleException
 import org.gradle.api.DefaultTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -19,7 +20,23 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.*
 
-val Project.android: BaseExtension? get() = findProperty("android") as BaseExtension?
+/**
+ * First `res` directory of the `main` source set.
+ *
+ * AGP 9 removed `com.android.build.gradle.BaseExtension`, so this goes through
+ * the supported `com.android.build.api.dsl` surface instead. Note that the new
+ * [AndroidSourceDirectorySet.directories] returns paths as strings rather than
+ * the `File`s the old `srcDirs` gave back.
+ */
+internal fun Project.mainResDir(): File {
+    val android = extensions.findByType(ApplicationExtension::class.java)
+        ?: throw GradleException("The Android application plugin must be applied before this plugin")
+    val directories = android.sourceSets.findByName("main")?.res?.directories
+        ?: throw GradleException("Unable to detect srcSet for res directory")
+    val first = directories.firstOrNull()
+        ?: throw GradleException("Unable to detect res directory for srcSet")
+    return file(first)
+}
 val Project.poeditor: PoEditorPluginExtension get() = findProperty("poeditor") as PoEditorPluginExtension
 
 @Suppress("unused")
@@ -123,9 +140,7 @@ open class ImportPoEditorStringsTask : ImportPoEditorStringsBaseTask<File>, Defa
     fun doAction() = super.doBaseAction()
 
     override fun init(): File {
-        val srcSet = project.android?.sourceSets?.associate { Pair(it.name, it.res.srcDirs) }?.getOrDefault("main", null)
-        val resDir = (srcSet ?: throw RuntimeException("Unable to detect srcSet for res directory")).elementAtOrNull(0)
-        resDir ?: throw RuntimeException("Unable to detect res directory for srcSet")
+        val resDir = project.mainResDir()
 
         for (name in resDir.list { _, name -> name.startsWith("values") }!!) {
             val dir = resDir.resolve(name)

@@ -11,34 +11,24 @@
 
 [versions]
 # --- build ---------------------------------------------------------------
-# AGP is deliberately held on the 8.x line. Moving to 9.x is a separate,
-# larger migration (see docs/MODERNISATION.md).
-agp = "8.13.2"
+agp = "9.3.2"
 kotlin = "2.4.10"
-# r28 is the first NDK that links native code with 16 KB page alignment by
-# default, which Android 16 requires from every app targeting SDK 36+.
-ndk = "28.2.13676358"
+# r28 was the first NDK to link with 16 KB page alignment by default; the
+# CMake build asks for it explicitly anyway, so this can track the latest.
+ndk = "30.0.16138531"
 
 # --- Android SDK ---------------------------------------------------------
-# compileSdk cannot go past 36 while AGP is on 8.x: API 37 is only published
-# as minor-versioned platforms (android-37.0/37.1/...), which AGP 8.x cannot
-# resolve -- it looks for a plain "android-37".
-compileSdk = "36"
-targetSdk = "36"
-# Raised from 22: Compose 1.11 (androidx.compose.material:material-ripple and
+compileSdk = "37"
+targetSdk = "37"
+# Raised from 22: Compose (androidx.compose.material:material-ripple and
 # friends) declares minSdk 23, so the manifest merger rejects anything lower.
 minSdk = "23"
 
 # --- main ----------------------------------------------------------------
-# 14.2.1 is the last release that still supports compileSdk 36;
-# 15.x requires compileSdk 37 and therefore AGP 9.x.
-aboutlibraries = "14.2.1"
-# 2026.06.01 is the last BOM whose compose-ui (1.11.4) still supports AGP 8.x;
-# the following BOM pulls ui 1.12.0, which demands AGP >= 9.1.0.
-composeBom = "2026.06.01"
+aboutlibraries = "15.2.0"
+composeBom = "2026.08.00"
 activityCompose = "1.13.0"
-# 2.10.0 requires AGP >= 9.1.0.
-navigationCompose = "2.9.8"
+navigationCompose = "2.10.0"
 
 # --- nonfree -------------------------------------------------------------
 billing = "9.1.0"
