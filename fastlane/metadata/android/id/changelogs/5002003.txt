@@ -1,3 +1,0 @@
-- Memperbaiki pendeteksian yang salah pada beberapa perangkat lama
-- Pembaruan untuk terjemahan
-- Meningkatkan pengujian dan deteksi kesalahan

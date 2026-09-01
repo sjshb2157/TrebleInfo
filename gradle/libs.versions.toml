@@ -22,7 +22,7 @@ minSdk = "26"
 
 # 15.x needs kotlin-stdlib 2.4, whose metadata AGP's built-in compiler cannot
 # read. Same runtime API.
-aboutlibraries = "14.2.1"
+aboutlibraries = "15.2.0"
 composeBom = "2026.08.00"
 activityCompose = "1.13.0"
 navigationCompose = "2.10.0"

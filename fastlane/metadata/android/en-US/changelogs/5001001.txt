@@ -1,4 +1,0 @@
-- Reduced application size and improved performance
-- Translation improvements
-- Better layout on small screens
-- Bug fixes

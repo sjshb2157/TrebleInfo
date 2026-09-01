@@ -1,3 +1,0 @@
-- Corrige a detecção incorreta de alguns dispositivos mais antigos
-- Atualizar traduções
-- Melhorar testes e detecção de erros
