@@ -13,7 +13,7 @@
 # --- build ---------------------------------------------------------------
 agp = "9.3.2"
 # AGP 9 compiles Kotlin itself (built-in Kotlin). AGP 9.3.2 embeds a 2.2.x
-# compiler, and the compose/parcelize compiler plugins must match it exactly,
+# compiler, and the compose compiler plugin must match it exactly,
 # so this is not a free choice.
 kotlin = "2.2.10"
 # r28 was the first NDK to link with 16 KB page alignment by default; the
@@ -58,9 +58,6 @@ agp = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 commons-io = { module = "commons-io:commons-io", version.ref = "commonsIo" }
 kotlin-xml-builder = { module = "org.redundent:kotlin-xml-builder", version.ref = "kotlinXmlBuilder" }
 
-# Under AGP built-in Kotlin the parcelize Gradle plugin no longer contributes
-# its runtime artifact, so @Parcelize does not resolve unless it is declared.
-kotlin-parcelize-runtime = { module = "org.jetbrains.kotlin:kotlin-parcelize-runtime", version.ref = "kotlin" }
 aboutlibraries-core = { module = "com.mikepenz:aboutlibraries-core", version.ref = "aboutlibraries" }
 
 compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
@@ -90,6 +87,5 @@ screengrab = { module = "tools.fastlane:screengrab", version.ref = "screengrab" 
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 aboutlibraries = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "aboutlibraries" }
