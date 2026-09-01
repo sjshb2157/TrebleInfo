@@ -12,7 +12,10 @@
 [versions]
 # --- build ---------------------------------------------------------------
 agp = "9.3.2"
-kotlin = "2.4.10"
+# AGP 9 compiles Kotlin itself (built-in Kotlin). AGP 9.3.2 embeds a 2.2.x
+# compiler, and the compose/parcelize compiler plugins must match it exactly,
+# so this is not a free choice.
+kotlin = "2.2.10"
 # r28 was the first NDK to link with 16 KB page alignment by default; the
 # CMake build asks for it explicitly anyway, so this can track the latest.
 ndk = "30.0.16138531"
@@ -23,8 +26,12 @@ targetSdk = "37"
 # navigation-runtime 2.10.0 declares minSdk 24, so 23 no longer merges.
 minSdk = "24"
 
-# --- main ----------------------------------------------------------------
-aboutlibraries = "15.2.0"
+# Held at 14.x: 15.x is built with Kotlin 2.4 and drags kotlin-stdlib 2.4 onto
+# the compile classpath, whose metadata AGP's built-in 2.2 compiler cannot read
+# (it reads up to 2.3.0). 14.2.1 ships stdlib 2.3.20 and has the same runtime
+# API, so Licenses.kt is unaffected. Every androidx dependency is still on
+# stdlib 2.0/2.1 and is fine.
+aboutlibraries = "14.2.1"
 composeBom = "2026.08.00"
 activityCompose = "1.13.0"
 navigationCompose = "2.10.0"
@@ -80,7 +87,6 @@ screengrab = { module = "tools.fastlane:screengrab", version.ref = "screengrab" 
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 aboutlibraries = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "aboutlibraries" }

@@ -17,12 +17,10 @@
  */
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.aboutlibraries)
@@ -172,12 +170,6 @@ android {
     namespace = "tk.hack5.treblecheck"
 }
 
-kotlin {
-    jvmToolchain(21)
-    compilerOptions {
-        jvmTarget = JvmTarget.JVM_21
-    }
-}
 
 if (file("poeditor.properties").exists()) {
     project.poeditor.apiToken = readProperties("poeditor.properties").getProperty("apiToken")
