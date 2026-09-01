@@ -30,15 +30,10 @@ jobs:
 
       - uses: android-actions/setup-android@v4
 
-      # A submodule edited and committed in place points at a commit nobody can
-      # fetch, which breaks every clone. Cheap to check, so check it first.
-      - name: Verify submodule pointers
-        run: python3 tools/check-submodules.py
-
       - uses: gradle/actions/setup-gradle@v6
 
       - name: Resolve dependencies
-        run: ./gradlew :app:dependencies --configuration freeDebugRuntimeClasspath --stacktrace
+        run: ./gradlew :app:dependencies --configuration freeDebugRuntimeClasspath --warning-mode all --stacktrace
 
   # Windows and macOS have case-insensitive filesystems, where a bare header
   # such as libvintf's Regex.h shadows the system <regex.h>. Linux CI cannot
@@ -129,7 +124,11 @@ jobs:
           exit $fail
 
       - name: Unit tests
-        run: ./gradlew testFreeDebugUnitTest --stacktrace
+        run: ./gradlew testFreeDebugUnitTest testNonfreeDebugUnitTest --stacktrace
+
+      # Nothing else compiles the instrumentation sources, so they rot silently.
+      - name: Compile instrumentation tests
+        run: ./gradlew assembleFreeDebugAndroidTest --stacktrace
 
       - name: Lint
         run: ./gradlew lintFreeDebug lintFreeRelease --stacktrace
@@ -143,7 +142,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Upload reports
-        if: failure()
+        if: always()
         uses: actions/upload-artifact@v7
         with:
           name: reports

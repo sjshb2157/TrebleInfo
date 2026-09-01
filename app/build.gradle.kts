@@ -27,13 +27,6 @@ plugins {
     id("materialdesignicons-android")
 }
 
-/**
- * Reads a `.properties` file from the module directory.
- *
- * Replaces `org.jetbrains.kotlin.konan.properties.loadProperties`, which is an
- * internal Kotlin/Native helper that happened to be on the buildscript
- * classpath and is not part of any supported API.
- */
 fun readProperties(name: String): Properties = Properties().apply {
     val propertiesFile = file(name)
     if (propertiesFile.exists()) {
@@ -150,6 +143,8 @@ android {
     }
     lint {
         checkDependencies = true
+        // Otherwise findings only reach the HTML report, which nobody reads.
+        textReport = true
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
@@ -163,7 +158,6 @@ android {
     }
     namespace = "tk.hack5.treblecheck"
 }
-
 
 if (file("poeditor.properties").exists()) {
     project.poeditor.apiToken = readProperties("poeditor.properties").getProperty("apiToken")
