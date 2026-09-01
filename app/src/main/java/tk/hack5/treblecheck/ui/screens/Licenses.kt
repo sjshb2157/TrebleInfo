@@ -199,7 +199,11 @@ fun LibraryDialog(library: Library, setOpenItem: (OpenItem<*>?) -> Unit, openLin
                     }
                     if (library.funding.isNotEmpty()) {
                         Text(stringResource(R.string.library_funding), style = MaterialTheme.typography.titleMedium)
-                        library.funding.forEach { funding ->
+                        // A plain `for` rather than `forEach`: these are
+                        // `Set`s, and on a `java.util.Set` receiver Kotlin now
+                        // resolves `forEach` to the inherited
+                        // `java.lang.Iterable#forEach`, which is API 24+.
+                        for (funding in library.funding) {
                             TextButton({
                                 openLink(funding.url)
                             }) {
@@ -219,13 +223,13 @@ fun LibraryDialog(library: Library, setOpenItem: (OpenItem<*>?) -> Unit, openLin
                                 Alignment.Start
                             )
                         ) {
-                            library.licenses.forEach {
+                            for (license in library.licenses) {
                                 TextButton(
                                     onClick = {
-                                        setOpenItem(OpenItem.OpenLicense(library.uniqueId, it.hash))
+                                        setOpenItem(OpenItem.OpenLicense(library.uniqueId, license.hash))
                                     }
                                 ) {
-                                    Text(it.name)
+                                    Text(license.name)
                                 }
                             }
                         }
@@ -310,11 +314,11 @@ fun Libraries(innerPadding: PaddingValues, scrollConnection: NestedScrollConnect
                     Text(it)
                 }
                 FlowRow(verticalArrangement = Arrangement.Center, horizontalArrangement = Arrangement.spacedBy(horizontalSpacer, Alignment.Start)) {
-                    library.licenses.forEach {
+                    for (license in library.licenses) {
                         TextButton(
-                            onClick = { openItem = OpenItem.OpenLicense(library.uniqueId, it.hash) }
+                            onClick = { openItem = OpenItem.OpenLicense(library.uniqueId, license.hash) }
                         ) {
-                            Text(it.name)
+                            Text(license.name)
                         }
                     }
                 }
