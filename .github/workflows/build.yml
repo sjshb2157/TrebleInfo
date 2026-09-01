@@ -30,6 +30,11 @@ jobs:
 
       - uses: android-actions/setup-android@v4
 
+      # A submodule edited and committed in place points at a commit nobody can
+      # fetch, which breaks every clone. Cheap to check, so check it first.
+      - name: Verify submodule pointers
+        run: python3 tools/check-submodules.py
+
       - uses: gradle/actions/setup-gradle@v6
 
       - name: Resolve dependencies
