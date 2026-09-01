@@ -33,7 +33,7 @@
 需要 JDK 21 与 Android SDK。
 
 ```
-git clone --recurse-submodules https://github.com/sjshb2157/TrebleInfo.git
+git clone --recurse-submodules https://github.com/sjshb57/TrebleInfo.git
 cd TrebleInfo
 ./gradlew assembleDebug
 ```

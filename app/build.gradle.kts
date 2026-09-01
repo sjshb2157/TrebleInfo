@@ -67,10 +67,6 @@ android {
         versionCode = appVersionCode
         versionName = appVersionName
 
-        // Donation target. Still the upstream author's account.
-        buildConfigField("String", "PAYPAL_EMAIL", "\"hackintoshfive@gmail.com\"")
-        buildConfigField("String", "PAYPAL_CURRENCY", "\"GBP\"")
-        buildConfigField("String", "PAYPAL_DESCRIPTION", "\"Donation for Treble Info\"")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         ndk {
             //noinspection ChromeOsAbiSupport
@@ -176,7 +172,6 @@ dependencies {
     androidTestImplementation(composeBom)
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.test.junit)
-    androidTestImplementation(libs.compose.ui.test.junit4)
 }
 
 tasks.named("preBuild") {
