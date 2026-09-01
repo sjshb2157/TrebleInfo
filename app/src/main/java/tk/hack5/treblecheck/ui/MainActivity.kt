@@ -311,8 +311,6 @@ fun MainActivityPreview() {
             { },
             { },
             { },
-            null,
-            { },
             { }
         )
     }
