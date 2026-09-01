@@ -146,8 +146,6 @@ android {
         // kotlin and kotlinStdlib are pinned to what AGP's built-in compiler
         // accepts, so "a newer version exists" is never actionable here.
         disable += setOf("GradleDependency", "NewerVersionAvailable")
-        // Otherwise findings only reach the HTML report, which nobody reads.
-        textReport = true
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21

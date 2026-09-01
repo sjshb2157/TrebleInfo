@@ -133,6 +133,12 @@ jobs:
       - name: Lint
         run: ./gradlew lintFreeDebug lintFreeRelease --stacktrace
 
+      # AGP always writes the text report; print it so findings are visible
+      # without downloading an artifact.
+      - name: Lint report
+        if: always()
+        run: cat app/build/reports/lint-results-*.txt || true
+
       - name: Upload APKs
         if: always()
         uses: actions/upload-artifact@v7
