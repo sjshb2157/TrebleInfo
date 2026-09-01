@@ -75,9 +75,7 @@ fun com.android.build.api.dsl.BuildType.setupBilling() {
 
 android {
     compileSdk = libs.versions.compileSdk.get().toInt()
-    // AGP 8.13's default NDK. Pinned so native builds do not silently change
-    // when the toolchain default moves.
-    ndkVersion = "27.0.12077973"
+    ndkVersion = libs.versions.ndk.get()
 
     defaultConfig {
         applicationId = "tk.hack5.treblecheck"

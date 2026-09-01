@@ -15,6 +15,9 @@
 # larger migration (see docs/MODERNISATION.md).
 agp = "8.13.2"
 kotlin = "2.4.10"
+# r28 is the first NDK that links native code with 16 KB page alignment by
+# default, which Android 16 requires from every app targeting SDK 36+.
+ndk = "28.2.13676358"
 
 # --- Android SDK ---------------------------------------------------------
 # compileSdk cannot go past 36 while AGP is on 8.x: API 37 is only published
