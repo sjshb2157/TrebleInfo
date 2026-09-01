@@ -189,31 +189,37 @@ object TrebleDetector {
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    fun getFrameworkCompatibilityMatrices(sepolicyVersion: Pair<Int, Int>) = sequence {
-        // Although SP usually contains a valid FCM,
-        // we could be running a device-specific image which has a weird FCM,
-        // or it could be older than vendor.
-        // Therefore, we don't fallback to SP, even when we don't have a matching FCM.
-        arrayOf(
-            "compatibility_matrix.legacy.xml",
-            "compatibility_matrix.1.xml",
-            "compatibility_matrix.2.xml",
-            "compatibility_matrix.3.xml",
-            "compatibility_matrix.4.xml",
-            "compatibility_matrix.5.xml",
-            "compatibility_matrix.6.xml",
-            "compatibility_matrix.7.xml",
-        ).forEach { name ->
-            val stream = this::class.java.classLoader!!.getResourceAsStream(name)
-            require(stream != null) { "$name not found" }
-            val original = stream.bufferedReader().readText()
+    fun getFrameworkCompatibilityMatrices(sepolicyVersion: Pair<Int, Int>): Pair<Sequence<String>, Int> {
+        // Hoisted out of the sequence builder: inside it, `this` is the
+        // SequenceScope rather than TrebleDetector. K2 also needs the element
+        // type spelled out, because `yield` sits inside a nested lambda.
+        val classLoader = this::class.java.classLoader!!
+        return sequence<String> {
+            // Although SP usually contains a valid FCM,
+            // we could be running a device-specific image which has a weird FCM,
+            // or it could be older than vendor.
+            // Therefore, we don't fallback to SP, even when we don't have a matching FCM.
+            arrayOf(
+                "compatibility_matrix.legacy.xml",
+                "compatibility_matrix.1.xml",
+                "compatibility_matrix.2.xml",
+                "compatibility_matrix.3.xml",
+                "compatibility_matrix.4.xml",
+                "compatibility_matrix.5.xml",
+                "compatibility_matrix.6.xml",
+                "compatibility_matrix.7.xml",
+            ).forEach { name ->
+                val stream = classLoader.getResourceAsStream(name)
+                require(stream != null) { "$name not found" }
+                val original = stream.bufferedReader().readText()
 
-            val insertIndex = original.lastIndexOf("</compatibility-matrix>")
-            yield(original.substring(0, insertIndex) +
-                    "<sepolicy><kernel-sepolicy-version>0</kernel-sepolicy-version><sepolicy-version>${sepolicyVersion.first}.${sepolicyVersion.second}</sepolicy-version></sepolicy>" +
-                    original.substring(insertIndex))
-        }
-    } to 7
+                val insertIndex = original.lastIndexOf("</compatibility-matrix>")
+                yield(original.substring(0, insertIndex) +
+                        "<sepolicy><kernel-sepolicy-version>0</kernel-sepolicy-version><sepolicy-version>${sepolicyVersion.first}.${sepolicyVersion.second}</sepolicy-version></sepolicy>" +
+                        original.substring(insertIndex))
+            }
+        } to 7
+    }
 
     private fun checkCompatibilityMatrix(level: Int?, sepolicyVersion: Pair<Int, Int>): Boolean? {
         val (matrices, maxLevel) = getFrameworkCompatibilityMatrices(sepolicyVersion)
