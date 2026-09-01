@@ -223,7 +223,7 @@ class MainActivity : ComponentActivity() {
 
 sealed class Screen(val route: String)
 
-sealed class RootScreen(route: String, @StringRes val title: Int, @DrawableRes val icon: Int) : Screen(route)
+sealed class RootScreen(route: String, @param:StringRes val title: Int, @param:DrawableRes val icon: Int) : Screen(route)
 
 object Screens {
     object Images : RootScreen("images", R.string.screen_images, R.drawable.screen_images)

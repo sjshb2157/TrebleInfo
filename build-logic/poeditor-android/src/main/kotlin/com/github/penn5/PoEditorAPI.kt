@@ -6,7 +6,7 @@ import groovy.json.JsonSlurper
 import java.lang.RuntimeException
 import java.math.BigDecimal
 import java.net.HttpURLConnection
-import java.net.URL
+import java.net.URI
 import java.nio.charset.StandardCharsets
 import java.text.SimpleDateFormat
 import java.util.*
@@ -23,7 +23,7 @@ class PoEditorAPI(private val apiToken: String) {
     internal fun post(endpoint: String, args: MutableMap<String, String>): Map<*, *> {
         args["api_token"] = this.apiToken
         val data = args.map {"${utf8(it.key)}=${utf8(it.value)}"}.joinToString("&")
-        val conn = (URL(POEDITOR_API_URL + endpoint).openConnection() as HttpURLConnection).apply {
+        val conn = (URI(POEDITOR_API_URL + endpoint).toURL().openConnection() as HttpURLConnection).apply {
             requestMethod = "POST"
             doInput = true
             doOutput = true
@@ -108,6 +108,7 @@ enum class ExportFormat(internal val raw: String) {
     XTB("xtb")
 }
 
+@ConsistentCopyVisibility
 data class PoEditorProject internal constructor(private val api: PoEditorAPI, val id: Int, val name: String,
                                                 val description: String?, val public: Boolean, val open: Boolean,
                                                 val referenceLanguage: String?, val termsCount: Int, val created: Date) {
@@ -135,7 +136,7 @@ data class PoEditorProject internal constructor(private val api: PoEditorAPI, va
 
     fun exportTranslation(language: String, format: ExportFormat,
                           filters: ExportFilterFlags? = null, alphabetical: Boolean = false): ByteArray {
-        return URL(exportTranslationUrl(language, format, filters, alphabetical)).readBytes()
+        return URI(exportTranslationUrl(language, format, filters, alphabetical)).toURL().readBytes()
     }
 
     companion object {

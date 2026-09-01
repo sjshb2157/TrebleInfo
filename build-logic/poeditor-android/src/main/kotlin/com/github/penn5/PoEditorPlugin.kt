@@ -23,10 +23,7 @@ import java.util.*
 /**
  * First `res` directory of the `main` source set.
  *
- * AGP 9 removed `com.android.build.gradle.BaseExtension`, so this goes through
- * the supported `com.android.build.api.dsl` surface instead. Note that the new
- * [AndroidSourceDirectorySet.directories] returns paths as strings rather than
- * the `File`s the old `srcDirs` gave back.
+ * AGP 9 removed `BaseExtension`; `directories` returns strings, not `File`s.
  */
 internal fun Project.mainResDir(): File {
     val android = extensions.findByType(ApplicationExtension::class.java)

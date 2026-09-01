@@ -49,14 +49,11 @@ val appVersionName: String = versionProperties.getProperty("versionName")
 val appVersionCode: Int = versionProperties.getProperty("versionCode").toInt()
 
 aboutLibraries {
-    // `configPath` / `excludeFields` moved into the `collect` and `export`
-    // blocks in AboutLibraries 11. `excludeFields = ["generated"]` is gone;
-    // the timestamp is now controlled by `includeMetaData`, which must stay
-    // off for reproducible builds.
     collect {
         configPath = layout.projectDirectory.dir("librariesConfig")
     }
     export {
+        // Timestamps break reproducible builds.
         includeMetaData = false
         prettyPrint = true
     }
@@ -71,8 +68,6 @@ fun com.android.build.api.dsl.BuildType.setupBilling() {
 }
 
 android {
-    // AGP 9 replaces the plain `compileSdk = 37` assignment with a block, so
-    // that minor platform revisions (android-37.1, ...) can be expressed.
     compileSdk {
         version = release(libs.versions.compileSdk.get().toInt())
     }
@@ -146,9 +141,7 @@ android {
         }
     }
     dependenciesInfo {
-        // Disables dependency metadata when building APKs.
         includeInApk = false
-        // Disables dependency metadata when building Android App Bundles.
         includeInBundle = false
     }
     lint {
@@ -159,12 +152,10 @@ android {
         targetCompatibility = JavaVersion.VERSION_21
     }
     sourceSets {
-        // src/sharedTest/java holds only Kotlin, so registering it on .kotlin
-        // is enough; the old duplicate .java registration is gone.
-        get("test").kotlin.srcDir("src/sharedTest/java")
-        get("test").resources.srcDir("src/sharedTest/resources")
-        get("androidTest").kotlin.srcDir("src/sharedTest/java")
-        get("androidTest").resources.srcDir("src/sharedTest/resources")
+        get("test").kotlin.directories += "src/sharedTest/java"
+        get("test").resources.directories += "src/sharedTest/resources"
+        get("androidTest").kotlin.directories += "src/sharedTest/java"
+        get("androidTest").resources.directories += "src/sharedTest/resources"
     }
     namespace = "tk.hack5.treblecheck"
 }
@@ -216,8 +207,8 @@ tasks.named("preBuild") {
 }
 
 tasks.register("versionName") {
-    // Captured at configuration time so the task body does not reach back into
-    // the project, which the configuration cache forbids.
+    // Read now, not in doLast: the configuration cache forbids reaching back
+    // into the project at execution time.
     val version = appVersionName
     doLast {
         println(version)

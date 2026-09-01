@@ -23,16 +23,12 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
     }
-    // The two build plugins used to be git submodules pointing at
-    // github.com/penn5. They are unmaintained, so they now live in
-    // build-logic/ and are built from source as part of this repository.
+    // Formerly unmaintained git submodules from github.com/penn5.
     includeBuild("build-logic/poeditor-android")
     includeBuild("build-logic/materialdesignicons-android")
 }
 
 plugins {
-    // Lets Gradle provision the Java 21 toolchain automatically when the
-    // machine does not already have a matching JDK.
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 

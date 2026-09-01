@@ -114,13 +114,7 @@ sealed class OpenItem<T> {
         private const val LIBRARY = "library"
         private const val LICENSE = "license"
 
-        /**
-         * Saves the open dialog as a plain list of strings.
-         *
-         * This used to be `@Parcelize`, but AGP 9's built-in Kotlin does not
-         * run the parcelize compiler plugin, and a Saver is the idiomatic
-         * Compose way to survive configuration changes anyway.
-         */
+        /** AGP 9's built-in Kotlin does not run the parcelize plugin. */
         val Saver: Saver<OpenItem<*>?, Any> = listSaver(
             save = { item ->
                 when (item) {
@@ -225,10 +219,8 @@ fun LibraryDialog(library: Library, setOpenItem: (OpenItem<*>?) -> Unit, openLin
                     }
                     if (library.funding.isNotEmpty()) {
                         Text(stringResource(R.string.library_funding), style = MaterialTheme.typography.titleMedium)
-                        // A plain `for` rather than `forEach`: these are
-                        // `Set`s, and on a `java.util.Set` receiver Kotlin now
-                        // resolves `forEach` to the inherited
-                        // `java.lang.Iterable#forEach`, which is API 24+.
+                        // Not forEach: on a java.util.Set receiver that
+                        // resolves to Iterable#forEach, which is API 24+.
                         for (funding in library.funding) {
                             TextButton({
                                 openLink(funding.url)
