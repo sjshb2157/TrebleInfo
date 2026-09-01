@@ -61,7 +61,7 @@ jobs:
       - name: Install NDK and CMake
         shell: bash
         run: |
-          NDK=$(grep -oP '(?<=^ndk = ")[^"]+' gradle/libs.versions.toml)
+          NDK=$(grep -oP '(?<=ndkVersion = ")[^"]+' app/build.gradle.kts)
           SDKM="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager.bat"
           [ -f "$SDKM" ] || SDKM=sdkmanager
           "$SDKM" --install "ndk;$NDK" "cmake;3.22.1"
@@ -91,7 +91,7 @@ jobs:
 
       - name: Install NDK and CMake
         run: |
-          NDK=$(grep -oP '(?<=^ndk = ")[^"]+' gradle/libs.versions.toml)
+          NDK=$(grep -oP '(?<=ndkVersion = ")[^"]+' app/build.gradle.kts)
           sdkmanager --install "ndk;$NDK" "cmake;3.22.1"
 
       - uses: gradle/actions/setup-gradle@v6
@@ -118,7 +118,7 @@ jobs:
             for so in $(find "$work/x" -name '*.so' | sort); do
               align=$("$readelf" -lW "$so" | awk '$1=="LOAD"{print $NF}' | sort -u | tr '\n' ' ')
               echo "   ${so#$work/x/} -> $align"
-              case "$align" in *0x1000*) echo "::error::${so#$work/x/} in $apk is not 16 KB aligned ($align)"; fail=1 ;; esac
+              case "$align" in "0x4000 ") ;; *) echo "::error::${so#$work/x/} in $apk is not 16 KB aligned ($align)"; fail=1 ;; esac
             done
           done
           exit $fail

@@ -1,3 +1,8 @@
+/*
+ * Copyright (C) penn5 (Hackintosh Five)
+ * Vendored from https://github.com/penn5/materialdesignicons-android
+ * See ../.upstream-commit for the imported revision.
+ */
 package com.github.penn5
 
 import com.android.build.api.dsl.ApplicationExtension

@@ -1,3 +1,8 @@
+/*
+ * Copyright (C) penn5 (Hackintosh Five)
+ * Vendored from https://github.com/penn5/poeditor-android
+ * See ../.upstream-commit for the imported revision.
+ */
 @file:Suppress("unused")
 
 package com.github.penn5

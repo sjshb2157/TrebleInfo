@@ -62,14 +62,15 @@ fun com.android.build.api.dsl.BuildType.setupBilling() {
 
 android {
     compileSdk {
-        version = release(libs.versions.compileSdk.get().toInt())
+        version = release(37)
     }
-    ndkVersion = libs.versions.ndk.get()
+    ndkVersion = "30.0.16138531"
 
     defaultConfig {
         applicationId = "tk.hack5.treblecheck"
-        minSdk = libs.versions.minSdk.get().toInt()
-        targetSdk = libs.versions.targetSdk.get().toInt()
+        // Project Treble starts at API 26.
+        minSdk = 26
+        targetSdk = 37
         versionCode = appVersionCode
         versionName = appVersionName
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

@@ -13,12 +13,7 @@
 agp = "9.3.2"
 # Must match the compiler AGP embeds for built-in Kotlin.
 kotlin = "2.2.10"
-ndk = "30.0.16138531"
 
-compileSdk = "37"
-targetSdk = "37"
-# Treble starts at API 26.
-minSdk = "26"
 
 aboutlibraries = "15.2.0"
 # AboutLibraries asks for kotlin-stdlib 2.4, whose metadata AGP's built-in 2.2
