@@ -179,7 +179,7 @@ data class PoEditorTerm(val key: String, val context: String?, val plural: Strin
             val updated = parseDate(json["updated"] as String)
             val translation = PoEditorTranslation.fromJson(json["translation"] as Map<*, *>)
             val reference = setNullOnEmpty(json["reference"] as String)
-            val tags = (json["tags"] as List<*>).filterIsInstance(String::class.java).filter { it.isNotEmpty() }
+            val tags = (json["tags"] as List<*>).filterIsInstance<String>().filter { it.isNotEmpty() }
             val comment = setNullOnEmpty(json["comment"] as String)
             return PoEditorTerm(key, context, plural, created, updated, translation, reference, tags, comment)
         }

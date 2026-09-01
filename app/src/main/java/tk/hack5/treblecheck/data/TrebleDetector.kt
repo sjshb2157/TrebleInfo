@@ -549,7 +549,7 @@ object TrebleDetector {
             return parseVersion(sepolicyVersionFile.bufferedReader().readLine())
         }
 
-        val files = File(root, "/vendor/etc/selinux/").listFiles { it -> it.canRead() && it.extension == "cil" }
+        val files = File(root, "/vendor/etc/selinux/").listFiles { it.canRead() && it.extension == "cil" }
         return files?.let { parseSelinuxData(it) }
     }
 
