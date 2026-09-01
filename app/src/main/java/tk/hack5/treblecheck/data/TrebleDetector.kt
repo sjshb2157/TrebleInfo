@@ -189,15 +189,10 @@ object TrebleDetector {
     }
 
     /**
-     * The bundled AOSP framework compatibility matrices, and the highest FCM
-     * level at which a non-match is treated as a real failure.
-     *
-     * Matrices are bundled up to 202604, but that ceiling stays at 7 on
-     * purpose. Above it a device that matches nothing is reported as unknown
-     * rather than incompatible: vendors routinely ship manifests with private
-     * extensions that a stock AOSP matrix rejects, so a non-match there is not
-     * evidence that Treble is missing. Raising it would turn those devices
-     * into a hard error.
+     * The bundled matrices, and the highest FCM level at which a non-match
+     * counts as a failure. That ceiling stays at 7 deliberately: above it a
+     * device matching nothing is reported unknown rather than incompatible,
+     * because vendor manifests routinely fail a stock AOSP matrix.
      */
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     fun getFrameworkCompatibilityMatrices(sepolicyVersion: Pair<Int, Int>): Pair<Sequence<String>, Int> {
@@ -461,8 +456,7 @@ object TrebleDetector {
 
     private fun locateVendorManifestFragments(): List<File> {
         val dir = File(root, "/vendor/etc/vintf/manifest")
-        // Some vendors drop a subdirectory in here; opening one as a manifest
-        // throws EISDIR and aborts detection entirely.
+        // isFile: a subdirectory here would throw EISDIR and abort detection.
         return (dir.listFiles() ?: return emptyList()).filter { it.isFile && it.canRead() }
     }
 

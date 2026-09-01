@@ -1,7 +1,3 @@
-/*
- * Vendored from https://github.com/penn5/materialdesignicons-android by penn5. See .upstream-commit.
- */
-
 plugins {
     `kotlin-dsl`
 }

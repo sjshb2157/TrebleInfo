@@ -46,9 +46,7 @@ fun Contribute(
     contributeCode: () -> Unit,
     projectPage: () -> Unit,
 ) {
-    // heightIn(min = maxHeight) is what makes Arrangement.Center do anything: a
-    // scrolling Column is measured with an unbounded height, so it would
-    // otherwise wrap its content and sit at the top of the screen.
+    // Without heightIn a scrolling Column wraps its content and Center is a no-op.
     BoxWithConstraints(Modifier.fillMaxSize()) {
         Column(
             Modifier

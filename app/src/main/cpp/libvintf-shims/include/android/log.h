@@ -23,9 +23,8 @@
 
 __BEGIN_DECLS
 
-// These are redeclared without their real __INTRODUCED_IN(30) so that libbase's
-// headers compile below API 30. Nothing actually calls them, so the mismatch is
-// deliberate and the resulting -Wavailability noise is not useful.
+// Redeclared without __INTRODUCED_IN(30) so libbase compiles below API 30.
+// Nothing calls them, so the availability mismatch is deliberate.
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wavailability"
 

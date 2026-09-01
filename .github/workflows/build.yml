@@ -15,8 +15,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # Fast feedback on the Gradle wiring. Needs no native submodules, so it
-  # finishes long before the full build.
   configure:
     name: Configure
     runs-on: ubuntu-latest
@@ -35,9 +33,6 @@ jobs:
       - name: Resolve dependencies
         run: ./gradlew :app:dependencies --configuration debugRuntimeClasspath --warning-mode all --stacktrace
 
-  # Windows and macOS have case-insensitive filesystems, where a bare header
-  # such as libvintf's Regex.h shadows the system <regex.h>. Linux CI cannot
-  # see that class of bug, so compile the native code on Windows too.
   build-windows:
     name: Build (Windows)
     runs-on: windows-latest
@@ -99,13 +94,9 @@ jobs:
       - name: Assemble debug
         run: ./gradlew assembleDebug --stacktrace
 
-      # Release exercises R8, resource shrinking and the ProGuard rules, none of
-      # which the debug variants touch. Unsigned without signing.properties.
       - name: Assemble release
         run: ./gradlew assembleRelease --stacktrace
 
-      # A 4 KB aligned .so fails to load on the 16 KB page devices that Android
-      # requires support for from targetSdk 36 on.
       - name: Check 16 KB page alignment
         run: |
           fail=0
@@ -126,15 +117,12 @@ jobs:
       - name: Unit tests
         run: ./gradlew testDebugUnitTest --stacktrace
 
-      # Nothing else compiles the instrumentation sources, so they rot silently.
       - name: Compile instrumentation tests
         run: ./gradlew assembleDebugAndroidTest --stacktrace
 
       - name: Lint
         run: ./gradlew lintDebug lintRelease --stacktrace
 
-      # AGP always writes the text report; print it so findings are visible
-      # without downloading an artifact.
       - name: Lint report
         if: always()
         run: cat app/build/reports/lint-results-*.txt || true
@@ -144,8 +132,6 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: apks
-          # The androidTest APK has no launcher activity and is only useful to
-          # an instrumentation runner, so it is built but not published.
           path: |
             app/build/outputs/apk/**/*.apk
             !app/build/outputs/apk/androidTest/**
