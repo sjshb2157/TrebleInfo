@@ -448,7 +448,10 @@ object TrebleDetector {
 
     private fun locateVendorManifestFragments(): List<File> {
         val dir = File(root, "/vendor/etc/vintf/manifest")
-        return (dir.listFiles() ?: return emptyList()).filter { it.canRead() }
+        // isFile matters: some vendors drop a subdirectory in here (a Xiaomi
+        // device has /vendor/etc/vintf/manifest/qspa), and opening a directory
+        // as a manifest throws EISDIR, which aborted the whole detection.
+        return (dir.listFiles() ?: return emptyList()).filter { it.isFile && it.canRead() }
     }
 
     /**
@@ -507,7 +510,7 @@ object TrebleDetector {
 
     private fun locateOdmManifestFragments(): List<File> {
         val dir = File(root, "/odm/etc/vintf/manifest")
-        return (dir.listFiles() ?: return emptyList()).toList()
+        return (dir.listFiles() ?: return emptyList()).filter { it.isFile && it.canRead() }
     }
 
     private fun locateLegacyManifest(): File? {
