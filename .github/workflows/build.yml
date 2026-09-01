@@ -144,7 +144,11 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: apks
-          path: app/build/outputs/apk/**/*.apk
+          # The androidTest APK has no launcher activity and is only useful to
+          # an instrumentation runner, so it is built but not published.
+          path: |
+            app/build/outputs/apk/**/*.apk
+            !app/build/outputs/apk/androidTest/**
           if-no-files-found: ignore
 
       - name: Upload reports
