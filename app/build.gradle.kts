@@ -27,13 +27,6 @@ plugins {
     id("materialdesignicons-android")
 }
 
-/**
- * Reads a `.properties` file from the module directory.
- *
- * Replaces `org.jetbrains.kotlin.konan.properties.loadProperties`, which is an
- * internal Kotlin/Native helper that happened to be on the buildscript
- * classpath and is not part of any supported API.
- */
 fun readProperties(name: String): Properties = Properties().apply {
     val propertiesFile = file(name)
     if (propertiesFile.exists()) {
@@ -150,6 +143,9 @@ android {
     }
     lint {
         checkDependencies = true
+        // kotlin and kotlinStdlib are pinned to what AGP's built-in compiler
+        // accepts, so "a newer version exists" is never actionable here.
+        disable += setOf("GradleDependency", "NewerVersionAvailable")
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
@@ -164,7 +160,6 @@ android {
     namespace = "tk.hack5.treblecheck"
 }
 
-
 if (file("poeditor.properties").exists()) {
     project.poeditor.apiToken = readProperties("poeditor.properties").getProperty("apiToken")
 }
@@ -176,6 +171,10 @@ tasks.withType(com.github.penn5.ImportPoEditorStringsBaseTask::class) {
 }
 
 dependencies {
+    constraints {
+        implementation(libs.kotlin.stdlib) { version { strictly(libs.versions.kotlinStdlib.get()) } }
+    }
+
     val composeBom = platform(libs.compose.bom)
 
     implementation(composeBom)
@@ -183,6 +182,7 @@ dependencies {
     implementation(libs.compose.material3)
     implementation(libs.compose.material3.windowsizeclass)
     implementation(libs.compose.animation)
+    implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.aboutlibraries.core)

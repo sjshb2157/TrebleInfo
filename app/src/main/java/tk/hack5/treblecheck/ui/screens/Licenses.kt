@@ -35,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -54,6 +55,7 @@ fun Licenses(
     val libraries = remember { mutableStateOf<Libs?>(null) }
 
     val context = LocalContext.current
+    val resources = LocalResources.current
     if (!LocalInspectionMode.current) {
         LaunchedEffect(libraries) {
             libraries.value = Libs.Builder().withContext(context).build()
@@ -68,7 +70,7 @@ fun Licenses(
             "https://spdx.org/licenses/GPL-3.0-or-later.html",
             null,
             "GPL-3.0-or-later",
-            context.resources.openRawResource(R.raw.license).bufferedReader().readText(),
+            resources.openRawResource(R.raw.license).bufferedReader().readText(),
             "GPL-3.0-or-later-TrebleInfo"
         )
     )

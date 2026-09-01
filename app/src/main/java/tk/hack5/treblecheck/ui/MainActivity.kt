@@ -20,7 +20,6 @@
 package tk.hack5.treblecheck.ui
 
 import android.content.*
-import android.net.Uri
 import android.os.Bundle
 import android.os.StrictMode
 import android.util.Log
@@ -42,6 +41,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.core.view.WindowCompat
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -156,7 +156,7 @@ class MainActivity : ComponentActivity() {
                 cpuArch,
                 fileName,
                 {
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/phhusson/treble_experimentations/wiki/Generic-System-Image-%28GSI%29-list"))
+                    val intent = Intent(Intent.ACTION_VIEW, "https://github.com/phhusson/treble_experimentations/wiki/Generic-System-Image-%28GSI%29-list".toUri())
                     try {
                         startActivity(intent)
                     } catch (e: ActivityNotFoundException) {
@@ -166,7 +166,7 @@ class MainActivity : ComponentActivity() {
                 },
                 {
                     val intent = Intent(Intent.ACTION_SENDTO).apply {
-                        data = Uri.parse("mailto:")
+                        data = "mailto:".toUri()
                         putExtra(Intent.EXTRA_EMAIL, arrayOf("contact-project+trebleinfo-trebleinfo-30453147-issue-@incoming.gitlab.com"))
                     }
                     try {
@@ -178,7 +178,7 @@ class MainActivity : ComponentActivity() {
                 },
                 {
                     val intent = Intent(Intent.ACTION_SENDTO).apply {
-                        data = Uri.parse("mailto:")
+                        data = "mailto:".toUri()
                         putExtra(Intent.EXTRA_EMAIL, arrayOf("treble@hack5.dev"))
                     }
                     try {
@@ -189,7 +189,7 @@ class MainActivity : ComponentActivity() {
                     }
                 },
                 {
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://gitlab.com/TrebleInfo/TrebleInfo/-/blob/dev/TRANSLATING.md"))
+                    val intent = Intent(Intent.ACTION_VIEW, "https://gitlab.com/TrebleInfo/TrebleInfo/-/blob/dev/TRANSLATING.md".toUri())
                     try {
                         startActivity(intent)
                     } catch (e: ActivityNotFoundException) {
@@ -198,7 +198,7 @@ class MainActivity : ComponentActivity() {
                     }
                 },
                 {
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://gitlab.com/TrebleInfo/TrebleInfo#contributing"))
+                    val intent = Intent(Intent.ACTION_VIEW, "https://gitlab.com/TrebleInfo/TrebleInfo#contributing".toUri())
                     try {
                         startActivity(intent)
                     } catch (e: ActivityNotFoundException) {
@@ -209,7 +209,7 @@ class MainActivity : ComponentActivity() {
                 donationPopup,
                 { donationPopup = null },
                 { url ->
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                    val intent = Intent(Intent.ACTION_VIEW, url.toUri())
                     try {
                         startActivity(intent)
                     } catch (e: ActivityNotFoundException) {
