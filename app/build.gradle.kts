@@ -17,10 +17,12 @@
  */
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.aboutlibraries)
@@ -160,15 +162,21 @@ android {
         targetCompatibility = JavaVersion.VERSION_21
     }
     sourceSets {
-        // Built-in Kotlin only honours Kotlin sources added to
-        // AndroidSourceSet.kotlin, never to .java, so the old duplicate
-        // registration is gone. src/sharedTest/java holds only Kotlin.
+        // src/sharedTest/java holds only Kotlin, so registering it on .kotlin
+        // is enough; the old duplicate .java registration is gone.
         get("test").kotlin.srcDir("src/sharedTest/java")
         get("test").resources.srcDir("src/sharedTest/resources")
         get("androidTest").kotlin.srcDir("src/sharedTest/java")
         get("androidTest").resources.srcDir("src/sharedTest/resources")
     }
     namespace = "tk.hack5.treblecheck"
+}
+
+kotlin {
+    jvmToolchain(21)
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_21
+    }
 }
 
 if (file("poeditor.properties").exists()) {
