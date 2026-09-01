@@ -31,7 +31,3 @@ dependencies {
     compileOnly(libs.agp)
     implementation(libs.commons.io)
 }
-
-kotlin {
-    jvmToolchain(21)
-}
