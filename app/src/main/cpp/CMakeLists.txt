@@ -67,7 +67,7 @@ add_library(
 
         hardware_interfaces/compatibility_matrices/exclude/fcm_exclude.cpp
 
-        system_core/libutils/Errors.cpp
+        system_core/libutils/binder/Errors.cpp
 
         TrebleDetector.cpp
 )
