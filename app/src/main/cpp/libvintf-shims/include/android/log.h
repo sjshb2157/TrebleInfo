@@ -23,6 +23,12 @@
 
 __BEGIN_DECLS
 
+// These are redeclared without their real __INTRODUCED_IN(30) so that libbase's
+// headers compile below API 30. Nothing actually calls them, so the mismatch is
+// deliberate and the resulting -Wavailability noise is not useful.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wavailability"
+
 #if __ANDROID_API__ < 30
 void __android_log_write_log_message(struct __android_log_message* log_message) __INTRODUCED_IN(1);
 
@@ -48,5 +54,7 @@ int32_t __android_log_get_minimum_priority(void) __INTRODUCED_IN(1);
 
 void __android_log_set_default_tag(const char* tag) __INTRODUCED_IN(1);
 #endif
+
+#pragma clang diagnostic pop
 
 __END_DECLS

@@ -190,9 +190,7 @@ object TrebleDetector {
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     fun getFrameworkCompatibilityMatrices(sepolicyVersion: Pair<Int, Int>): Pair<Sequence<String>, Int> {
-        // Hoisted out of the sequence builder: inside it, `this` is the
-        // SequenceScope rather than TrebleDetector. K2 also needs the element
-        // type spelled out, because `yield` sits inside a nested lambda.
+        // Hoisted: inside the builder `this` is the SequenceScope.
         val classLoader = this::class.java.classLoader!!
         return sequence<String> {
             // Although SP usually contains a valid FCM,
@@ -448,9 +446,8 @@ object TrebleDetector {
 
     private fun locateVendorManifestFragments(): List<File> {
         val dir = File(root, "/vendor/etc/vintf/manifest")
-        // isFile matters: some vendors drop a subdirectory in here (a Xiaomi
-        // device has /vendor/etc/vintf/manifest/qspa), and opening a directory
-        // as a manifest throws EISDIR, which aborted the whole detection.
+        // Some vendors drop a subdirectory in here; opening one as a manifest
+        // throws EISDIR and aborts detection entirely.
         return (dir.listFiles() ?: return emptyList()).filter { it.isFile && it.canRead() }
     }
 

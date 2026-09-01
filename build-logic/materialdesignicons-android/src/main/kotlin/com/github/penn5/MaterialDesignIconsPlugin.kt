@@ -16,7 +16,7 @@ import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.net.HttpURLConnection
-import java.net.URL
+import java.net.URI
 import java.nio.charset.StandardCharsets
 import java.util.*
 import javax.xml.parsers.SAXParserFactory
@@ -28,10 +28,7 @@ private const val SIGNATURE = "<!-- File auto-synced, do not edit! MaterialDesig
 /**
  * First `res` directory of the `main` source set.
  *
- * AGP 9 removed `com.android.build.gradle.BaseExtension`, so this goes through
- * the supported `com.android.build.api.dsl` surface instead. Note that the new
- * [AndroidSourceDirectorySet.directories] returns paths as strings rather than
- * the `File`s the old `srcDirs` gave back.
+ * AGP 9 removed `BaseExtension`; `directories` returns strings, not `File`s.
  */
 internal fun Project.mainResDir(): File {
     val android = extensions.findByType(ApplicationExtension::class.java)
@@ -55,7 +52,7 @@ class MaterialDesignIconsPlugin : Plugin<Project> {
 }
 
 private fun getMeta(): List<*> {
-    val conn = (URL("$BASE_CDN_URL/meta.json").openConnection() as HttpURLConnection).apply {
+    val conn = (URI("$BASE_CDN_URL/meta.json").toURL().openConnection() as HttpURLConnection).apply {
         requestMethod = "GET"
     }
     conn.connect()
@@ -64,7 +61,7 @@ private fun getMeta(): List<*> {
 }
 
 private fun getIconSVG(iconName: String): InputStream {
-    val conn = (URL("$BASE_CDN_URL/svg/$iconName.svg").openConnection() as HttpURLConnection).apply {
+    val conn = (URI("$BASE_CDN_URL/svg/$iconName.svg").toURL().openConnection() as HttpURLConnection).apply {
         requestMethod = "GET"
     }
     conn.connect()
@@ -161,7 +158,8 @@ open class UpdateDrawablesTask : DefaultTask() {
                         writer.write("See the License for the specific language governing permissions and\n")
                         writer.write("limitations under the License. -->\n")
                     }
-                    WriterOutputStream(writer, StandardCharsets.UTF_8).use { outputStream ->
+                    WriterOutputStream.builder().setWriter(writer).setCharset(StandardCharsets.UTF_8).get()
+                        .use { outputStream ->
                         outputStream.write(icon.encodeToByteArray())
                     }
                 }

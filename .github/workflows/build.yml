@@ -15,70 +15,123 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # Fast feedback on the Gradle wiring itself. Does not need the native
-  # submodules, so it finishes long before the full build does.
+  # Fast feedback on the Gradle wiring. Needs no native submodules, so it
+  # finishes long before the full build.
   configure:
     name: Configure
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: 21
 
-      - uses: android-actions/setup-android@v3
+      - uses: android-actions/setup-android@v4
 
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v6
 
       - name: Resolve dependencies
         run: ./gradlew :app:dependencies --configuration freeDebugRuntimeClasspath --stacktrace
 
-  build:
-    name: Build
-    runs-on: ubuntu-latest
+  # Windows and macOS have case-insensitive filesystems, where a bare header
+  # such as libvintf's Regex.h shadows the system <regex.h>. Linux CI cannot
+  # see that class of bug, so compile the native code on Windows too.
+  build-windows:
+    name: Build (Windows)
+    runs-on: windows-latest
+    timeout-minutes: 90
     steps:
-      - uses: actions/checkout@v5
+      - name: Allow long paths
+        run: git config --global core.longpaths true
+
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
           fetch-depth: 1
 
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: 21
 
-      - uses: android-actions/setup-android@v3
+      - uses: android-actions/setup-android@v4
+
+      - name: Install NDK and CMake
+        shell: bash
+        run: |
+          NDK=$(grep -oP '(?<=^ndk = ")[^"]+' gradle/libs.versions.toml)
+          SDKM="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager.bat"
+          [ -f "$SDKM" ] || SDKM=sdkmanager
+          "$SDKM" --install "ndk;$NDK" "cmake;3.22.1"
+
+      - uses: gradle/actions/setup-gradle@v6
+
+      - name: Assemble debug
+        shell: bash
+        run: ./gradlew assembleFreeDebug --stacktrace
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+          fetch-depth: 1
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: android-actions/setup-android@v4
 
       - name: Install NDK and CMake
         run: |
           NDK=$(grep -oP '(?<=^ndk = ")[^"]+' gradle/libs.versions.toml)
           sdkmanager --install "ndk;$NDK" "cmake;3.22.1"
 
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v6
 
       - name: Assemble debug
         run: ./gradlew assembleFreeDebug assembleNonfreeDebug --stacktrace
 
-      # A 4 KB aligned .so fails to load on 16 KB page devices, which Android 16
-      # mandates for apps targeting SDK 36+. The failure is silent at build
-      # time, so assert it here instead.
-      # A 4 KB aligned .so fails to load on 16 KB page devices, which Android 16
-      # mandates for apps targeting SDK 36+. The failure is silent at build
-      # time, so assert it on the packaged APKs here.
+      # Release exercises R8, resource shrinking and the ProGuard rules, none of
+      # which the debug variants touch. Unsigned without signing.properties.
+      - name: Assemble release
+        run: ./gradlew assembleFreeRelease assembleNonfreeRelease --stacktrace
+
+      # A 4 KB aligned .so fails to load on the 16 KB page devices that Android
+      # requires support for from targetSdk 36 on.
       - name: Check 16 KB page alignment
-        run: python3 tools/check_elf_alignment.py $(find app/build/outputs/apk -name '*.apk')
+        run: |
+          fail=0
+          readelf=$(ls "$ANDROID_HOME"/ndk/*/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-readelf | head -1)
+          work=$(mktemp -d)
+          for apk in $(find app/build/outputs/apk -name '*.apk' | sort); do
+            echo "== $apk"
+            rm -rf "$work/x"
+            unzip -oq "$apk" 'lib/*' -d "$work/x" || continue
+            for so in $(find "$work/x" -name '*.so' | sort); do
+              align=$("$readelf" -lW "$so" | awk '$1=="LOAD"{print $NF}' | sort -u | tr '\n' ' ')
+              echo "   ${so#$work/x/} -> $align"
+              case "$align" in *0x1000*) echo "::error::${so#$work/x/} in $apk is not 16 KB aligned ($align)"; fail=1 ;; esac
+            done
+          done
+          exit $fail
 
       - name: Unit tests
         run: ./gradlew testFreeDebugUnitTest --stacktrace
 
       - name: Lint
-        run: ./gradlew lintFreeDebug --stacktrace
+        run: ./gradlew lintFreeDebug lintFreeRelease --stacktrace
 
       - name: Upload APKs
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: apks
           path: app/build/outputs/apk/**/*.apk
@@ -86,7 +139,7 @@ jobs:
 
       - name: Upload reports
         if: failure()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: reports
           path: app/build/reports/

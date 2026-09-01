@@ -1,9 +1,5 @@
 /*
- * Vendored from https://github.com/penn5/poeditor-android
- * See .upstream-commit for the imported revision.
- *
- * Originally by penn5 (Hackintosh Five), the author of Treble Info.
- * Inlined here so the build no longer depends on an external git submodule.
+ * Vendored from https://github.com/penn5/poeditor-android by penn5. See .upstream-commit.
  */
 
 plugins {
