@@ -1,9 +1,9 @@
 {
   "uniqueId": "com.android.platform:system.libbase",
-  "artifactVersion": "54852c0e",
+  "artifactVersion": "6d19b5c6",
   "name": "libbase",
   "description": "This library is a collection of convenience functions to make common tasks easier and less error-prone.",
-  "website": "https://android.googlesource.com/platform/system/libbase/+/54852c0ea74ddaaf8e37cb7cf0c553a71059faca/",
+  "website": "https://android.googlesource.com/platform/system/libbase/+/6d19b5c690fa4220c10e42c2326150bbd4d4b7bb/",
   "organization": {
     "name": "The Android Open Source Project",
     "organisationUrl": "https://source.android.com"

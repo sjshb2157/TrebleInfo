@@ -23,7 +23,6 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.aboutlibraries)
-    id("poeditor-android")
     id("materialdesignicons-android")
 }
 
@@ -34,12 +33,14 @@ fun readProperties(name: String): Properties = Properties().apply {
     }
 }
 
+fun Properties.require(key: String, file: String): String = getProperty(key)
+    ?: error("$key is missing from app/$file")
+
 val versionProperties = readProperties("version.properties")
-val billingProperties = readProperties("billing.properties")
 val signingProperties = readProperties("signing.properties")
 
-val appVersionName: String = versionProperties.getProperty("versionName")
-val appVersionCode: Int = versionProperties.getProperty("versionCode").toInt()
+val appVersionName: String = versionProperties.require("versionName", "version.properties")
+val appVersionCode: Int = versionProperties.require("versionCode", "version.properties").toInt()
 
 aboutLibraries {
     collect {
@@ -52,51 +53,38 @@ aboutLibraries {
     }
 }
 
-fun com.android.build.api.dsl.BuildType.setupBilling() {
-    buildConfigField("String", "GPLAY_PRODUCT", billingProperties.getProperty("gplayProduct"))
-
-    buildConfigField("String", "PAYPAL_EMAIL", billingProperties.getProperty("paypalEmail"))
-    buildConfigField("String", "PAYPAL_CURRENCY", billingProperties.getProperty("paypalCurrency"))
-    buildConfigField("String", "PAYPAL_DESCRIPTION", billingProperties.getProperty("paypalDescription"))
-}
-
 android {
     compileSdk {
-        version = release(libs.versions.compileSdk.get().toInt())
+        version = release(37)
     }
-    ndkVersion = libs.versions.ndk.get()
+    ndkVersion = "30.0.16138531"
 
     defaultConfig {
         applicationId = "tk.hack5.treblecheck"
-        minSdk = libs.versions.minSdk.get().toInt()
-        targetSdk = libs.versions.targetSdk.get().toInt()
+        // Project Treble starts at API 26.
+        minSdk = 26
+        targetSdk = 37
         versionCode = appVersionCode
         versionName = appVersionName
+
+        // Donation target. Still the upstream author's account.
+        buildConfigField("String", "PAYPAL_EMAIL", "\"hackintoshfive@gmail.com\"")
+        buildConfigField("String", "PAYPAL_CURRENCY", "\"GBP\"")
+        buildConfigField("String", "PAYPAL_DESCRIPTION", "\"Donation for Treble Info\"")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        testInstrumentationRunnerArguments["notClass"] = "tk.hack5.treblecheck.ScreenshotTaker"
         ndk {
             //noinspection ChromeOsAbiSupport
             abiFilters += "arm64-v8a"
         }
     }
 
-    flavorDimensions += "freedom"
-    productFlavors {
-        create("free") {
-            dimension = "freedom"
-        }
-        create("nonfree") {
-            dimension = "freedom"
-        }
-    }
-
     if (file("signing.properties").exists()) {
         signingConfigs {
             create("release") {
-                keyAlias = signingProperties.getProperty("keyAlias")
-                storeFile = file(signingProperties.getProperty("storeFile"))
-                keyPassword = signingProperties.getProperty("keyPassword")
-                storePassword = signingProperties.getProperty("storePassword")
+                keyAlias = signingProperties.require("keyAlias", "signing.properties")
+                storeFile = file(signingProperties.require("storeFile", "signing.properties"))
+                keyPassword = signingProperties.require("keyPassword", "signing.properties")
+                storePassword = signingProperties.require("storePassword", "signing.properties")
             }
         }
     }
@@ -106,14 +94,12 @@ android {
             if (file("signing.properties").exists()) {
                 signingConfig = signingConfigs["release"]
             }
-            setupBilling()
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
         getByName("debug") {
             signingConfig = signingConfigs["debug"]
-            setupBilling()
         }
     }
     externalNativeBuild {
@@ -160,15 +146,6 @@ android {
     namespace = "tk.hack5.treblecheck"
 }
 
-if (file("poeditor.properties").exists()) {
-    project.poeditor.apiToken = readProperties("poeditor.properties").getProperty("apiToken")
-}
-
-project.poeditor.projectId = 285385
-
-tasks.withType(com.github.penn5.ImportPoEditorStringsBaseTask::class) {
-    allowFuzzy = false
-}
 
 dependencies {
     constraints {
@@ -189,9 +166,6 @@ dependencies {
     implementation(libs.compose.ui.tooling.preview)
     debugImplementation(libs.compose.ui.tooling)
 
-    "nonfreeImplementation"(libs.billing)
-    "nonfreeImplementation"(libs.billing.ktx)
-
     testImplementation(libs.test.junit)
     testImplementation(libs.test.mockk)
     testImplementation(libs.test.mockk.agent.jvm)
@@ -200,14 +174,12 @@ dependencies {
 
     androidTestImplementation(composeBom)
     androidTestImplementation(libs.androidx.test.runner)
-    androidTestImplementation(libs.screengrab)
     androidTestImplementation(libs.androidx.test.junit)
     androidTestImplementation(libs.compose.ui.test.junit4)
 }
 
 tasks.named("preBuild") {
     mustRunAfter("updateDrawables")
-    mustRunAfter("importTranslations")
 }
 
 tasks.register("versionName") {

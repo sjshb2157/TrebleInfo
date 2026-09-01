@@ -1,9 +1,9 @@
 {
   "uniqueId": "com.android.platform:system.libvintf",
-  "artifactVersion": "f2e5cf9d",
+  "artifactVersion": "9a095008",
   "name": "libvintf",
   "description": "Provides functions to parse and compare compatibility matrices and HAL manifests",
-  "website": "https://android.googlesource.com/platform/system/libvintf/+/f2e5cf9db52748bbaa49c96d813e5766408d14fb/",
+  "website": "https://android.googlesource.com/platform/system/libvintf/+/9a095008eaf2b4ac7cb6e9d2da6aeca596f04062/",
   "organization": {
     "name": "The Android Open Source Project",
     "organisationUrl": "https://source.android.com"

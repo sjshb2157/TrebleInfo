@@ -52,76 +52,82 @@ fun Images(
     treble: Boolean?,
     fileName: String?,
 ) {
-    Column(
-        Modifier
-            .verticalScroll(rememberScrollState())
-            .nestedScroll(scrollConnection)
-            .fillMaxSize()
-            .padding(innerPadding.horizontal())
-            .consumeWindowInsets(innerPadding)
-            .padding(horizontal = pageHorizontalPadding),
-        Arrangement.Center,
-        Alignment.CenterHorizontally
-    ) {
-        Spacer(Modifier.height(innerPadding.calculateTopPadding()))
-        val icon: Painter
-        val title: String
-        val body: String
-        val bug: Boolean
-        if (treble == false) {
-            icon = painterResource(R.drawable.no_treble)
-            title = stringResource(R.string.no_treble_title)
-            body = stringResource(R.string.no_treble_body)
-            bug = false
-        } else if (treble == null || fileName == null) {
-            icon = painterResource(R.drawable.bug)
-            title = stringResource(R.string.detection_error_title)
-            body = stringResource(R.string.detection_error_body)
-            bug = true
-        } else {
-            icon = painterResource(R.drawable.images_found)
-            title = stringResource(R.string.images_found_title)
-            body = stringResource(R.string.images_found_body)
-            bug = false
-        }
-        Icon(icon, null, Modifier.size(imagesIconSize), tint = MaterialTheme.colorScheme.primary)
-        Text(title, style = MaterialTheme.typography.titleLarge, textAlign = TextAlign.Center)
-        Text(body, textAlign = TextAlign.Center)
-        val button = if (bug) {
-            Spacer(Modifier.height(verticalBigSpacer))
-            Button(reportBug) { Text(stringResource(R.string.report_this_bug)) }
-            true
-        } else if (treble != false && fileName != null) {
-            Text(fileName, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
-            Spacer(Modifier.height(verticalBigSpacer))
-            Button(browseImages) {
-                Icon(painterResource(R.drawable.images_found), null)
-                Spacer(Modifier.width(buttonIconSpacerWidth))
-                Text(stringResource(R.string.browse_images))
+    // heightIn(min = maxHeight) is what makes Arrangement.Center do anything: a
+    // scrolling Column is measured with an unbounded height, so it would
+    // otherwise wrap its content and sit at the top of the screen.
+    BoxWithConstraints(Modifier.fillMaxSize()) {
+        Column(
+            Modifier
+                .verticalScroll(rememberScrollState())
+                .nestedScroll(scrollConnection)
+                .heightIn(min = maxHeight)
+                .fillMaxWidth()
+                .padding(innerPadding.horizontal())
+                .consumeWindowInsets(innerPadding)
+                .padding(horizontal = pageHorizontalPadding),
+            Arrangement.Center,
+            Alignment.CenterHorizontally
+        ) {
+            Spacer(Modifier.height(innerPadding.calculateTopPadding()))
+            val icon: Painter
+            val title: String
+            val body: String
+            val bug: Boolean
+            if (treble == false) {
+                icon = painterResource(R.drawable.no_treble)
+                title = stringResource(R.string.no_treble_title)
+                body = stringResource(R.string.no_treble_body)
+                bug = false
+            } else if (treble == null || fileName == null) {
+                icon = painterResource(R.drawable.bug)
+                title = stringResource(R.string.detection_error_title)
+                body = stringResource(R.string.detection_error_body)
+                bug = true
+            } else {
+                icon = painterResource(R.drawable.images_found)
+                title = stringResource(R.string.images_found_title)
+                body = stringResource(R.string.images_found_body)
+                bug = false
             }
-            true
-        } else {
-            false
-        }
-        if (button) {
-            OutlinedButton(navigateToDetails) {
-                Icon(painterResource(R.drawable.screen_details), null)
-                Spacer(Modifier.width(buttonIconSpacerWidth))
-                Text(stringResource(R.string.view_details))
+            Icon(icon, null, Modifier.size(imagesIconSize), tint = MaterialTheme.colorScheme.primary)
+            Text(title, style = MaterialTheme.typography.titleLarge, textAlign = TextAlign.Center)
+            Text(body, textAlign = TextAlign.Center)
+            val button = if (bug) {
+                Spacer(Modifier.height(verticalBigSpacer))
+                Button(reportBug) { Text(stringResource(R.string.report_this_bug)) }
+                true
+            } else if (treble != false && fileName != null) {
+                Text(fileName, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+                Spacer(Modifier.height(verticalBigSpacer))
+                Button(browseImages) {
+                    Icon(painterResource(R.drawable.images_found), null)
+                    Spacer(Modifier.width(buttonIconSpacerWidth))
+                    Text(stringResource(R.string.browse_images))
+                }
+                true
+            } else {
+                false
             }
-        } else {
-            Spacer(Modifier.height(verticalBigSpacer))
-            Button(navigateToDetails) {
-                Icon(painterResource(R.drawable.screen_details), null)
-                Spacer(Modifier.width(buttonIconSpacerWidth))
-                Text(stringResource(R.string.view_details))
+            if (button) {
+                OutlinedButton(navigateToDetails) {
+                    Icon(painterResource(R.drawable.screen_details), null)
+                    Spacer(Modifier.width(buttonIconSpacerWidth))
+                    Text(stringResource(R.string.view_details))
+                }
+            } else {
+                Spacer(Modifier.height(verticalBigSpacer))
+                Button(navigateToDetails) {
+                    Icon(painterResource(R.drawable.screen_details), null)
+                    Spacer(Modifier.width(buttonIconSpacerWidth))
+                    Text(stringResource(R.string.view_details))
+                }
             }
+            OutlinedButton(navigateToContribute) {
+                Icon(painterResource(R.drawable.screen_contribute), null)
+                Spacer(Modifier.width(buttonIconSpacerWidth))
+                Text(stringResource(R.string.contribute))
+            }
+            Spacer(Modifier.height(innerPadding.calculateBottomPadding()))
         }
-        OutlinedButton(navigateToContribute) {
-            Icon(painterResource(R.drawable.screen_contribute), null)
-            Spacer(Modifier.width(buttonIconSpacerWidth))
-            Text(stringResource(R.string.contribute))
-        }
-        Spacer(Modifier.height(innerPadding.calculateBottomPadding()))
     }
 }

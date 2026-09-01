@@ -80,6 +80,8 @@ target_include_directories(
 
         SYSTEM PRIVATE
 
+        # libvintf's own sources include its private headers with <angles>.
+        libvintf
         libvintf/include
         libvintf/include-host
         libvintf-shims/include
@@ -97,6 +99,9 @@ target_include_directories(
 # on a case-insensitive filesystem the `#include <regex.h>` inside Regex.h would
 # resolve to Regex.h itself. -iquote is searched only for quoted includes, which
 # is the form libvintf actually uses. Joined form so paths with spaces survive.
+# libvintf uses C++20 ranges (std::views) since 2025.
+set_target_properties(trebledetector PROPERTIES CXX_STANDARD 20 CXX_STANDARD_REQUIRED ON)
+
 target_compile_options(trebledetector PRIVATE "-iquote${CMAKE_CURRENT_LIST_DIR}/libvintf/include/vintf")
 
 # std::iterator, deprecated in C++17, is still used by libvintf's own headers,

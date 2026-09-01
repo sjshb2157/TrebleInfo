@@ -1,9 +1,9 @@
 {
   "uniqueId": "com.android.platform:packages.modules.Gki",
-  "artifactVersion": "bfaecc58",
+  "artifactVersion": "d3a1f40a",
   "name": "Gki",
   "description": "Provides kernel metadata to libvintf",
-  "website": "https://android.googlesource.com/platform/packages/modules/Gki/+/bfaecc580a8cd183e50ea1d3dce70c79fc4059db/",
+  "website": "https://android.googlesource.com/platform/packages/modules/Gki/+/d3a1f40aec1e12efd0169b4cb171e81a69df4179/",
   "organization": {
     "name": "The Android Open Source Project",
     "organisationUrl": "https://source.android.com"

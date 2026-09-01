@@ -1,9 +1,9 @@
 {
   "uniqueId": "com.android.platform:frameworks.hardware.interfaces",
-  "artifactVersion": "94709486",
+  "artifactVersion": "1a56e38e",
   "name": "hardware_interfaces",
   "description": "Provides the list of excluded interfaces to libvintf",
-  "website": "https://android.googlesource.com/platform/hardware/interfaces/+/9470948681fd12c52698a19a68573dcf1ddaad2e/",
+  "website": "https://android.googlesource.com/platform/hardware/interfaces/+/1a56e38edc2f2f6189ef405ee1edce554e15cbc0/",
   "organization": {
     "name": "The Android Open Source Project",
     "organisationUrl": "https://source.android.com"

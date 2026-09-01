@@ -3,7 +3,6 @@
 	<string name="title">Treble Info</string>
 	<string name="sar_title">System as Root</string>
 	<string name="ab_title">Seamless Upgrades</string>
-	<string name="donate">Donate</string>
 	<string name="dynamicpartitions_title">Dynamic Partitions</string>
 	<string name="screen_images">Images</string>
 	<string name="screen_details">Details</string>
@@ -65,13 +64,8 @@
 	<string name="binder_arch_64_bit">64-bit</string>
 	<string name="binder_arch_unknown_version">Unknown, using version %d</string>
 	<string name="no_browser">No web browser installed!</string>
-	<string name="no_email">No email client installed!</string>
 	<string name="close_dialog">Close</string>
 	<string name="detail_placeholder">Select an item to view details</string>
-	<string name="donation_successful_title">Donation successful!</string>
-	<string name="donation_successful_body">Thank you for your support.</string>
-	<string name="donation_failed_title">Donation failed</string>
-	<string name="donation_failed_body">Sorry, something went wrong… Please do try again later!</string>
 	<string name="contribute">Contribute</string>
 	<string name="library_developers">Developers</string>
 	<string name="library_organization">Organization</string>
@@ -80,4 +74,5 @@
 	<string name="library_funding">Funding</string>
 	<string name="library_licenses">Licenses</string>
 	<string name="library_links">Links</string>
+    <string name="project_page">Project page</string>
 </resources>

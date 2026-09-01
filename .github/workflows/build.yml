@@ -33,7 +33,7 @@ jobs:
       - uses: gradle/actions/setup-gradle@v6
 
       - name: Resolve dependencies
-        run: ./gradlew :app:dependencies --configuration freeDebugRuntimeClasspath --warning-mode all --stacktrace
+        run: ./gradlew :app:dependencies --configuration debugRuntimeClasspath --warning-mode all --stacktrace
 
   # Windows and macOS have case-insensitive filesystems, where a bare header
   # such as libvintf's Regex.h shadows the system <regex.h>. Linux CI cannot
@@ -61,7 +61,7 @@ jobs:
       - name: Install NDK and CMake
         shell: bash
         run: |
-          NDK=$(grep -oP '(?<=^ndk = ")[^"]+' gradle/libs.versions.toml)
+          NDK=$(grep -oP '(?<=ndkVersion = ")[^"]+' app/build.gradle.kts)
           SDKM="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager.bat"
           [ -f "$SDKM" ] || SDKM=sdkmanager
           "$SDKM" --install "ndk;$NDK" "cmake;3.22.1"
@@ -70,7 +70,7 @@ jobs:
 
       - name: Assemble debug
         shell: bash
-        run: ./gradlew assembleFreeDebug --stacktrace
+        run: ./gradlew assembleDebug --stacktrace
 
   build:
     name: Build
@@ -91,18 +91,18 @@ jobs:
 
       - name: Install NDK and CMake
         run: |
-          NDK=$(grep -oP '(?<=^ndk = ")[^"]+' gradle/libs.versions.toml)
+          NDK=$(grep -oP '(?<=ndkVersion = ")[^"]+' app/build.gradle.kts)
           sdkmanager --install "ndk;$NDK" "cmake;3.22.1"
 
       - uses: gradle/actions/setup-gradle@v6
 
       - name: Assemble debug
-        run: ./gradlew assembleFreeDebug assembleNonfreeDebug --stacktrace
+        run: ./gradlew assembleDebug --stacktrace
 
       # Release exercises R8, resource shrinking and the ProGuard rules, none of
       # which the debug variants touch. Unsigned without signing.properties.
       - name: Assemble release
-        run: ./gradlew assembleFreeRelease assembleNonfreeRelease --stacktrace
+        run: ./gradlew assembleRelease --stacktrace
 
       # A 4 KB aligned .so fails to load on the 16 KB page devices that Android
       # requires support for from targetSdk 36 on.
@@ -118,20 +118,20 @@ jobs:
             for so in $(find "$work/x" -name '*.so' | sort); do
               align=$("$readelf" -lW "$so" | awk '$1=="LOAD"{print $NF}' | sort -u | tr '\n' ' ')
               echo "   ${so#$work/x/} -> $align"
-              case "$align" in *0x1000*) echo "::error::${so#$work/x/} in $apk is not 16 KB aligned ($align)"; fail=1 ;; esac
+              case "$align" in "0x4000 ") ;; *) echo "::error::${so#$work/x/} in $apk is not 16 KB aligned ($align)"; fail=1 ;; esac
             done
           done
           exit $fail
 
       - name: Unit tests
-        run: ./gradlew testFreeDebugUnitTest testNonfreeDebugUnitTest --stacktrace
+        run: ./gradlew testDebugUnitTest --stacktrace
 
       # Nothing else compiles the instrumentation sources, so they rot silently.
       - name: Compile instrumentation tests
-        run: ./gradlew assembleFreeDebugAndroidTest --stacktrace
+        run: ./gradlew assembleDebugAndroidTest --stacktrace
 
       - name: Lint
-        run: ./gradlew lintFreeDebug lintFreeRelease --stacktrace
+        run: ./gradlew lintDebug lintRelease --stacktrace
 
       # AGP always writes the text report; print it so findings are visible
       # without downloading an artifact.

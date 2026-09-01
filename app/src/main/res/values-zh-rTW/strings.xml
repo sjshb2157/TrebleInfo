@@ -3,7 +3,6 @@
 	<string name="title">Treble Info</string>
 	<string name="sar_title">System as Root</string>
 	<string name="ab_title">無縫系統更新</string>
-	<string name="donate">抖內</string>
 	<string name="dynamicpartitions_title">動態分區</string>
 	<string name="screen_images">映像</string>
 	<string name="screen_details">細節</string>
@@ -61,12 +60,19 @@
 	<string name="binder_arch_64_bit">64-bit</string>
 	<string name="binder_arch_unknown_version">未知，使用版本 %d</string>
 	<string name="no_browser">未安裝瀏覽器！</string>
-	<string name="no_email">未安裝 E-Mail 使用者端！</string>
 	<string name="close_dialog">關閉</string>
 	<string name="detail_placeholder">選擇一個項目以查看詳細訊息</string>
-	<string name="donation_successful_title">捐贈成功！</string>
-	<string name="donation_successful_body">感謝你的捐贈。</string>
-	<string name="donation_failed_title">捐款失敗</string>
-	<string name="donation_failed_body">抱歉，出了點問題…請稍後再試！</string>
 	<string name="contribute">貢獻</string>
+    <string name="ab_explanation">無縫升級允許透過儲存兩個版本的 Android 韌體來安裝更新，以最小化停機時間。</string>
+    <string name="detection_error_title">糟糕！</string>
+    <string name="library_developers">開發者</string>
+    <string name="library_funding">資助</string>
+    <string name="library_licenses">許可證</string>
+    <string name="library_links">連結</string>
+    <string name="library_organization">組織</string>
+    <string name="library_source">檢視原始碼</string>
+    <string name="library_website">造訪網站</string>
+    <string name="treble_lite_false">VNDK 處於非 Lite 模式</string>
+    <string name="treble_lite_title">連結器命名空間隔離</string>
+    <string name="project_page">專案位址</string>
 </resources>

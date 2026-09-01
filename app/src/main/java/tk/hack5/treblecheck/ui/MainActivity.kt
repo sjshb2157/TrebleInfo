@@ -49,7 +49,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import kotlinx.coroutines.launch
 import tk.hack5.treblecheck.*
 import tk.hack5.treblecheck.R
 import tk.hack5.treblecheck.data.*
@@ -68,26 +67,19 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private fun openLink(url: String) {
+        try {
+            startActivity(Intent(Intent.ACTION_VIEW, url.toUri()))
+        } catch (e: ActivityNotFoundException) {
+            Log.w(tag, "Launch browser failed", e)
+            Toast.makeText(this, R.string.no_browser, Toast.LENGTH_LONG).show()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         super.onCreate(savedInstanceState)
         setContent {
-            var donationPopup by rememberSaveable { mutableStateOf<Boolean?>(null) }
-
-            val listener = remember {
-                object : IABListener {
-                    override fun paymentFailed() {
-                        donationPopup = false
-                    }
-
-                    override fun paymentSuccess() {
-                        donationPopup = true
-                    }
-                }
-            }
-            val scope = rememberCoroutineScope()
-            val iabHelper = remember { IABHelper(this, listener, scope) }
-
             val treble = remember {
                 try {
                     Optional.Value(TrebleDetector.getVndkData())
@@ -155,67 +147,13 @@ class MainActivity : ComponentActivity() {
                 binderArch,
                 cpuArch,
                 fileName,
-                {
-                    val intent = Intent(Intent.ACTION_VIEW, "https://github.com/phhusson/treble_experimentations/wiki/Generic-System-Image-%28GSI%29-list".toUri())
-                    try {
-                        startActivity(intent)
-                    } catch (e: ActivityNotFoundException) {
-                        Log.w(tag, "Launch browser failed", e)
-                        Toast.makeText(this, R.string.no_browser, Toast.LENGTH_LONG).show()
-                    }
-                },
-                {
-                    val intent = Intent(Intent.ACTION_SENDTO).apply {
-                        data = "mailto:".toUri()
-                        putExtra(Intent.EXTRA_EMAIL, arrayOf("contact-project+trebleinfo-trebleinfo-30453147-issue-@incoming.gitlab.com"))
-                    }
-                    try {
-                        startActivity(intent)
-                    } catch (e: ActivityNotFoundException) {
-                        Log.w(tag, "Send email failed", e)
-                        Toast.makeText(this, R.string.no_email, Toast.LENGTH_LONG).show()
-                    }
-                },
-                {
-                    val intent = Intent(Intent.ACTION_SENDTO).apply {
-                        data = "mailto:".toUri()
-                        putExtra(Intent.EXTRA_EMAIL, arrayOf("treble@hack5.dev"))
-                    }
-                    try {
-                        startActivity(intent)
-                    } catch (e: ActivityNotFoundException) {
-                        Log.w(tag, "Send email failed", e)
-                        Toast.makeText(this, R.string.no_email, Toast.LENGTH_LONG).show()
-                    }
-                },
-                {
-                    val intent = Intent(Intent.ACTION_VIEW, "https://gitlab.com/TrebleInfo/TrebleInfo/-/blob/dev/TRANSLATING.md".toUri())
-                    try {
-                        startActivity(intent)
-                    } catch (e: ActivityNotFoundException) {
-                        Log.w(tag, "Launch browser failed", e)
-                        Toast.makeText(this, R.string.no_browser, Toast.LENGTH_LONG).show()
-                    }
-                },
-                {
-                    val intent = Intent(Intent.ACTION_VIEW, "https://gitlab.com/TrebleInfo/TrebleInfo#contributing".toUri())
-                    try {
-                        startActivity(intent)
-                    } catch (e: ActivityNotFoundException) {
-                        Log.w(tag, "Launch browser failed", e)
-                    }
-                },
-                { scope.launch { iabHelper.makePayment() } },
-                donationPopup,
-                { donationPopup = null },
-                { url ->
-                    val intent = Intent(Intent.ACTION_VIEW, url.toUri())
-                    try {
-                        startActivity(intent)
-                    } catch (e: ActivityNotFoundException) {
-                        Log.w(tag, "Launch browser failed", e)
-                    }
-                }
+                { openLink("https://github.com/phhusson/treble_experimentations/wiki/Generic-System-Image-%28GSI%29-list") },
+                { openLink("https://github.com/sjshb57/TrebleInfo/issues") },
+                { openLink("https://github.com/sjshb57/TrebleInfo/issues/new") },
+                { openLink("https://github.com/sjshb57/TrebleInfo#翻译") },
+                { openLink("https://github.com/sjshb57/TrebleInfo/pulls") },
+                { openLink("https://github.com/sjshb57/TrebleInfo") },
+                ::openLink,
             )
         }
     }
@@ -251,9 +189,7 @@ fun MainActivityContent(
     askAQuestion: () -> Unit,
     helpTranslate: () -> Unit,
     contributeCode: () -> Unit,
-    donate: () -> Unit,
-    donationPopup: Boolean?,
-    dismissDonationPopup: () -> Unit,
+    projectPage: () -> Unit,
     openLink: (String) -> Unit,
 ) {
     val navController = rememberNavController()
@@ -302,27 +238,6 @@ fun MainActivityContent(
                 }
             }
         ) { innerPadding ->
-            donationPopup?.let {
-                AlertDialog(
-                    onDismissRequest = dismissDonationPopup,
-                    confirmButton = { TextButton(onClick = dismissDonationPopup) { Text(stringResource(R.string.close_dialog)) } },
-                    title = {
-                        if (it) {
-                            Text(stringResource(R.string.donation_successful_title))
-                        } else {
-                            Text(stringResource(R.string.donation_failed_title))
-                        }
-                    },
-                    text = {
-                        if (it) {
-                            Text(stringResource(R.string.donation_successful_body), style = MaterialTheme.typography.bodyMedium)
-                        } else {
-                            Text(stringResource(R.string.donation_failed_body), style = MaterialTheme.typography.bodyMedium)
-                        }
-                    },
-                )
-            }
-
             NavHost(navController = navController, startDestination = "images") {
                 composable(Screens.Images.route) {
                     Images(
@@ -365,7 +280,7 @@ fun MainActivityContent(
                     reportABug,
                     helpTranslate,
                     contributeCode,
-                    donate
+                    projectPage
                 ) }
             }
         }
@@ -395,8 +310,6 @@ fun MainActivityPreview() {
             { },
             { },
             { },
-            { },
-            null,
             { },
             { }
         )

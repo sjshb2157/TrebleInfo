@@ -316,20 +316,8 @@ obj/
 
 
 # Secrets
-/app/poeditor.properties
 /app/signing.properties
 
 
-# Fastlane
-/gitlab_token.txt
-/fastlane/report.xml
-/fastlane/metadata/android/screenshots.html
-
 # Contains private data
 /.idea/deploymentTargetDropDown.xml
-
-/vendor/
-
-# Translation auditing
-/audit_translations/output.html
-/audit_translations/venv/

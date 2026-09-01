@@ -188,6 +188,17 @@ object TrebleDetector {
         return PassthroughResult.NOT_COMPLIANT
     }
 
+    /**
+     * The bundled AOSP framework compatibility matrices, and the highest FCM
+     * level at which a non-match is treated as a real failure.
+     *
+     * Matrices are bundled up to 202604, but that ceiling stays at 7 on
+     * purpose. Above it a device that matches nothing is reported as unknown
+     * rather than incompatible: vendors routinely ship manifests with private
+     * extensions that a stock AOSP matrix rejects, so a non-match there is not
+     * evidence that Treble is missing. Raising it would turn those devices
+     * into a hard error.
+     */
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     fun getFrameworkCompatibilityMatrices(sepolicyVersion: Pair<Int, Int>): Pair<Sequence<String>, Int> {
         // Hoisted: inside the builder `this` is the SequenceScope.
@@ -206,6 +217,10 @@ object TrebleDetector {
                 "compatibility_matrix.5.xml",
                 "compatibility_matrix.6.xml",
                 "compatibility_matrix.7.xml",
+                "compatibility_matrix.8.xml",
+                "compatibility_matrix.202404.xml",
+                "compatibility_matrix.202504.xml",
+                "compatibility_matrix.202604.xml",
             ).forEach { name ->
                 val stream = classLoader.getResourceAsStream(name)
                 require(stream != null) { "$name not found" }
