@@ -180,7 +180,6 @@ dependencies {
 
 tasks.named("preBuild") {
     mustRunAfter("updateDrawables")
-    mustRunAfter("importTranslations")
 }
 
 tasks.register("versionName") {
