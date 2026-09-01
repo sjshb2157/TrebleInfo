@@ -26,6 +26,7 @@
 - 补充了 FCM level 8 / 202404 / 202504 / 202604 的兼容性矩阵
 - 新增 GitHub Actions 构建流水线（含 Windows 构建与 16 KB 页对齐校验）
 - 上游的 fastlane 发布流水线与 PoEditor 翻译工具链已移除，它们依赖只有上游持有的凭据
+- 移除了 `nonfree` 产品风味与 Google Play 结算依赖，只保留 PayPal 网页捐赠
 
 ## 构建
 
@@ -34,7 +35,7 @@
 ```
 git clone --recurse-submodules https://github.com/sjshb2157/TrebleInfo.git
 cd TrebleInfo
-./gradlew assembleFreeDebug
+./gradlew assembleDebug
 ```
 
 如果已经克隆过但没有拉子模块：
@@ -49,15 +50,12 @@ git submodule update --init --recursive --force
 
 首次构建会自动下载 NDK 与 CMake，耗时较长。
 
-### 构建变体
-
-存在 `free` 与 `nonfree` 两个 flavor，区别仅在于捐赠方式：`free` 跳转 PayPal 网页，
-`nonfree` 使用 Google Play 结算。
+### 常用任务
 
 ```
-./gradlew assembleFreeDebug        # 日常开发
-./gradlew assembleFreeRelease      # 走 R8 与资源压缩
-./gradlew testFreeDebugUnitTest    # 单元测试
+./gradlew assembleDebug        # 日常开发
+./gradlew assembleRelease      # 走 R8 与资源压缩
+./gradlew testDebugUnitTest    # 单元测试
 ```
 
 `app/build.gradle.kts` 中 `abiFilters` 只保留了 `arm64-v8a`。如需其他架构，删除该配置即可。

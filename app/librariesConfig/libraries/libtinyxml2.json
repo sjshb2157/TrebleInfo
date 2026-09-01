@@ -1,9 +1,9 @@
 {
   "uniqueId": "com.android.platform:external.tinyxml2",
-  "artifactVersion": "457bf28c",
+  "artifactVersion": "7485b225",
   "name": "TinyXML2",
   "description": "TinyXML-2 is a simple, small, efficient, C++ XML parser that can be easily integrated into other programs.",
-  "website": "https://android.googlesource.com/platform/external/tinyxml2/+/457bf28c570c46db5d26ca33983704c29f2e0ee0/",
+  "website": "https://android.googlesource.com/platform/external/tinyxml2/+/7485b22521f577cf944e5687361548d8993d8d2c/",
   "organization": {
     "name": "The Android Open Source Project",
     "organisationUrl": "https://source.android.com"

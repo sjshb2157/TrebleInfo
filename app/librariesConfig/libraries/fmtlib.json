@@ -1,0 +1,26 @@
+{
+  "uniqueId": "com.android.platform:external.fmtlib",
+  "artifactVersion": "97ceae9d",
+  "name": "{fmt}",
+  "description": "A modern formatting library for C++, providing a fast and safe alternative to C stdio and C++ iostreams.",
+  "website": "https://android.googlesource.com/platform/external/fmtlib/+/97ceae9d27415d6444f3e24f491da8ed6902ecfa/",
+  "organization": {
+    "name": "The Android Open Source Project",
+    "organisationUrl": "https://source.android.com"
+  },
+  "developers": [
+    {
+      "name": "Victor Zverovich"
+    }
+  ],
+  "scm": {
+    "connection": "scm:https://android.googlesource.com/platform/external/fmtlib.git",
+    "url": "https://cs.android.com/android/platform/external/fmtlib",
+    "developerConnection": "scm:https://android.googlesource.com/platform/external/fmtlib.git"
+  },
+  "licenses": [
+    "MIT"
+  ],
+  "funding": [],
+  "tag": "trebledetector"
+}

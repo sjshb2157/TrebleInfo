@@ -38,7 +38,6 @@ fun Properties.require(key: String, file: String): String = getProperty(key)
     ?: error("$key is missing from app/$file")
 
 val versionProperties = readProperties("version.properties")
-val billingProperties = readProperties("billing.properties")
 val signingProperties = readProperties("signing.properties")
 
 val appVersionName: String = versionProperties.require("versionName", "version.properties")
@@ -55,14 +54,6 @@ aboutLibraries {
     }
 }
 
-fun com.android.build.api.dsl.BuildType.setupBilling() {
-    buildConfigField("String", "GPLAY_PRODUCT", billingProperties.require("gplayProduct", "billing.properties"))
-
-    buildConfigField("String", "PAYPAL_EMAIL", billingProperties.require("paypalEmail", "billing.properties"))
-    buildConfigField("String", "PAYPAL_CURRENCY", billingProperties.require("paypalCurrency", "billing.properties"))
-    buildConfigField("String", "PAYPAL_DESCRIPTION", billingProperties.require("paypalDescription", "billing.properties"))
-}
-
 android {
     compileSdk {
         version = release(37)
@@ -76,31 +67,25 @@ android {
         targetSdk = 37
         versionCode = appVersionCode
         versionName = appVersionName
+
+        // Donation target. Still the upstream author's account.
+        buildConfigField("String", "PAYPAL_EMAIL", "\"hackintoshfive@gmail.com\"")
+        buildConfigField("String", "PAYPAL_CURRENCY", "\"GBP\"")
+        buildConfigField("String", "PAYPAL_DESCRIPTION", "\"Donation for Treble Info\"")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        testInstrumentationRunnerArguments["notClass"] = "tk.hack5.treblecheck.ScreenshotTaker"
         ndk {
             //noinspection ChromeOsAbiSupport
             abiFilters += "arm64-v8a"
         }
     }
 
-    flavorDimensions += "freedom"
-    productFlavors {
-        create("free") {
-            dimension = "freedom"
-        }
-        create("nonfree") {
-            dimension = "freedom"
-        }
-    }
-
     if (file("signing.properties").exists()) {
         signingConfigs {
             create("release") {
-                keyAlias = signingProperties.getProperty("keyAlias")
-                storeFile = file(signingProperties.getProperty("storeFile"))
-                keyPassword = signingProperties.getProperty("keyPassword")
-                storePassword = signingProperties.getProperty("storePassword")
+                keyAlias = signingProperties.require("keyAlias", "signing.properties")
+                storeFile = file(signingProperties.require("storeFile", "signing.properties"))
+                keyPassword = signingProperties.require("keyPassword", "signing.properties")
+                storePassword = signingProperties.require("storePassword", "signing.properties")
             }
         }
     }
@@ -110,14 +95,12 @@ android {
             if (file("signing.properties").exists()) {
                 signingConfig = signingConfigs["release"]
             }
-            setupBilling()
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
         getByName("debug") {
             signingConfig = signingConfigs["debug"]
-            setupBilling()
         }
     }
     externalNativeBuild {
@@ -193,9 +176,6 @@ dependencies {
     implementation(libs.compose.ui.tooling.preview)
     debugImplementation(libs.compose.ui.tooling)
 
-    "nonfreeImplementation"(libs.billing)
-    "nonfreeImplementation"(libs.billing.ktx)
-
     testImplementation(libs.test.junit)
     testImplementation(libs.test.mockk)
     testImplementation(libs.test.mockk.agent.jvm)
@@ -204,7 +184,6 @@ dependencies {
 
     androidTestImplementation(composeBom)
     androidTestImplementation(libs.androidx.test.runner)
-    androidTestImplementation(libs.screengrab)
     androidTestImplementation(libs.androidx.test.junit)
     androidTestImplementation(libs.compose.ui.test.junit4)
 }

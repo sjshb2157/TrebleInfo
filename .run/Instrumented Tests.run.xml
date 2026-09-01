@@ -10,8 +10,7 @@
       </option>
       <option name="taskNames">
         <list>
-          <option value=":app:connectedFreeDebugAndroidTest" />
-          <option value=":app:connectedNonfreeDebugAndroidTest" />
+          <option value=":app:connectedDebugAndroidTest" />
         </list>
       </option>
       <option name="vmOptions" />

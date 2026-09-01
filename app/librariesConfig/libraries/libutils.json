@@ -1,9 +1,9 @@
 {
   "uniqueId": "com.android.platform:system.core.libutils",
-  "artifactVersion": "6634c174",
+  "artifactVersion": "a3b721a3",
   "name": "libutils",
   "description": "Provides a list of shared error codes for libvintf and dependencies",
-  "website": "https://android.googlesource.com/platform/system/core/+/6634c1741e4b7dc2b5ffdec8ca4725a25786b1c3/libutils/",
+  "website": "https://android.googlesource.com/platform/system/core/+/a3b721a32242006b59cb12bd62c9133632af3a2d/libutils/",
   "organization": {
     "name": "The Android Open Source Project",
     "organisationUrl": "https://source.android.com"
