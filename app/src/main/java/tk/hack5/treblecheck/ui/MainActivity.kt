@@ -67,6 +67,8 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private val settings by lazy { Settings.from(this) }
+
     private fun openLink(url: String) {
         try {
             startActivity(Intent(Intent.ACTION_VIEW, url.toUri()))
@@ -147,10 +149,9 @@ class MainActivity : ComponentActivity() {
                 binderArch,
                 cpuArch,
                 fileName,
+                settings,
                 { openLink("https://github.com/phhusson/treble_experimentations/wiki/Generic-System-Image-%28GSI%29-list") },
-                { openLink("https://github.com/sjshb57/TrebleInfo/issues") },
                 { openLink("https://github.com/sjshb57/TrebleInfo/issues/new") },
-                { openLink("https://github.com/sjshb57/TrebleInfo#翻译") },
                 { openLink("https://github.com/sjshb57/TrebleInfo/pulls") },
                 { openLink("https://github.com/sjshb57/TrebleInfo") },
                 ::openLink,
@@ -184,10 +185,9 @@ fun MainActivityContent(
     binderArch: BinderArch,
     cpuArch: CPUArch,
     fileName: String?,
+    settings: Settings,
     browseImages: () -> Unit,
     reportABug: () -> Unit,
-    askAQuestion: () -> Unit,
-    helpTranslate: () -> Unit,
     contributeCode: () -> Unit,
     projectPage: () -> Unit,
     openLink: (String) -> Unit,
@@ -196,7 +196,13 @@ fun MainActivityContent(
     val topAppBarState = remember(navController.currentBackStackEntryAsState().value) { TopAppBarState(-Float.MAX_VALUE, 0f, 0f) }
     val topAppBarScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(topAppBarState)
 
-    TrebleCheckTheme(darkTheme = Mock.data?.theme ?: isSystemInDarkTheme()) {
+    val darkTheme = Mock.data?.theme ?: when (settings.themeMode) {
+        ThemeMode.System -> isSystemInDarkTheme()
+        ThemeMode.Light -> false
+        ThemeMode.Dark -> true
+    }
+
+    TrebleCheckTheme(darkTheme, settings.dynamicColour, settings.pureBlack) {
         Scaffold(
             topBar = {
                 TopAppBar(
@@ -276,9 +282,9 @@ fun MainActivityContent(
                 composable(Screens.Contribute.route) { Contribute(
                     innerPadding,
                     topAppBarScrollBehavior.nestedScrollConnection,
-                    askAQuestion,
+                    settings,
+                    darkTheme,
                     reportABug,
-                    helpTranslate,
                     contributeCode,
                     projectPage
                 ) }
@@ -305,8 +311,7 @@ fun MainActivityPreview() {
             BinderArch.Binder8,
             CPUArch.ARM64,
             "system-arm64-ab.img.xz",
-            { },
-            { },
+            Settings(null),
             { },
             { },
             { },

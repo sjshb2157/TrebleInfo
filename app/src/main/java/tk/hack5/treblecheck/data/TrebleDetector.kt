@@ -237,7 +237,9 @@ object TrebleDetector {
 
                 val insertIndex = original.lastIndexOf("</compatibility-matrix>")
                 yield(level to (original.substring(0, insertIndex) +
-                        "<sepolicy><kernel-sepolicy-version>0</kernel-sepolicy-version><sepolicy-version>${sepolicyVersion.first}.${sepolicyVersion.second}</sepolicy-version></sepolicy>" +
+                        "<sepolicy><kernel-sepolicy-version>0</kernel-sepolicy-version>" +
+                        "<sepolicy-version>${sepolicyVersion.first}</sepolicy-version>" +
+                        "<sepolicy-version>${sepolicyVersion.first}.${sepolicyVersion.second}</sepolicy-version></sepolicy>" +
                         original.substring(insertIndex)))
             }
         } to MAX_ENFORCED_LEVEL
