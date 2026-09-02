@@ -28,8 +28,10 @@
 	<string name="treble_false">不支援</string>
 	<string name="treble_version_title">VNDK 版本</string>
 	<string name="treble_version_explanation">VNDK 版本是供應商設計用於執行的 Android 版本。 使用較新版本的 Android 可能會導致功能缺失，並且您無法使用舊版本。</string>
+	<string name="treble_lite_title">連結器命名空間隔離</string>
 	<string name="treble_lite_explanation">VNDK 配置負責強制分離系統的不同部分。 VNDK Lite 放寬了這一要求，以相容性保證為代價降低了儲存要求。</string>
 	<string name="treble_lite_true">VNDK 處於 Lite 模式</string>
+	<string name="treble_lite_false">VNDK 不處於 Lite 模式</string>
 	<string name="treble_legacy_title">清單位置</string>
 	<string name="treble_legacy_explanation">設備可以向 Android 提供的支持功能列表儲存在 VINTF 清單中。 該文件以前儲存在供應商分區的根目錄中，但這不再是好的做法。</string>
 	<string name="treble_legacy_true">傳統</string>
@@ -72,7 +74,5 @@
     <string name="library_organization">組織</string>
     <string name="library_source">檢視原始碼</string>
     <string name="library_website">造訪網站</string>
-    <string name="treble_lite_false">VNDK 處於非 Lite 模式</string>
-    <string name="treble_lite_title">連結器命名空間隔離</string>
     <string name="project_page">專案位址</string>
 </resources>
