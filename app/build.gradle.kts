@@ -96,6 +96,12 @@ android {
         }
         getByName("debug") {
             signingConfig = signingConfigs["debug"]
+            providers.gradleProperty("emulatorAbi").orNull?.let { abi ->
+                ndk {
+                    abiFilters.clear()
+                    abiFilters += abi
+                }
+            }
         }
     }
     externalNativeBuild {
