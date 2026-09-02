@@ -29,7 +29,7 @@ adb shell run-as tk.hack5.treblecheck cat "/vendor/etc/vintf/manifest_$vendor_sk
 adb shell run-as tk.hack5.treblecheck cat "/vendor/etc/vintf/manifest.xml" > "vendor/etc/vintf/manifest.xml" || rm "vendor/etc/vintf/manifest.xml"
 adb shell run-as tk.hack5.treblecheck cat "/vendor/manifest.xml" > "vendor/manifest.xml" || rm "vendor/manifest.xml"
 
-rm "vendor/etc/vintf/manifest/*"
+rm -f vendor/etc/vintf/manifest/*
 i=0
 for file in $(adb shell run-as tk.hack5.treblecheck find "/vendor/etc/vintf/manifest/" -maxdepth 1 -iname '*.xml'); do
   adb shell run-as tk.hack5.treblecheck cat "$file" > "vendor/etc/vintf/manifest/$i" || rm "vendor/etc/vintf/manifest/$i"
@@ -42,17 +42,17 @@ adb shell run-as tk.hack5.treblecheck cat "/odm/etc/vintf/manifest.xml" > "odm/e
 adb shell run-as tk.hack5.treblecheck cat "/odm/etc/manifest_$odm_sku.xml" > "odm/etc/manifest_sku.xml" || rm "odm/etc/manifest_sku.xml"
 adb shell run-as tk.hack5.treblecheck cat "/odm/etc/manifest.xml" > "odm/etc/manifest.xml" || rm "odm/etc/manifest.xml"
 
-rm "odm/etc/vintf/manifest/*"
+rm -f odm/etc/vintf/manifest/*
 i=0
 for file in $(adb shell run-as tk.hack5.treblecheck find "/odm/etc/vintf/manifest/" -maxdepth 1 -iname '*.xml'); do
-  adb shell run-as tk.hack5.treblecheck cat "$file" > "odm/etc/vintf/manifest/$i" || rm "odm/etc/manifest/$i"
+  adb shell run-as tk.hack5.treblecheck cat "$file" > "odm/etc/vintf/manifest/$i" || rm "odm/etc/vintf/manifest/$i"
   i=$((i+1))
 done
 
 adb shell run-as tk.hack5.treblecheck cat "/vendor/etc/vintf/compatibility_matrix.xml" > "vendor/etc/vintf/compatibility_matrix.xml" || rm "vendor/etc/vintf/compatibility_matrix.xml"
 adb shell run-as tk.hack5.treblecheck cat "/vendor/compatibility_matrix.xml" > "vendor/compatibility_matrix.xml" || rm "vendor/compatibility_matrix.xml"
 
-rm "vendor/etc/selinux/*"
+rm -f vendor/etc/selinux/*
 i=0
 for file in $(adb shell run-as tk.hack5.treblecheck find "/vendor/etc/selinux/" -maxdepth 1 -iname '*.cil'); do
   adb shell run-as tk.hack5.treblecheck cat "$file" > "vendor/etc/selinux/$i" || rm "vendor/etc/selinux/$i"

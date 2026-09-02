@@ -219,7 +219,7 @@ object TrebleDetector {
             ).forEach { name ->
                 val stream = classLoader.getResourceAsStream(name)
                 require(stream != null) { "$name not found" }
-                val original = stream.bufferedReader().readText()
+                val original = stream.use { it.bufferedReader().readText() }
 
                 val insertIndex = original.lastIndexOf("</compatibility-matrix>")
                 yield(original.substring(0, insertIndex) +
@@ -552,7 +552,8 @@ object TrebleDetector {
         // https://android.googlesource.com/platform/system/core/+/refs/tags/android-12.1.0_r2/init/selinux.cpp#281
         val sepolicyVersionFile = File(root, "/vendor/etc/selinux/plat_sepolicy_vers.txt")
         if (sepolicyVersionFile.exists()) {
-            return parseVersion(sepolicyVersionFile.bufferedReader().readLine())
+            val line = sepolicyVersionFile.useLines { it.firstOrNull() } ?: return null
+            return parseVersion(line)
         }
 
         val files = File(root, "/vendor/etc/selinux/").listFiles { it.canRead() && it.extension == "cil" }
@@ -563,10 +564,12 @@ object TrebleDetector {
         var version = Pair(-1, -1)
 
         files.forEach { file ->
-            file.bufferedReader().lineSequence().forEach { line ->
-                SELINUX_REGEX.findAll(line).forEach { match ->
-                    Pair(match.groupValues[1].toInt(), match.groupValues[2].toInt()).let {
-                        if (it > version) version = it
+            file.useLines { lines ->
+                lines.forEach { line ->
+                    SELINUX_REGEX.findAll(line).forEach { match ->
+                        Pair(match.groupValues[1].toInt(), match.groupValues[2].toInt()).let {
+                            if (it > version) version = it
+                        }
                     }
                 }
             }

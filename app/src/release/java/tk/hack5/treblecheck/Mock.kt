@@ -19,9 +19,6 @@
 
 package tk.hack5.treblecheck
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import tk.hack5.treblecheck.data.BinderArch
 import tk.hack5.treblecheck.data.CPUArch
 import tk.hack5.treblecheck.data.TrebleResult

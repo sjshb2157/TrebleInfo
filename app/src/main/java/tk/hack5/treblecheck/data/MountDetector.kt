@@ -36,19 +36,16 @@ object MountDetector {
     internal fun getMountsStream(): BufferedReader = File(MOUNTS_PATH).inputStream().bufferedReader()
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    internal fun getMounts(): Iterable<Mount> {
-        val mountsStream: BufferedReader
+    internal fun getMounts(): List<Mount> {
         try {
-            mountsStream = getMountsStream()
+            return getMountsStream().use { mountsStream ->
+                mountsStream.lineSequence().mapNotNull { parseLine(it) }.toList()
+            }
         } catch (e: FileNotFoundException) {
             throw ParseException("The host is not running Linux or procfs is broken", e)
         } catch (e: IOException) {
             throw ParseException("Failed to open and read /proc/mounts", e)
         }
-        val lines = mountsStream.lineSequence().mapNotNull {
-            parseLine(it)
-        }
-        return lines.asIterable()
     }
 
     fun isSAR(): Boolean? {

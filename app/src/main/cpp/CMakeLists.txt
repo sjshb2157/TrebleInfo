@@ -70,7 +70,6 @@ add_library(
         TrebleDetector.cpp
 )
 
-target_compile_features(trebledetector PRIVATE cxx_std_17)
 target_include_directories(
         trebledetector
 
