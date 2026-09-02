@@ -16,9 +16,7 @@
 	<string name="browse_images">瀏覽映像</string>
 	<string name="view_details">瀏覽細節</string>
 	<string name="report_this_bug">回報這個 bug</string>
-	<string name="ask_a_question">提出問題</string>
 	<string name="report_a_bug">回報一個 bug</string>
-	<string name="help_translate">協助翻譯</string>
 	<string name="contribute_code">貢獻程式碼</string>
 	<string name="this_app">這個應用程式</string>
 	<string name="treble_title">Project Treble</string>
@@ -75,4 +73,13 @@
     <string name="library_source">檢視原始碼</string>
     <string name="library_website">造訪網站</string>
     <string name="project_page">專案位址</string>
+	<string name="section_appearance">外觀</string>
+	<string name="theme_mode_system">跟隨系統</string>
+	<string name="theme_mode_light">淺色</string>
+	<string name="theme_mode_dark">深色</string>
+	<string name="dynamic_colour">動態取色</string>
+	<string name="dynamic_colour_summary">從桌布擷取配色</string>
+	<string name="pure_black">純黑背景</string>
+	<string name="pure_black_summary">深色模式下使用純黑背景</string>
+	<string name="section_contribute">參與</string>
 </resources>

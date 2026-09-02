@@ -17,9 +17,7 @@
 	<string name="browse_images">Browse images</string>
 	<string name="view_details">View details</string>
 	<string name="report_this_bug">Report bug</string>
-	<string name="ask_a_question">Ask a question</string>
 	<string name="report_a_bug">Report a bug</string>
-	<string name="help_translate">Help translate</string>
 	<string name="contribute_code">Contribute code</string>
 	<string name="this_app">This application</string>
 	<string name="treble_title">Project Treble</string>
@@ -75,4 +73,13 @@
 	<string name="library_licenses">Licenses</string>
 	<string name="library_links">Links</string>
     <string name="project_page">Project page</string>
+	<string name="section_appearance">Appearance</string>
+	<string name="theme_mode_system">System</string>
+	<string name="theme_mode_light">Light</string>
+	<string name="theme_mode_dark">Dark</string>
+	<string name="dynamic_colour">Dynamic colour</string>
+	<string name="dynamic_colour_summary">Take the palette from your wallpaper</string>
+	<string name="pure_black">Pure black</string>
+	<string name="pure_black_summary">Use a black background in dark mode</string>
+	<string name="section_contribute">Contribute</string>
 </resources>

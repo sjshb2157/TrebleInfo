@@ -53,24 +53,37 @@ val Shapes = Shapes(
 val Typography = Typography()
 
 @Composable
-fun TrebleCheckTheme(darkTheme: Boolean, content: @Composable () -> Unit) {
-    val colorScheme = if (darkTheme) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            dynamicDarkColorScheme(LocalContext.current)
-        } else {
-            DarkColorPalette
-        }
-    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        dynamicLightColorScheme(LocalContext.current)
+fun TrebleCheckTheme(
+    darkTheme: Boolean,
+    dynamicColour: Boolean = true,
+    pureBlack: Boolean = false,
+    content: @Composable () -> Unit,
+) {
+    val colorScheme = if (dynamicColour && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        val context = LocalContext.current
+        if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+    } else if (darkTheme) {
+        DarkColorPalette
     } else {
         LightColorPalette
     }
 
     MaterialTheme(
-        colorScheme = colorScheme,
+        // Only the surfaces the app actually paints large areas with go black. Dialogs and
+        // menus keep their own containers, or they would vanish into the background.
+        colorScheme = if (darkTheme && pureBlack) {
+            colorScheme.copy(
+                background = Color.Black,
+                surface = Color.Black,
+                surfaceContainerLowest = Color.Black,
+                surfaceContainerLow = Color.Black,
+                surfaceContainer = Color.Black,
+            )
+        } else {
+            colorScheme
+        },
         typography = Typography,
         shapes = Shapes,
         content = content
     )
-
 }
