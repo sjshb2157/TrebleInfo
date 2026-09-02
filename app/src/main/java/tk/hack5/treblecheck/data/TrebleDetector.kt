@@ -44,6 +44,26 @@ object TrebleDetector {
     private val LEGACY_REQUIRED_BINDERIZED = setOf("android.hardware.biometrics.fingerprint", "android.hardware.configstore", "android.hardware.dumpstate", "android.hardware.graphics.allocator", "android.hardware.radio", "android.hardware.usb", "android.hardware.wifi", "android.hardware.wifi.supplicant")
     private val ALLOWED_PASSTHROUGHS = setOf("android.hardware.graphics.mapper", "android.hardware.renderscript")
 
+    /** Level::LEGACY in libvintf, the value for pre-Treble devices. */
+    private const val LEGACY_LEVEL = 0
+    private const val MAX_ENFORCED_LEVEL = 7
+
+    private val BUNDLED_MATRICES = listOf(
+        LEGACY_LEVEL to "compatibility_matrix.legacy.xml",
+        1 to "compatibility_matrix.1.xml",
+        2 to "compatibility_matrix.2.xml",
+        3 to "compatibility_matrix.3.xml",
+        4 to "compatibility_matrix.4.xml",
+        5 to "compatibility_matrix.5.xml",
+        6 to "compatibility_matrix.6.xml",
+        7 to "compatibility_matrix.7.xml",
+        8 to "compatibility_matrix.8.xml",
+        202404 to "compatibility_matrix.202404.xml",
+        202504 to "compatibility_matrix.202504.xml",
+        202604 to "compatibility_matrix.202604.xml",
+        202704 to "compatibility_matrix.202704.xml",
+    )
+
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     internal var root: File? = null
 
@@ -88,7 +108,7 @@ object TrebleDetector {
                 parseManifest(it)
                     .let { res ->
                         Log.v(tag, "manifest ${it.absolutePath}: $res")
-                        targetLevel = targetLevel ?: res.third?.toIntOrNull()
+                        targetLevel = targetLevel ?: parseTargetLevel(res.third)
                         res.first to res.second
                     }
             }
@@ -178,6 +198,12 @@ object TrebleDetector {
         throw ParseException("No method to detect version ($supportsTreble)")
     }
 
+    private fun parseTargetLevel(value: String?) = when (value) {
+        null -> null
+        "legacy" -> LEGACY_LEVEL
+        else -> value.toIntOrNull()
+    }
+
     private fun checkPassthroughs(passthroughs: Set<String>): PassthroughResult {
         if ((passthroughs - ALLOWED_PASSTHROUGHS).none { it.startsWith("android.") }) {
             return PassthroughResult.FULLY_COMPLIANT
@@ -189,65 +215,64 @@ object TrebleDetector {
     }
 
     /**
-     * The bundled matrices, and the highest FCM level at which a non-match
-     * counts as a failure. That ceiling stays at 7 deliberately: above it a
-     * device matching nothing is reported unknown rather than incompatible,
-     * because vendor manifests routinely fail a stock AOSP matrix.
+     * The bundled matrices, keyed by the FCM level they declare, and the
+     * highest level at which a non-match counts as a failure. That ceiling
+     * stays at 7 deliberately: above it a device that fails is reported
+     * unknown rather than incompatible, because vendor manifests routinely
+     * fail a stock AOSP matrix.
      */
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    fun getFrameworkCompatibilityMatrices(sepolicyVersion: Pair<Int, Int>): Pair<Sequence<String>, Int> {
+    fun getFrameworkCompatibilityMatrices(sepolicyVersion: Pair<Int, Int>): Pair<Sequence<Pair<Int, String>>, Int> {
         // Hoisted: inside the builder `this` is the SequenceScope.
         val classLoader = this::class.java.classLoader!!
-        return sequence<String> {
+        return sequence {
             // Although SP usually contains a valid FCM,
             // we could be running a device-specific image which has a weird FCM,
             // or it could be older than vendor.
             // Therefore, we don't fallback to SP, even when we don't have a matching FCM.
-            arrayOf(
-                "compatibility_matrix.legacy.xml",
-                "compatibility_matrix.1.xml",
-                "compatibility_matrix.2.xml",
-                "compatibility_matrix.3.xml",
-                "compatibility_matrix.4.xml",
-                "compatibility_matrix.5.xml",
-                "compatibility_matrix.6.xml",
-                "compatibility_matrix.7.xml",
-                "compatibility_matrix.8.xml",
-                "compatibility_matrix.202404.xml",
-                "compatibility_matrix.202504.xml",
-                "compatibility_matrix.202604.xml",
-            ).forEach { name ->
+            BUNDLED_MATRICES.forEach { (level, name) ->
                 val stream = classLoader.getResourceAsStream(name)
                 require(stream != null) { "$name not found" }
                 val original = stream.use { it.bufferedReader().readText() }
 
                 val insertIndex = original.lastIndexOf("</compatibility-matrix>")
-                yield(original.substring(0, insertIndex) +
+                yield(level to (original.substring(0, insertIndex) +
                         "<sepolicy><kernel-sepolicy-version>0</kernel-sepolicy-version><sepolicy-version>${sepolicyVersion.first}.${sepolicyVersion.second}</sepolicy-version></sepolicy>" +
-                        original.substring(insertIndex))
+                        original.substring(insertIndex)))
             }
-        } to 7
+        } to MAX_ENFORCED_LEVEL
     }
 
-    private fun checkCompatibilityMatrix(level: Int?, sepolicyVersion: Pair<Int, Int>): Boolean? {
+    /**
+     * https://source.android.com/docs/core/architecture/vintf/match-rules
+     * A device manifest matches the framework compatibility matrix whose level
+     * equals the shipping FCM version the manifest declares, and no other. A
+     * manifest without target-level predates FCM levels, which libvintf calls
+     * Level::LEGACY, so the legacy matrix is the one that applies to it.
+     */
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    internal fun checkCompatibilityMatrix(level: Int?, sepolicyVersion: Pair<Int, Int>): Boolean? {
+        val shippingLevel = level ?: LEGACY_LEVEL
         val (matrices, maxLevel) = getFrameworkCompatibilityMatrices(sepolicyVersion)
-        for (matrix in matrices) {
-            val result = try {
-                checkCompatibilityMatrix(matrix, propertyGet("ro.boot.product.vendor.sku") ?: "", propertyGet("ro.boot.product.hardware.sku") ?: "")
-            } catch (e: UnsatisfiedLinkError) {
-                Log.w(tag, "Native library unavailable", e)
-                return null
-            }
-            return when (result) {
-                0 -> continue
-                1 -> true
-                // error already logged in native code
-                -1 -> null // failed to parse built-in manifest, should never happen
-                -2 -> if (level != null && level > maxLevel) null else false // device manifest load failed, so it can't support Treble unless it is newer than us and we don't recognise it properly
-                else -> throw ParseException("Unknown return value from check_compatibility_matrix")
-            }
+        val unknownLevel = shippingLevel > maxLevel
+        val matrix = matrices.firstOrNull { it.first == shippingLevel }?.second ?: run {
+            Log.w(tag, "No bundled matrix for shipping FCM version $shippingLevel")
+            return if (unknownLevel) null else false
         }
-        return if (level != null && level > maxLevel) null else false // nothing matched
+        val result = try {
+            checkCompatibilityMatrix(matrix, propertyGet("ro.boot.product.vendor.sku") ?: "", propertyGet("ro.boot.product.hardware.sku") ?: "")
+        } catch (e: UnsatisfiedLinkError) {
+            Log.w(tag, "Native library unavailable", e)
+            return null
+        }
+        return when (result) {
+            1 -> true
+            // error already logged in native code
+            0 -> if (unknownLevel) null else false
+            -1 -> null // failed to parse built-in matrix, should never happen
+            -2 -> if (unknownLevel) null else false // device manifest load failed, so it can't support Treble unless it is newer than us and we don't recognise it properly
+            else -> throw ParseException("Unknown return value from check_compatibility_matrix")
+        }
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
