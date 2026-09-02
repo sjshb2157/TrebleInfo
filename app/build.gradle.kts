@@ -61,7 +61,6 @@ android {
 
     defaultConfig {
         applicationId = "tk.hack5.treblecheck"
-        // Project Treble starts at API 26.
         minSdk = 26
         targetSdk = 37
         versionCode = appVersionCode
