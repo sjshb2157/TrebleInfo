@@ -44,10 +44,6 @@ cd TrebleInfo
 git submodule update --init --recursive --force
 ```
 
-> **`--force` 不能省。** 原生代码依赖 7 个 AOSP 子模块，如果本地工作区停留在旧的
-> commit，之后任何一次 `git add -A`（包括 Android Studio 的「提交全部改动」）都会
-> 把仓库里的子模块指针改回旧版本。
-
 首次构建会自动下载 NDK 与 CMake，耗时较长。
 
 ### 常用任务
