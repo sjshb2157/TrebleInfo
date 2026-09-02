@@ -1,7 +1,8 @@
+<!-- https://android.googlesource.com/platform/hardware/interfaces/+/5f2ae92927454b104a461f0dedb7aa61ed52fc3c/compatibility_matrices/compatibility_matrix.202604.xml -->
 <compatibility-matrix version="1.0" type="framework" level="202604">
     <hal format="aidl">
         <name>android.hardware.audio.core</name>
-        <version>1-3</version>
+        <version>1-4</version>
         <interface>
             <name>IModule</name>
             <instance>default</instance>
@@ -20,7 +21,7 @@
     </hal>
     <hal format="aidl">
         <name>android.hardware.audio.effect</name>
-        <version>1-3</version>
+        <version>1-4</version>
         <interface>
             <name>IFactory</name>
             <instance>default</instance>
@@ -36,7 +37,7 @@
     </hal>
     <hal format="aidl">
         <name>android.hardware.automotive.audiocontrol</name>
-        <version>2-5</version>
+        <version>2-6</version>
         <interface>
             <name>IAudioControl</name>
             <instance>default</instance>
@@ -99,7 +100,7 @@
     </hal>
     <hal format="aidl" updatable-via-apex="true">
         <name>android.hardware.biometrics.face</name>
-        <version>3-4</version>
+        <version>3-5</version>
         <interface>
             <name>IFace</name>
             <instance>default</instance>
@@ -120,11 +121,12 @@
         <interface>
             <name>IBluetoothHci</name>
             <instance>default</instance>
+            <regex-instance>hci[1-9][0-9]*</regex-instance>
         </interface>
     </hal>
     <hal format="aidl">
         <name>android.hardware.bluetooth.audio</name>
-        <version>3-5</version>
+        <version>3-6</version>
         <interface>
             <name>IBluetoothAudioProviderFactory</name>
             <instance>default</instance>
@@ -140,9 +142,18 @@
     </hal>
     <hal format="aidl">
         <name>android.hardware.bluetooth.socket</name>
-        <version>1</version>
+        <version>1-2</version>
         <interface>
             <name>IBluetoothSocket</name>
+            <instance>default</instance>
+            <instance>lpp</instance>
+        </interface>
+    </hal>
+    <hal format="aidl">
+        <name>android.hardware.bluetooth.gatt</name>
+        <version>1</version>
+        <interface>
+            <name>IBluetoothGatt</name>
             <instance>default</instance>
         </interface>
     </hal>
@@ -179,7 +190,7 @@
     </hal>
     <hal format="aidl" updatable-via-apex="true">
         <name>android.hardware.camera.provider</name>
-        <version>1-3</version>
+        <version>1-4</version>
         <interface>
             <name>ICameraProvider</name>
             <regex-instance>[^/]+/[0-9]+</regex-instance>
@@ -202,7 +213,7 @@
     </hal>
     <hal format="aidl">
         <name>android.hardware.contexthub</name>
-        <version>3-4</version>
+        <version>3-5</version>
         <interface>
             <name>IContextHub</name>
             <instance>default</instance>
@@ -210,7 +221,7 @@
     </hal>
     <hal format="aidl" updatable-via-apex="true">
         <name>android.hardware.drm</name>
-        <version>1</version>
+        <version>1-2</version>
         <interface>
             <name>IDrmFactory</name>
             <regex-instance>.*</regex-instance>
@@ -233,7 +244,7 @@
     </hal>
     <hal format="aidl">
         <name>android.hardware.gnss</name>
-        <version>2-5</version>
+        <version>2-7</version>
         <interface>
             <name>IGnss</name>
             <instance>default</instance>
@@ -241,7 +252,7 @@
     </hal>
     <hal format="aidl">
         <name>android.hardware.graphics.allocator</name>
-        <version>1-2</version>
+        <version>1-3</version>
         <interface>
             <name>IAllocator</name>
             <instance>default</instance>
@@ -249,7 +260,7 @@
     </hal>
     <hal format="aidl">
         <name>android.hardware.graphics.composer3</name>
-        <version>4</version>
+        <version>4-5</version>
         <interface>
             <name>IComposer</name>
             <instance>default</instance>
@@ -257,17 +268,9 @@
     </hal>
     <hal format="aidl">
         <name>android.hardware.health</name>
-        <version>3-4</version>
+        <version>3-5</version>
         <interface>
             <name>IHealth</name>
-            <instance>default</instance>
-        </interface>
-    </hal>
-    <hal format="aidl">
-        <name>android.hardware.health.storage</name>
-        <version>1</version>
-        <interface>
-            <name>IStorage</name>
             <instance>default</instance>
         </interface>
     </hal>
@@ -276,6 +279,14 @@
         <version>1-5</version>
         <interface>
             <name>IIdentityCredentialStore</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="aidl">
+        <name>android.hardware.motioncontext</name>
+        <version>1</version>
+        <interface>
+            <name>IMotionContext</name>
             <instance>default</instance>
         </interface>
     </hal>
@@ -311,6 +322,14 @@
         </interface>
     </hal>
     <hal format="aidl">
+        <name>android.hardware.npu</name>
+        <version>1</version>
+        <interface>
+            <name>IScheduling</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="aidl">
         <name>android.hardware.security.secretkeeper</name>
         <version>1-2</version>
         <interface>
@@ -321,7 +340,7 @@
     </hal>
     <hal format="aidl" updatable-via-apex="true">
         <name>android.hardware.security.keymint</name>
-        <version>1-4</version>
+        <version>1-5</version>
         <interface>
             <name>IKeyMintDevice</name>
             <instance>default</instance>
@@ -339,7 +358,7 @@
     </hal>
     <hal format="aidl">
         <name>android.hardware.light</name>
-        <version>2</version>
+        <version>2-3</version>
         <interface>
             <name>ILights</name>
             <instance>default</instance>
@@ -347,7 +366,7 @@
     </hal>
     <hal format="aidl">
         <name>android.hardware.media.c2</name>
-        <version>1</version>
+        <version>1-2</version>
         <interface>
             <name>IComponentStore</name>
             <regex-instance>default[0-9]*</regex-instance>
@@ -380,7 +399,7 @@
     </hal>
     <hal format="aidl">
         <name>android.hardware.power</name>
-        <version>5-6</version>
+        <version>5-7</version>
         <interface>
             <name>IPower</name>
             <instance>default</instance>
@@ -396,7 +415,7 @@
     </hal>
     <hal format="aidl">
         <name>android.hardware.radio.config</name>
-        <version>3-4</version>
+        <version>3-5</version>
         <interface>
             <name>IRadioConfig</name>
             <instance>default</instance>
@@ -404,7 +423,7 @@
     </hal>
     <hal format="aidl">
         <name>android.hardware.radio.data</name>
-        <version>3-4</version>
+        <version>3-5</version>
         <interface>
             <name>IRadioData</name>
             <instance>slot1</instance>
@@ -414,7 +433,7 @@
     </hal>
     <hal format="aidl">
         <name>android.hardware.radio.messaging</name>
-        <version>3-4</version>
+        <version>3-5</version>
         <interface>
             <name>IRadioMessaging</name>
             <instance>slot1</instance>
@@ -424,7 +443,7 @@
     </hal>
     <hal format="aidl">
         <name>android.hardware.radio.modem</name>
-        <version>3-4</version>
+        <version>3-5</version>
         <interface>
             <name>IRadioModem</name>
             <instance>slot1</instance>
@@ -434,7 +453,7 @@
     </hal>
     <hal format="aidl">
         <name>android.hardware.radio.network</name>
-        <version>3-4</version>
+        <version>3-5</version>
         <interface>
             <name>IRadioNetwork</name>
             <instance>slot1</instance>
@@ -444,7 +463,7 @@
     </hal>
     <hal format="aidl">
         <name>android.hardware.radio.sim</name>
-        <version>3-4</version>
+        <version>3-5</version>
         <interface>
             <name>IRadioSim</name>
             <instance>slot1</instance>
@@ -464,7 +483,7 @@
     </hal>
     <hal format="aidl">
         <name>android.hardware.radio.voice</name>
-        <version>3-4</version>
+        <version>3-5</version>
         <interface>
             <name>IRadioVoice</name>
             <instance>slot1</instance>
@@ -474,7 +493,7 @@
     </hal>
     <hal format="aidl">
         <name>android.hardware.radio.ims</name>
-        <version>2-3</version>
+        <version>2-4</version>
         <interface>
             <name>IRadioIms</name>
             <instance>slot1</instance>
@@ -484,7 +503,7 @@
     </hal>
     <hal format="aidl">
         <name>android.hardware.radio.ims.media</name>
-        <version>2-3</version>
+        <version>2-4</version>
         <interface>
             <name>IImsMedia</name>
             <instance>default</instance>
@@ -524,6 +543,14 @@
         </interface>
     </hal>
     <hal format="aidl" exclusive-to="virtual-machine">
+        <name>android.hardware.security.see.devicestate</name>
+        <version>1</version>
+        <interface>
+            <name>IDeviceState</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="aidl" exclusive-to="virtual-machine">
         <name>android.hardware.security.see.storage</name>
         <version>1</version>
         <interface>
@@ -557,6 +584,14 @@
             <regex-instance>.*</regex-instance>
         </interface>
     </hal>
+    <hal format="aidl" optional="true">
+        <name>android.hardware.security.timestamp</name>
+        <version>1</version>
+        <interface>
+            <name>ITimeStamper</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
     <hal format="aidl">
         <name>android.hardware.sensors</name>
         <version>2-3</version>
@@ -567,7 +602,7 @@
     </hal>
     <hal format="aidl">
          <name>android.hardware.soundtrigger3</name>
-         <version>1-3</version>
+         <version>1-4</version>
          <interface>
              <name>ISoundTriggerHw</name>
              <instance>default</instance>
@@ -639,7 +674,7 @@
     </hal>
     <hal format="aidl">
         <name>android.hardware.usb</name>
-        <version>1-3</version>
+        <version>1-4</version>
         <interface>
             <name>IUsb</name>
             <instance>default</instance>
@@ -647,6 +682,7 @@
     </hal>
     <hal format="aidl">
         <name>android.hardware.usb.gadget</name>
+        <version>1-2</version>
         <interface>
             <name>IUsbGadget</name>
             <instance>default</instance>
@@ -654,7 +690,7 @@
     </hal>
     <hal format="aidl">
         <name>android.hardware.vibrator</name>
-        <version>1-3</version>
+        <version>1-4</version>
         <interface>
             <name>IVibrator</name>
             <instance>default</instance>
@@ -662,7 +698,7 @@
     </hal>
     <hal format="aidl">
         <name>android.hardware.vibrator</name>
-        <version>1-3</version>
+        <version>1-4</version>
         <interface>
             <name>IVibratorManager</name>
             <instance>default</instance>
@@ -679,7 +715,7 @@
     </hal>
     <hal format="aidl">
         <name>android.hardware.weaver</name>
-        <version>2</version>
+        <version>2-3</version>
         <interface>
             <name>IWeaver</name>
             <instance>default</instance>
@@ -687,7 +723,7 @@
     </hal>
     <hal format="aidl" updatable-via-apex="true">
         <name>android.hardware.wifi</name>
-        <version>2-3</version>
+        <version>2-4</version>
         <interface>
             <name>IWifi</name>
             <instance>default</instance>
@@ -711,7 +747,7 @@
     </hal>
     <hal format="aidl">
         <name>android.hardware.wifi.supplicant</name>
-        <version>3-4</version>
+        <version>4-5</version>
         <interface>
             <name>ISupplicant</name>
             <instance>default</instance>
@@ -719,7 +755,7 @@
     </hal>
     <hal format="aidl" optional="true">
         <name>android.hardware.tv.mediaquality</name>
-        <version>1</version>
+        <version>1-2</version>
         <interface>
             <name>IMediaQuality</name>
             <instance>default</instance>
