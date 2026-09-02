@@ -19,6 +19,7 @@
 package tk.hack5.treblecheck
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
@@ -27,18 +28,34 @@ import org.junit.runners.Parameterized
 import tk.hack5.treblecheck.data.TrebleDetector
 
 @RunWith(Parameterized::class)
-class ValidateCompatibilityTest(private val testName: String, private val vendorSku: String, private val hardwareSku: String, private val sepolicyVersion: Pair<Int, Int>, private val expected: Set<Int>) {
+class ValidateCompatibilityTest(
+    private val testName: String,
+    private val vendorSku: String,
+    private val hardwareSku: String,
+    private val sepolicyVersion: Pair<Int, Int>,
+    private val targetLevel: Int?,
+    private val expected: Boolean?,
+) {
     companion object {
         @Suppress("BooleanLiteralArgument")
-        @Parameterized.Parameters
+        @Parameterized.Parameters(name = "{0}")
         @JvmStatic
         fun data() = listOf(
-            arrayOf("vndk1a", "vendorSku", "hardwareSku", 30 to 0, setOf(5, 6)),
-            arrayOf("vndk3a", "vendorSku", "hardwareSku", 32 to 0, setOf(5, 6)),
-            arrayOf("vndk4a", "vendorSku", "hardwareSku", 30 to 0, setOf(5, 6)),
-            arrayOf("vndk5a", "vendorSku", "hardwareSku", 27 to 0, setOf<Int>()),
-            arrayOf("vndk6a", "vendorSku", "hardwareSku", 27 to 0, setOf(0, 1, 2)),
+            arrayOf("vndk1a", "vendorSku", "hardwareSku", 30 to 0, 3, true),
+            arrayOf("vndk3a", "vendorSku", "hardwareSku", 32 to 0, 3, true),
+            arrayOf("vndk4a", "vendorSku", "hardwareSku", 30 to 0, 3, true),
+            // No target-level, so the legacy matrix applies. vndk5a used to fail
+            // it on missing required HALs; libvintf stopped checking those in
+            // AOSP c2de8e5, so it now passes on the sepolicy version alone.
+            arrayOf("vndk5a", "vendorSku", "hardwareSku", 27 to 0, null, true),
+            arrayOf("vndk6a", "vendorSku", "hardwareSku", 27 to 0, null, true),
         )
+
+        private val EXPECTED_LEVELS =
+            listOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 202404, 202504, 202604, 202704)
+
+        private val LEVEL_ATTRIBUTE =
+            Regex("""<compatibility-matrix[^>]*\blevel="([^"]+)""")
     }
 
     @get:Rule
@@ -50,20 +67,31 @@ class ValidateCompatibilityTest(private val testName: String, private val vendor
         extractFiles(name, allFiles(vendorSku, hardwareSku), temporaryFolder)
     }
 
+    /** Every bundled matrix parses, declares the level we index it under, and survives libvintf. */
     @Test
-    fun checkValidateCompatibility() {
+    fun checkBundledMatrices() {
         extractFiles(testName)
 
         TrebleDetector.root = temporaryFolder.root
         val (matrices, maxLevel) = TrebleDetector.getFrameworkCompatibilityMatrices(sepolicyVersion)
         assertEquals(7, maxLevel)
-        matrices.forEachIndexed { i, matrix ->
-            val result = TrebleDetector.checkCompatibilityMatrix(
-                matrix,
-                vendorSku,
-                hardwareSku
-            )
-            assertEquals("matrix $i", if (i in expected) 1 else 0, result)
-        }
+
+        val levels = matrices.map { (level, matrix) ->
+            val declared = LEVEL_ATTRIBUTE.find(matrix)?.groupValues?.get(1)
+            assertEquals("matrix $level level attribute", if (level == 0) "legacy" else "$level", declared)
+            val result = TrebleDetector.checkCompatibilityMatrix(matrix, vendorSku, hardwareSku)
+            assertTrue("matrix $level was rejected by libvintf (result $result)", result >= 0)
+            level
+        }.toList()
+        assertEquals(EXPECTED_LEVELS, levels)
+    }
+
+    /** The declared shipping FCM version selects exactly one matrix, per the AOSP match rules. */
+    @Test
+    fun checkValidateCompatibility() {
+        extractFiles(testName)
+
+        TrebleDetector.root = temporaryFolder.root
+        assertEquals(expected, TrebleDetector.checkCompatibilityMatrix(targetLevel, sepolicyVersion))
     }
 }

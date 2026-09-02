@@ -1,4 +1,4 @@
-<!-- https://android.googlesource.com/platform/hardware/interfaces/+/540dc2771adfcf69da51b8933bc7cc3b2c73eefd/compatibility_matrices/compatibility_matrix.3.xml -->
+<!-- https://android.googlesource.com/platform/hardware/interfaces/+/227fecd3ed5038d5bf2ac051380eb8eb8427a1ce/compatibility_matrices/compatibility_matrix.3.xml -->
 <compatibility-matrix version="1.0" type="framework" level="3">
     <hal format="hidl" optional="false">
         <name>android.hardware.audio</name>
@@ -184,7 +184,10 @@
             <instance>default</instance>
         </interface>
     </hal>
-    <hal format="hidl" optional="false">
+    <!-- Either the AIDL or the HIDL allocator HAL must exist on the device.
+         If the HIDL composer HAL exists, it must be at least version 2.0.
+         See DeviceManifestTest.GrallocHal -->
+    <hal format="hidl" optional="true">
         <name>android.hardware.graphics.allocator</name>
         <version>2.0</version>
         <interface>
@@ -208,7 +211,10 @@
             <instance>default</instance>
         </interface>
     </hal>
-    <hal format="hidl" optional="false">
+    <!-- Either the AIDL or the HIDL health HAL must exist on the device.
+         If the HIDL health HAL exists, it must be at least version 2.0.
+         See DeviceManifestTest.HealthHal -->
+    <hal format="hidl" optional="true">
         <name>android.hardware.health</name>
         <version>2.0</version>
         <interface>
@@ -224,7 +230,7 @@
             <instance>default</instance>
         </interface>
     </hal>
-    <hal format="hidl" optional="false">
+    <hal format="hidl" optional="true">
         <name>android.hardware.keymaster</name>
         <version>3.0</version>
         <version>4.0</version>
@@ -311,6 +317,10 @@
             <instance>slot2</instance>
             <instance>slot3</instance>
         </interface>
+    </hal>
+    <hal format="hidl" optional="true">
+        <name>android.hardware.radio</name>
+        <version>1.0-2</version>
         <interface>
             <name>ISap</name>
             <instance>slot1</instance>

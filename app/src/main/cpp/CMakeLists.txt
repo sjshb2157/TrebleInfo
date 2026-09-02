@@ -90,7 +90,7 @@ target_include_directories(
         system_core/libutils/include
 )
 # Not -I: on a case-insensitive filesystem <regex.h> would resolve to Regex.h.
-set_target_properties(trebledetector PROPERTIES CXX_STANDARD 20 CXX_STANDARD_REQUIRED ON)
+set_target_properties(trebledetector PROPERTIES CXX_STANDARD 23 CXX_STANDARD_REQUIRED ON)
 
 target_compile_options(trebledetector PRIVATE "-iquote${CMAKE_CURRENT_LIST_DIR}/libvintf/include/vintf")
 

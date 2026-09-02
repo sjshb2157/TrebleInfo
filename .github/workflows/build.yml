@@ -110,3 +110,52 @@ jobs:
           name: reports
           path: app/build/reports/
           if-no-files-found: ignore
+
+  instrumented-tests:
+    name: Instrumented tests
+    # The emulator run costs about fifteen minutes, so keep it off pull requests.
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+          fetch-depth: 1
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: android-actions/setup-android@v4
+
+      - name: Install NDK and CMake
+        run: |
+          NDK=$(grep -oP '(?<=ndkVersion = ")[^"]+' app/build.gradle.kts)
+          sdkmanager --install "ndk;$NDK" "cmake;3.22.1"
+
+      - uses: gradle/actions/setup-gradle@v6
+
+      - name: Run instrumented tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          arch: x86_64
+          target: default
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          script: ./gradlew connectedDebugAndroidTest -PemulatorAbi=x86_64 --stacktrace
+
+      - name: Instrumented test report
+        if: always()
+        run: |
+          for f in app/build/outputs/androidTest-results/connected/**/*.xml; do
+            [ -f "$f" ] && echo "== $f" && cat "$f"
+          done || true

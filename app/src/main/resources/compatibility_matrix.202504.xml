@@ -1,3 +1,4 @@
+<!-- https://android.googlesource.com/platform/hardware/interfaces/+/0993f51b96e92ccdde93a6b7cbb8bb9b0ab49503/compatibility_matrices/compatibility_matrix.202504.xml -->
 <compatibility-matrix version="1.0" type="framework" level="202504">
     <hal format="aidl">
         <name>android.hardware.audio.core</name>
@@ -233,7 +234,7 @@
     </hal>
     <hal format="aidl">
         <name>android.hardware.gnss</name>
-        <version>2-5</version>
+        <version>2-6</version>
         <interface>
             <name>IGnss</name>
             <instance>default</instance>
